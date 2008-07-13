@@ -1,0 +1,20 @@
+msgid "Kill everything that moves."
+msgstr "Zabij wszystko co się rusza."
+
+msgid "Get 1 point for kill. If you carry the Yellow Flag you get 2 points for kill. Also you get multipoints for multikills."
+msgstr "Dostajesz 1 punkt za zabicie. Jeśli jesteś w posiadaniu żółtej flagi dostajesz 2 punkty. Dostajesz także więcej punktów za kilka zabójstw pod rząd."
+
+msgid "Up to 4 teams fight against each other."
+msgstr "Do 4 drużyn walczy przeciwko sobie."
+
+msgid "Capture the enemy flag and bring it to your base to score. 20 points for capture."
+msgstr "Zdobądź flagę drużyny przeciwnej i przynieś ja z powrotem do swojej bazy. 20 punktów za zdobycie."
+
+msgid "'First Blood' style. Whoever owns the Rambo Bow gains super Rambo powers. Only Rambo gets points for kill."
+msgstr "Gra w stylu 'First Blood'. Ten kto zdobędzie Luk Rambo dostaje super moce Rambo. Tylko Rambo dostaje punkty za zabójstwa."
+
+msgid "Red team gets 30 points for retreiving the black flag. Blue team gets 1 point every 5 seconds if the flag is in base."
+msgstr "Drużyna czerwona dostaje 30 punktów za zdobycie czarnej flagi. Niebiescy dostają 1 punkt co 5 sekund jeśli są w posiadaniu czarnej flagi."
+
+msgid "Get the yellow flag and hold it with your team for as long as possible. The team earns 1 point every 5 seconds of holding."
+msgstr "Złap żółtą flagę i trzymaj ja wraz z drużyna jak najdłużej. Drużyna zdobywa punkt za każde 5 sekund trzymania."

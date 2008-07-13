@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CruelHessian" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="./CruelHessian" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pg" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="./CruelHessian" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-pedantic" />
+			<Add option="-W" />
+			<Add option="-Wall" />
+			<Add directory="/usr/local/include/CEGUI/" />
+			<Add directory="/usr/include/CEGUI" />
+			<Add directory="/usr/include/SDL" />
+			<Add directory="/usr/include" />
+		</Compiler>
+		<Linker>
+			<Add library="SDL_image" />
+			<Add library="SDL_ttf" />
+			<Add library="GL" />
+			<Add library="GLU" />
+			<Add library="SDL_mixer" />
+			<Add library="CEGUIBase" />
+			<Add library="CEGUIOpenGLRenderer" />
+			<Add library="boost_filesystem" />
+			<Add library="boost_regex" />
+		</Linker>
+		<Unit filename="../src/bot.cpp" />
+		<Unit filename="../src/bullet.cpp" />
+		<Unit filename="../src/controls.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/draw.cpp" />
+		<Unit filename="../src/draw_extra.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/draw_extra.h" />
+		<Unit filename="../src/draw_sc.h" />
+		<Unit filename="../src/globals.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/grenade.cpp" />
+		<Unit filename="../src/gui.cpp" />
+		<Unit filename="../src/gui.h" />
+		<Unit filename="../src/gun.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/gun.h" />
+		<Unit filename="../src/init.cpp" />
+		<Unit filename="../src/main.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/moving_objects.cpp" />
+		<Unit filename="../src/moving_objects.h" />
+		<Unit filename="../src/physics.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/read_pms.cpp" />
+		<Unit filename="../src/static_objects.cpp" />
+		<Unit filename="../src/worldmap.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

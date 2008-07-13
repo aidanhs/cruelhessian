@@ -1,0 +1,9 @@
+Building Cruel Hessian with CMake
+------------------------
+
+Install newest cmake version from www.cmake.org 
+
+Then type :
+
+	cmake .
+	make
