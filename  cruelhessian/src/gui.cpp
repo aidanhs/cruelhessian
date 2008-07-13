@@ -113,7 +113,7 @@ void showMaps(string mask)
 {
     boost::regex re(SOL_PATH+"Maps/"+mask+".+.PMS");
     boost::filesystem::directory_iterator end;
-    string str;
+    std::string str;
 
     if ( !boost::filesystem::exists(SOL_PATH+"Maps/") )
     {

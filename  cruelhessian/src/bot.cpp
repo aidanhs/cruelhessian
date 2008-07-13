@@ -129,48 +129,48 @@ static int read_poa_temp(MT name)
     for (int temp = 0; temp < 2; temp++)
     {
         int i = 0, k = 0;
-        FILE *file;
+        //FILE *file;
         int stop = 0;
-        char buffer[255];
-        //std::string buffer;
+        //char buffer[255];
+        std::string buffer;
         float min_x = 100, max_x = -100, min_z = 100, max_z = -100;
 
         // reading .poa file
-        if ((file = fopen(anim_type(name).c_str(), "r")) == NULL)
-        /*std::ifstream file (anim_type(name).c_str());
-        if (!file.is_open())*/
+        //if ((file = fopen(anim_type(name).c_str(), "r")) == NULL)
+        std::ifstream file (anim_type(name).c_str());
+        if (!file.is_open())
         {
             cout << "ERROR opening file \n\n";
             return -1;
         }
         //cout << "start";
-        //istringstream in;
-        //string input;
+        istringstream in;
+        string input;
         while (stop == 0)
         {
-            //getline (file,buffer);
-            fgets(buffer, 255, file);
+            getline (file,buffer);
+            //fgets(buffer, 255, file);
             if (buffer[0] != '\r' && buffer[0] != '\n' && buffer[0] != 'N' && buffer[0] != 'E' && buffer[0] != 'C' && stop == 0)
             {
                 //sscanf(buffer, "%s", part);
 
-                fgets(buffer, 255, file);
-                sscanf(buffer, "%f\n", &part_x[name][k][i][temp]);
-                //getline (file, input);
-                //in.str(input);
-                //in >> part_x[name][k][i][temp];
+                //fgets(buffer, 255, file);
+                //sscanf(buffer, "%f\n", &part_x[name][k][i][temp]);
+                getline (file, input);
+                in.str(input);
+                in >> part_x[name][k][i][temp];
 
-                fgets(buffer, 255, file);
-                sscanf(buffer, "%f\n", &part_y[name][k][i][temp]);
-                //getline (file, input);
-                //in.str(input);
-                //in >> part_y[name][k][i][temp];
+                //fgets(buffer, 255, file);
+                //sscanf(buffer, "%f\n", &part_y[name][k][i][temp]);
+                getline (file, input);
+                in.str(input);
+                in >> part_y[name][k][i][temp];
 
-                fgets(buffer, 255, file);
-                sscanf(buffer, "%f\n", &part_z[name][k][i][temp]);
-                //getline (file, input);
-                //in.str(input);
-                //in >> part_z[name][k][i][temp];
+                //fgets(buffer, 255, file);
+                //sscanf(buffer, "%f\n", &part_z[name][k][i][temp]);
+                getline (file, input);
+                in.str(input);
+                in >> part_z[name][k][i][temp];
 
                 if (temp == 1)
                 {
@@ -204,8 +204,8 @@ static int read_poa_temp(MT name)
             }
         }
         FRAMES_MAX[name] = i+1;
-        fclose(file);
-//        file.close();
+       // fclose(file);
+        file.close();
 
         SOL_WIDTH[name] = max_x - min_x;
         SOL_HEIGHT[name] = max_z - min_z;
