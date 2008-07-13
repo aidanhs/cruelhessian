@@ -18,6 +18,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "worldmap.h"
 #include "globals.h"
 #include "bullet.h"
@@ -129,27 +132,45 @@ static int read_poa_temp(MT name)
         FILE *file;
         int stop = 0;
         char buffer[255];
+        //std::string buffer;
         float min_x = 100, max_x = -100, min_z = 100, max_z = -100;
 
         // reading .poa file
         if ((file = fopen(anim_type(name).c_str(), "r")) == NULL)
+        /*std::ifstream file (anim_type(name).c_str());
+        if (!file.is_open())*/
         {
             cout << "ERROR opening file \n\n";
             return -1;
         }
-
+        //cout << "start";
+        //istringstream in;
+        //string input;
         while (stop == 0)
         {
+            //getline (file,buffer);
             fgets(buffer, 255, file);
             if (buffer[0] != '\r' && buffer[0] != '\n' && buffer[0] != 'N' && buffer[0] != 'E' && buffer[0] != 'C' && stop == 0)
             {
                 //sscanf(buffer, "%s", part);
+
                 fgets(buffer, 255, file);
                 sscanf(buffer, "%f\n", &part_x[name][k][i][temp]);
+                //getline (file, input);
+                //in.str(input);
+                //in >> part_x[name][k][i][temp];
+
                 fgets(buffer, 255, file);
                 sscanf(buffer, "%f\n", &part_y[name][k][i][temp]);
+                //getline (file, input);
+                //in.str(input);
+                //in >> part_y[name][k][i][temp];
+
                 fgets(buffer, 255, file);
                 sscanf(buffer, "%f\n", &part_z[name][k][i][temp]);
+                //getline (file, input);
+                //in.str(input);
+                //in >> part_z[name][k][i][temp];
 
                 if (temp == 1)
                 {
@@ -184,6 +205,7 @@ static int read_poa_temp(MT name)
         }
         FRAMES_MAX[name] = i+1;
         fclose(file);
+//        file.close();
 
         SOL_WIDTH[name] = max_x - min_x;
         SOL_HEIGHT[name] = max_z - min_z;
@@ -211,7 +233,7 @@ void WorldMap::read_animations()
     read_poa_temp(KUCA);
     read_poa_temp(SKOK);
     read_poa_temp(GORA);
-    read_poa_temp(ZMIEN_BRON);
+//    read_poa_temp(ZMIEN_BRON);
 }
 
 

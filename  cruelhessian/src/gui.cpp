@@ -115,6 +115,12 @@ void showMaps(string mask)
     boost::filesystem::directory_iterator end;
     string str;
 
+    if ( !boost::filesystem::exists(SOL_PATH+"Maps/") )
+    {
+        cout << "'Maps' directory doesn't exist !";
+        exit(EXIT_FAILURE);
+    }
+
     mMapList->resetList();
 
     for (boost::filesystem::directory_iterator iter(SOL_PATH+"Maps/"); iter != end; ++iter)
@@ -319,7 +325,6 @@ void main_loop ()
     {
         inject_input(must_quit);
         inject_time_pulse(last_time_pulse);
-
         glClear(GL_COLOR_BUFFER_BIT);
         CEGUI::System::getSingleton().renderGUI();
         SDL_GL_SwapBuffers();

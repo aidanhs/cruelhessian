@@ -3,6 +3,7 @@
 
 You'll need to have these libraries to build Cruel Hessian:
 
+ Soldat >= 1.4.1
  libsdl >= 1.2.13
  libsdl-image >= 1.2.6
  libsdl-mixer >= 1.2.8

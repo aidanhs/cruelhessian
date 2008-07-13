@@ -1,64 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="bot.cpp" open="1" top="0" tabpos="10">
-		<Cursor position="8" topLine="0" />
+	<File name="../src/bot.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="5332" topLine="148" />
 	</File>
-	<File name="bullet.cpp" open="1" top="0" tabpos="14">
-		<Cursor position="11" topLine="0" />
+	<File name="../src/draw.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="1105" topLine="23" />
 	</File>
-	<File name="controls.cpp" open="1" top="0" tabpos="11">
-		<Cursor position="10685" topLine="309" />
+	<File name="../src/draw_extra.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="5797" topLine="274" />
 	</File>
-	<File name="draw.cpp" open="1" top="0" tabpos="12">
-		<Cursor position="16348" topLine="453" />
+	<File name="../src/gui.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1285" topLine="33" />
 	</File>
-	<File name="draw_extra.cpp" open="1" top="0" tabpos="19">
-		<Cursor position="6730" topLine="305" />
+	<File name="../src/init.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="935" topLine="152" />
 	</File>
-	<File name="draw_extra.h" open="1" top="0" tabpos="20">
-		<Cursor position="39" topLine="0" />
+	<File name="../src/main.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="0" topLine="197" />
 	</File>
-	<File name="globals.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="1184" topLine="26" />
-	</File>
-	<File name="grenade.cpp" open="1" top="0" tabpos="18">
-		<Cursor position="38" topLine="0" />
-	</File>
-	<File name="gui.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="26626" topLine="723" />
-	</File>
-	<File name="gui.h" open="1" top="0" tabpos="3">
-		<Cursor position="32" topLine="0" />
-	</File>
-	<File name="gun.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="7929" topLine="339" />
-	</File>
-	<File name="gun.h" open="1" top="0" tabpos="4">
-		<Cursor position="19" topLine="0" />
-	</File>
-	<File name="init.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="5153" topLine="93" />
-	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="7">
-		<Cursor position="3832" topLine="130" />
-	</File>
-	<File name="moving_objects.cpp" open="1" top="0" tabpos="16">
-		<Cursor position="1024" topLine="0" />
-	</File>
-	<File name="moving_objects.h" open="1" top="0" tabpos="17">
-		<Cursor position="19" topLine="0" />
-	</File>
-	<File name="physics.cpp" open="1" top="0" tabpos="13">
-		<Cursor position="38" topLine="63" />
-	</File>
-	<File name="read_pms.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="8454" topLine="337" />
-	</File>
-	<File name="static_objects.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="45" topLine="0" />
-	</File>
-	<File name="worldmap.cpp" open="1" top="0" tabpos="9">
-		<Cursor position="1742" topLine="37" />
+	<File name="../src/read_pms.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="0" topLine="336" />
 	</File>
 </CodeBlocks_layout_file>

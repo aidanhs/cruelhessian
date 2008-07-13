@@ -79,7 +79,7 @@ int init_all2()
         cout << "Unable to initialize SDL_ttf: " << TTF_GetError() << endl;
         exit(EXIT_FAILURE);
     }
-
+//cout << "FFF";
     read_fonts();
 
     if (!(font1_16 = TTF_OpenFont((SOL_PATH+Font1).c_str(), 16)))
@@ -136,6 +136,7 @@ int init_all2()
             }
         }
     }
+    cout << "QQQQ";
 
     world = new WorldMap();
 
@@ -194,7 +195,7 @@ int free_init_all2()
 
 void WorldMap::game_loop()
 {
-
+//cout << "start";
     if ((SDL_GetTicks()-timer_fps) >= 1000)
     {
         cout << "FPS : " << countfps << endl;

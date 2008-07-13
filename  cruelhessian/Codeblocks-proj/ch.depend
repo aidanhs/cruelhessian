@@ -38,12 +38,22 @@
 
 1205704765 /usr/include/SDL/SDL_platform.h
 
-1215336066 /usr/include/GL/gl.h
+1214168937 /usr/include/GL/gl.h
+	"gl_mangle.h"
+	<stdlib.h>
+	<windows.h>
+	<GL/mesa_wgl.h>
 	<GL/glext.h>
 
-1215336066 /usr/include/GL/glext.h
+1214168937 /usr/include/GL/glext.h
 	<windows.h>
 	<stddef.h>
+	<inttypes.h>
+	<inttypes.h>
+	<inttypes.h>
+	<stdint.h>
+	<stdint.h>
+	<inttypes.h>
 
 1214168937 /usr/include/GL/glu.h
 	"glu_mangle.h"
@@ -730,7 +740,7 @@
 	"globals.h"
 	"worldmap.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUI.h
+1216002973 /usr/local/include/CEGUI//CEGUI.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIRect.h"
@@ -801,78 +811,78 @@
 	"elements/CEGUITreeItem.h"
 	"elements/CEGUIGroupBox.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIBase.h
+1216002973 /usr/local/include/CEGUI//CEGUIBase.h
 	<cassert>
 	"CEGUIConfig.h"
 	"CEGUIVersion.h"
 	<string>
 	"CEGUIForwardRefs.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIConfig.h
+1216002973 /usr/local/include/CEGUI//CEGUIConfig.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIVersion.h
+1216002975 /usr/local/include/CEGUI//CEGUIVersion.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIForwardRefs.h
+1216002974 /usr/local/include/CEGUI//CEGUIForwardRefs.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIString.h
+1216002974 /usr/local/include/CEGUI//CEGUIString.h
 	"CEGUIBase.h"
 	<string>
 	<string.h>
 	<stdexcept>
 
-1215353956 /usr/local/include/CEGUI//CEGUIRect.h
+1216002974 /usr/local/include/CEGUI//CEGUIRect.h
 	"CEGUIBase.h"
 	"CEGUIVector.h"
 	"CEGUISize.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIVector.h
+1216002975 /usr/local/include/CEGUI//CEGUIVector.h
 	"CEGUIBase.h"
 	"CEGUISize.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUISize.h
+1216002974 /usr/local/include/CEGUI//CEGUISize.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIExceptions.h
-	"CEGUIBase.h"
-	"CEGUIString.h"
-
-1215353956 /usr/local/include/CEGUI//CEGUITexture.h
+1216002974 /usr/local/include/CEGUI//CEGUIExceptions.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIRenderer.h
+1216002975 /usr/local/include/CEGUI//CEGUITexture.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+
+1216002974 /usr/local/include/CEGUI//CEGUIRenderer.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIRect.h"
 	"CEGUIColourRect.h"
 	"CEGUIEventSet.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIColourRect.h
+1216002973 /usr/local/include/CEGUI//CEGUIColourRect.h
 	"CEGUIBase.h"
 	"CEGUIcolour.h"
 
-1215353957 /usr/local/include/CEGUI//CEGUIcolour.h
+1216002975 /usr/local/include/CEGUI//CEGUIcolour.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIEventSet.h
+1216002974 /usr/local/include/CEGUI//CEGUIEventSet.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIEvent.h"
 	"CEGUIIteratorBase.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIEvent.h
+1216002974 /usr/local/include/CEGUI//CEGUIEvent.h
 	"CEGUIString.h"
 	"CEGUIBoundSlot.h"
 	"CEGUISubscriberSlot.h"
 	"CEGUIRefCounted.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIBoundSlot.h
+1216002973 /usr/local/include/CEGUI//CEGUIBoundSlot.h
 	"CEGUIBase.h"
 	"CEGUISubscriberSlot.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUISubscriberSlot.h
+1216002975 /usr/local/include/CEGUI//CEGUISubscriberSlot.h
 	"CEGUIBase.h"
 	"CEGUIFreeFunctionSlot.h"
 	"CEGUIFunctorCopySlot.h"
@@ -881,31 +891,31 @@
 	"CEGUIMemberFunctionSlot.h"
 	"CEGUIFunctorReferenceBinder.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFreeFunctionSlot.h
+1216002974 /usr/local/include/CEGUI//CEGUIFreeFunctionSlot.h
 	"CEGUISlotFunctorBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUISlotFunctorBase.h
+1216002974 /usr/local/include/CEGUI//CEGUISlotFunctorBase.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIFunctorCopySlot.h
+1216002974 /usr/local/include/CEGUI//CEGUIFunctorCopySlot.h
 	"CEGUISlotFunctorBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFunctorReferenceSlot.h
+1216002974 /usr/local/include/CEGUI//CEGUIFunctorReferenceSlot.h
 	"CEGUISlotFunctorBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFunctorPointerSlot.h
+1216002974 /usr/local/include/CEGUI//CEGUIFunctorPointerSlot.h
 	"CEGUISlotFunctorBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIMemberFunctionSlot.h
+1216002974 /usr/local/include/CEGUI//CEGUIMemberFunctionSlot.h
 	"CEGUISlotFunctorBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFunctorReferenceBinder.h
+1216002974 /usr/local/include/CEGUI//CEGUIFunctorReferenceBinder.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIRefCounted.h
+1216002974 /usr/local/include/CEGUI//CEGUIRefCounted.h
 
-1215353956 /usr/local/include/CEGUI//CEGUIIteratorBase.h
+1216002974 /usr/local/include/CEGUI//CEGUIIteratorBase.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIImageset.h
+1216002974 /usr/local/include/CEGUI//CEGUIImageset.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIRect.h"
@@ -916,18 +926,18 @@
 	"CEGUIXMLSerializer.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIImagesetManager.h
+1216002974 /usr/local/include/CEGUI//CEGUIImagesetManager.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
 	"CEGUIIteratorBase.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUISingleton.h
+1216002974 /usr/local/include/CEGUI//CEGUISingleton.h
 	"CEGUIBase.h"
 	<cassert>
 
-1215353956 /usr/local/include/CEGUI//CEGUIImage.h
+1216002974 /usr/local/include/CEGUI//CEGUIImage.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIRect.h"
@@ -938,14 +948,14 @@
 	"CEGUIXMLSerializer.h"
 	<map>
 
-1215353957 /usr/local/include/CEGUI//CEGUIXMLSerializer.h
+1216002975 /usr/local/include/CEGUI//CEGUIXMLSerializer.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	<vector>
 	<iostream>
 	<CEGUI/XMLSerializer.h>
 
-1215353956 /usr/local/include/CEGUI//CEGUILogger.h
+1216002974 /usr/local/include/CEGUI//CEGUILogger.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	<fstream>
@@ -954,7 +964,7 @@
 	<utility>
 	"CEGUISingleton.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIMouseCursor.h
+1216002974 /usr/local/include/CEGUI//CEGUIMouseCursor.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
@@ -964,20 +974,20 @@
 	"CEGUIInputEvent.h"
 	"CEGUIUDim.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIInputEvent.h
+1216002974 /usr/local/include/CEGUI//CEGUIInputEvent.h
 	"CEGUIBase.h"
 	"CEGUIEventArgs.h"
 	"CEGUIString.h"
 	"CEGUIVector.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIEventArgs.h
+1216002974 /usr/local/include/CEGUI//CEGUIEventArgs.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIUDim.h
+1216002975 /usr/local/include/CEGUI//CEGUIUDim.h
 	"CEGUIRect.h"
 	"CEGUIVector.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFont.h
+1216002974 /usr/local/include/CEGUI//CEGUIFont.h
 	"CEGUIBase.h"
 	"CEGUIPropertySet.h"
 	"CEGUIString.h"
@@ -988,30 +998,30 @@
 	"CEGUIImage.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIPropertySet.h
+1216002974 /usr/local/include/CEGUI//CEGUIPropertySet.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIIteratorBase.h"
 	"CEGUIProperty.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIProperty.h
+1216002974 /usr/local/include/CEGUI//CEGUIProperty.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIXMLSerializer.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIFontManager.h
+1216002974 /usr/local/include/CEGUI//CEGUIFontManager.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
 	"CEGUIIteratorBase.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIGlobalEventSet.h
+1216002974 /usr/local/include/CEGUI//CEGUIGlobalEventSet.h
 	"CEGUIEventSet.h"
 	"CEGUISingleton.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindow.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindow.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIVector.h"
@@ -1028,7 +1038,7 @@
 	<vector>
 	<set>
 
-1215353956 /usr/local/include/CEGUI//CEGUISystem.h
+1216002975 /usr/local/include/CEGUI//CEGUISystem.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
@@ -1037,36 +1047,36 @@
 	"CEGUIInputEvent.h"
 	"CEGUIResourceProvider.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIResourceProvider.h
+1216002974 /usr/local/include/CEGUI//CEGUIResourceProvider.h
 	"CEGUIBase.h"
 	"CEGUIDataContainer.h"
 	"CEGUIString.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIDataContainer.h
+1216002973 /usr/local/include/CEGUI//CEGUIDataContainer.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowProperties.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowProperties.h
 	"CEGUIProperty.h"
 	"CEGUIXMLSerializer.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIRenderCache.h
+1216002974 /usr/local/include/CEGUI//CEGUIRenderCache.h
 	"CEGUIVector.h"
 	"CEGUIRect.h"
 	"CEGUIImage.h"
 	"CEGUIFont.h"
 	<vector>
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowRenderer.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowRenderer.h
 	"CEGUIWindow.h"
 	"CEGUIProperty.h"
 	<vector>
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowFactory.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowFactory.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIWindow.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowFactoryManager.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowFactoryManager.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
@@ -1075,7 +1085,7 @@
 	<map>
 	<vector>
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowManager.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowManager.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
@@ -1084,46 +1094,46 @@
 	<map>
 	<vector>
 
-1215353956 /usr/local/include/CEGUI//CEGUIWindowRendererManager.h
+1216002975 /usr/local/include/CEGUI//CEGUIWindowRendererManager.h
 	"CEGUIWindowRenderer.h"
 	"CEGUISingleton.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIScheme.h
+1216002974 /usr/local/include/CEGUI//CEGUIScheme.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISchemeManager.h"
 	<vector>
 
-1215353956 /usr/local/include/CEGUI//CEGUISchemeManager.h
+1216002974 /usr/local/include/CEGUI//CEGUISchemeManager.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUISingleton.h"
 	"CEGUIIteratorBase.h"
 	<map>
 
-1215353956 /usr/local/include/CEGUI//CEGUIScriptWindowHelper.h
+1216002974 /usr/local/include/CEGUI//CEGUIScriptWindowHelper.h
 	"CEGUIBase.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIScriptModule.h
+1216002974 /usr/local/include/CEGUI//CEGUIScriptModule.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIEvent.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUICoordConverter.h
+1216002973 /usr/local/include/CEGUI//CEGUICoordConverter.h
 	"CEGUIUDim.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIPropertyHelper.h
+1216002974 /usr/local/include/CEGUI//CEGUIPropertyHelper.h
 	"CEGUIWindow.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetLookManager.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetLookManager.h
 	"CEGUISingleton.h"
 	"CEGUIString.h"
 	"CEGUIExceptions.h"
 	"falagard/CEGUIFalWidgetLookFeel.h"
 	<map>
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetLookFeel.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetLookFeel.h
 	"falagard/CEGUIFalStateImagery.h"
 	"falagard/CEGUIFalWidgetComponent.h"
 	"falagard/CEGUIFalImagerySection.h"
@@ -1133,330 +1143,330 @@
 	"falagard/CEGUIFalNamedArea.h"
 	<map>
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalStateImagery.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalStateImagery.h
 	"falagard/CEGUIFalLayerSpecification.h"
 	"CEGUIWindow.h"
 	<set>
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalLayerSpecification.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalLayerSpecification.h
 	"falagard/CEGUIFalSectionSpecification.h"
 	"CEGUIWindow.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalSectionSpecification.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalSectionSpecification.h
 	"CEGUIWindow.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetComponent.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalWidgetComponent.h
 	"falagard/CEGUIFalDimensions.h"
 	"falagard/CEGUIFalPropertyInitialiser.h"
 	"CEGUIWindow.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalDimensions.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalDimensions.h
 	"falagard/CEGUIFalEnums.h"
 	"CEGUIString.h"
 	"CEGUIUDim.h"
 	"CEGUIXMLSerializer.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalEnums.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalEnums.h
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyInitialiser.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyInitialiser.h
 	"CEGUIPropertySet.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalImagerySection.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalImagerySection.h
 	"falagard/CEGUIFalImageryComponent.h"
 	"falagard/CEGUIFalTextComponent.h"
 	"falagard/CEGUIFalFrameComponent.h"
 	"CEGUIXMLSerializer.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalImageryComponent.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalImageryComponent.h
 	"falagard/CEGUIFalComponentBase.h"
 	"CEGUIXMLSerializer.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalComponentBase.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalComponentBase.h
 	"falagard/CEGUIFalDimensions.h"
 	"CEGUIWindow.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalTextComponent.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalTextComponent.h
 	"falagard/CEGUIFalComponentBase.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalFrameComponent.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalFrameComponent.h
 	"falagard/CEGUIFalComponentBase.h"
 	"CEGUIXMLSerializer.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyDefinition.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyDefinition.h
 	"CEGUIFalPropertyDefinitionBase.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyDefinitionBase.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyDefinitionBase.h
 	"CEGUIProperty.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyLinkDefinition.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalPropertyLinkDefinition.h
 	"falagard/CEGUIFalPropertyDefinitionBase.h"
 
-1215353958 /usr/local/include/CEGUI//falagard/CEGUIFalNamedArea.h
+1216002977 /usr/local/include/CEGUI//falagard/CEGUIFalNamedArea.h
 	"falagard/CEGUIFalDimensions.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIButtonBase.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIButtonBase.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIPushButton.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIPushButton.h
 	"CEGUIBase.h"
 	"elements/CEGUIButtonBase.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUICheckbox.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUICheckbox.h
 	"CEGUIBase.h"
 	"elements/CEGUIButtonBase.h"
 	"elements/CEGUICheckboxProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUICheckboxProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUICheckboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIRadioButton.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIRadioButton.h
 	"CEGUIBase.h"
 	"elements/CEGUIButtonBase.h"
 	"elements/CEGUIRadioButtonProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIRadioButtonProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIRadioButtonProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITitlebar.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITitlebar.h
 	"CEGUIWindow.h"
 	"elements/CEGUITitlebarProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITitlebarProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITitlebarProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIFrameWindow.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIFrameWindow.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIFrameWindowProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIFrameWindowProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIFrameWindowProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIProgressBar.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIProgressBar.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIProgressBarProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIProgressBarProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIProgressBarProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIEditbox.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIEditbox.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIEditboxProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIEditboxProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIEditboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIThumb.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUIThumb.h
 	"CEGUIPushButton.h"
 	"elements/CEGUIThumbProperties.h"
 	<utility>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIThumbProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUIThumbProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUISlider.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUISlider.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUISliderProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUISliderProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUISliderProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrollbar.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrollbar.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIScrollbarProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrollbarProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrollbarProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListbox.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListbox.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIListboxProperties.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListboxProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUICombobox.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUICombobox.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIComboboxProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIComboboxProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIComboboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListHeader.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListHeader.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIListHeaderSegment.h"
 	"elements/CEGUIListHeaderProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListHeaderSegment.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListHeaderSegment.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIListHeaderSegmentProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListHeaderSegmentProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListHeaderSegmentProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListHeaderProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListHeaderProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMultiColumnList.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMultiColumnList.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"CEGUIListHeader.h"
 	"elements/CEGUIMultiColumnListProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMultiColumnListProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMultiColumnListProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIGUISheet.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIGUISheet.h
 	"CEGUIWindow.h"
 	"CEGUIWindowFactory.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListboxTextItem.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListboxTextItem.h
 	"elements/CEGUIListboxItem.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIListboxItem.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIListboxItem.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIColourRect.h"
 	"CEGUIRenderCache.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIComboDropList.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIComboDropList.h
 	"elements/CEGUIListbox.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMultiLineEditbox.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMultiLineEditbox.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"CEGUIFont.h"
 	"elements/CEGUIMultiLineEditboxProperties.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMultiLineEditboxProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMultiLineEditboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITabButton.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITabButton.h
 	"CEGUIBase.h"
 	"elements/CEGUIButtonBase.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITabControl.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITabControl.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUITabControlProperties.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITabControlProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITabControlProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUISpinner.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUISpinner.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUISpinnerProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUISpinnerProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUISpinnerProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIDragContainer.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIDragContainer.h
 	"CEGUIWindow.h"
 	"CEGUIWindowFactory.h"
 	"elements/CEGUIDragContainerProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIDragContainerProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIDragContainerProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrolledContainer.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrolledContainer.h
 	"CEGUIWindow.h"
 	"CEGUIWindowFactory.h"
 	"elements/CEGUIScrolledContainerProperties.h"
 	<map>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrolledContainerProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrolledContainerProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrollablePane.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrollablePane.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIScrollablePaneProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrollablePaneProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrollablePaneProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITooltip.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITooltip.h
 	"CEGUIWindow.h"
 	"elements/CEGUITooltipProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITooltipProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITooltipProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemEntry.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIItemEntry.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIItemEntryProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemEntryProperties.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIItemEntryProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMenuItem.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMenuItem.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIItemEntry.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemListBase.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIItemListBase.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIItemListBaseProperties.h"
 	"elements/CEGUIItemEntry.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemListBaseProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIItemListBaseProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMenuBase.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMenuBase.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIMenuBaseProperties.h"
 	"elements/CEGUIItemListBase.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMenuBaseProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMenuBaseProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIMenubar.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIMenubar.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIMenuBase.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIPopupMenu.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIPopupMenu.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"elements/CEGUIPopupMenuProperties.h"
 	"elements/CEGUIMenuBase.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIPopupMenuProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIPopupMenuProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrolledItemListBase.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrolledItemListBase.h
 	"elements/CEGUIItemListBase.h"
 	"elements/CEGUIScrollbar.h"
 	"elements/CEGUIScrolledItemListBaseProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIScrolledItemListBaseProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIScrolledItemListBaseProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemListbox.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIItemListbox.h
 	"elements/CEGUIScrolledItemListBase.h"
 	"elements/CEGUIItemListboxProperties.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIItemListboxProperties.h
+1216002976 /usr/local/include/CEGUI//elements/CEGUIItemListboxProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITree.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITree.h
 	"CEGUIBase.h"
 	"CEGUIWindow.h"
 	"CEGUIWindowManager.h"
@@ -1464,26 +1474,26 @@
 	"elements/CEGUITreeProperties.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITreeItem.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITreeItem.h
 	"CEGUIBase.h"
 	"CEGUIString.h"
 	"CEGUIColourRect.h"
 	"CEGUIRenderCache.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUITreeProperties.h
+1216002977 /usr/local/include/CEGUI//elements/CEGUITreeProperties.h
 	"CEGUIProperty.h"
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIGroupBox.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIGroupBox.h
 	"CEGUIBase.h"
 	"CEGUIWindowFactory.h"
 	"elements/CEGUIClippedContainer.h"
 	<vector>
 
-1215353957 /usr/local/include/CEGUI//elements/CEGUIClippedContainer.h
+1216002975 /usr/local/include/CEGUI//elements/CEGUIClippedContainer.h
 	"CEGUIWindow.h"
 	"CEGUIWindowFactory.h"
 
-1215353965 /usr/local/include/CEGUI//RendererModules/OpenGLGUIRenderer/openglrenderer.h
+1216002982 /usr/local/include/CEGUI//RendererModules/OpenGLGUIRenderer/openglrenderer.h
 	"CEGUIBase.h"
 	<OpenGL/gl.h>
 	<OpenGL/glu.h>
@@ -1494,7 +1504,7 @@
 	"CEGUIRenderer.h"
 	"CEGUITexture.h"
 
-1215353956 /usr/local/include/CEGUI//CEGUIDefaultResourceProvider.h
+1216002973 /usr/local/include/CEGUI//CEGUIDefaultResourceProvider.h
 	"CEGUIBase.h"
 	"CEGUIResourceProvider.h"
 	<map>
@@ -4191,6 +4201,199 @@
 	"worldmap.h"
 
 1215906732 source:/mnt/win_e/cruelhessian/src/worldmap.cpp
+	"SDL_mixer.h"
+	"SDL_opengl.h"
+	<math.h>
+	<list>
+	<sstream>
+	"draw_extra.h"
+	"globals.h"
+	"gun.h"
+	"physics.h"
+	"controls.h"
+	"bot.h"
+	"grenade.h"
+	"bullet.h"
+	"worldmap.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/bullet.cpp
+	"bot.h"
+	"worldmap.h"
+	"bullet.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/bot.h
+	"moving_objects.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/moving_objects.h
+	"globals.h"
+	"worldmap.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/globals.h
+	"SDL_opengl.h"
+	"SDL_image.h"
+	<iostream>
+	<list>
+	"gun.h"
+	"read_pms.h"
+	<math.h>
+
+1214168937 /usr/include/GL/gl_mangle.h
+
+1214168937 /usr/include/GL/mesa_wgl.h
+	<GL/gl.h>
+	<windows.h>
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/gun.h
+	<math.h>
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/read_pms.h
+	<vector>
+	<string>
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/worldmap.h
+	"main.h"
+	<iostream>
+	"SDL_opengl.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/main.h
+	"SDL_ttf.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/bullet.h
+	"moving_objects.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/controls.cpp
+	"SDL_mixer.h"
+	"controls.h"
+	"draw_extra.h"
+	"gun.h"
+	"bot.h"
+	"worldmap.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/controls.h
+	"draw_extra.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/draw_extra.h
+	"SDL_opengl.h"
+	"SDL_ttf.h"
+	<iostream>
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/draw.cpp
+	"SDL_mixer.h"
+	"SDL_opengl.h"
+	<sstream>
+	"worldmap.h"
+	"globals.h"
+	"bot.h"
+	"grenade.h"
+	"bullet.h"
+	"physics.h"
+	"draw_extra.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/grenade.h
+	"moving_objects.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/physics.h
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/draw_extra.cpp
+	<sstream>
+	"draw_extra.h"
+	"worldmap.h"
+	"gun.h"
+	"bot.h"
+	"SDL.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/globals.cpp
+	"globals.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/grenade.cpp
+	"grenade.h"
+	"bot.h"
+	"worldmap.h"
+
+1216016471 source:/home/konp/cruelhessian/ cruelhessian/src/bot.cpp
+	<fstream>
+	<sstream>
+	<string>
+	"worldmap.h"
+	"globals.h"
+	"bullet.h"
+	"bot.h"
+
+1216016148 source:/home/konp/cruelhessian/ cruelhessian/src/gui.cpp
+	<iostream>
+	<sstream>
+	<fstream>
+	<locale.h>
+	<libintl.h>
+	"SDL.h"
+	"boost/filesystem/fstream.hpp"
+	"boost/regex.hpp"
+	"gui.h"
+	"globals.h"
+	"worldmap.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/gui.h
+	"CEGUI.h"
+	"RendererModules/OpenGLGUIRenderer/openglrenderer.h"
+	"CEGUIDefaultResourceProvider.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/gun.cpp
+	"SDL.h"
+	"SDL_ttf.h"
+	"SDL_image.h"
+	"draw_extra.h"
+	"globals.h"
+	"main.h"
+	"bot.h"
+	"worldmap.h"
+	"gun.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/init.cpp
+	<sstream>
+	"draw_extra.h"
+	"worldmap.h"
+	"globals.h"
+
+1216016608 source:/home/konp/cruelhessian/ cruelhessian/src/main.cpp
+	"SDL_mixer.h"
+	"globals.h"
+	"worldmap.h"
+	"draw_extra.h"
+	"read_pms.h"
+	"bot.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/moving_objects.cpp
+	"bot.h"
+	"worldmap.h"
+	"moving_objects.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/physics.cpp
+	"SDL_mixer.h"
+	"physics.h"
+	"globals.h"
+	"gun.h"
+	"controls.h"
+	"draw_extra.h"
+	"bot.h"
+	"grenade.h"
+	"bullet.h"
+	"worldmap.h"
+
+1216017043 source:/home/konp/cruelhessian/ cruelhessian/src/read_pms.cpp
+	<fstream>
+	<vector>
+	<string>
+	"globals.h"
+	"read_pms.h"
+	"worldmap.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/static_objects.cpp
+	"static_objects.h"
+
+1216001826 /home/konp/cruelhessian/ cruelhessian/src/static_objects.h
+	"worldmap.h"
+
+1216001826 source:/home/konp/cruelhessian/ cruelhessian/src/worldmap.cpp
 	"SDL_mixer.h"
 	"SDL_opengl.h"
 	<math.h>

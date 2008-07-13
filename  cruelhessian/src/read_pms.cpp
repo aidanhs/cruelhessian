@@ -326,7 +326,15 @@ int read_fonts()
                 {
                     strcpy(Font1, "lucon.ttf");
                 }
-                else exit(EXIT_FAILURE);
+                else if (!strcmp(temp_font, "Verdana"))
+                {
+                    strcpy(Font1, "lucon.ttf");
+                }
+                else
+                {
+                    cout << "Error loading Font 1\n";
+                    exit(EXIT_FAILURE);
+                }
             }
             else if (!strcmp(var_name, "Font2"))
             {
@@ -339,7 +347,15 @@ int read_fonts()
                 {
                     strcpy(Font2, "lucon.ttf");
                 }
-                else exit(EXIT_FAILURE);
+                else if (!strcmp(temp_font, "Verdana"))
+                {
+                    strcpy(Font2, "lucon.ttf");
+                }
+                else
+                {
+                    cout << "Error loading Font 2\n";
+                    exit(EXIT_FAILURE);
+                }
             }
             else if (!strcmp(var_name, "FontMenuSize")) FontMenuSize = font_read_int(tag, i);
             else if (!strcmp(var_name, "FontConsoleSize")) FontConsoleSize = font_read_int(tag, i);
