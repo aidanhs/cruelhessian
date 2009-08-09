@@ -1,0 +1,57 @@
+0.1.0-rc2
+ - improve collision detection system; using the fact, that edges of polygons
+	are placed in map file in clockwise direction
+
+0.1.0-rc1
+ - possibility to select gun with a key
+ - start to implement chat window
+ - fixed displaying maps' lists
+ - some improvements in GUI
+ - support for M3U playlists
+
+0.1.0-beta
+ - window with list of players' scores (see README.txt)
+ - fix displaying new map after closing previous one
+ - insert all map-specific structures and variables into Map class
+ - start to use bots' config files from Bots/ directory
+ - some other minor fixes
+
+0.1.0-alpha
+ - added next few sounds
+ - start to implement simple 3D audio effects
+ - fixed audio volume changing
+ - fixed displaying map list
+ - fixed many memory leaks
+ - some fixes in HUD
+ - improved GUI
+ - possibility to take screenshots, show FPS's, stop/play music, 
+	set to previous and next music track (see README.txt)
+ - update stb_image from SOIL library to 1.18 version
+
+0.1e
+ - should work now on 64-bit systems
+ - fix timers
+ - many improvements in GUI system
+ - use weapons.ini file from Soldat directory
+ - new config file parser - based on SimpleIni 4.11
+ - the code is now much more readable
+
+0.1d
+ - vastly improve overall performance
+ - remove sdl_image (use built-in SOIL library) and sdl_ttf dependency
+ - clean the code
+ - improve spawnpoints calculating
+ - initially implemented waypoints
+
+0.1c
+ - better controls
+ - huge improvement in collision detection system, use SECTORS structure from pms file
+ - no Boost library dependency; instead of boost_regex, Cruel Hessian is now using 
+ 	his own regular expressions library based on re_lib
+
+0.1b
+ - improve cmake building system
+ - some minor changes
+
+0.1a
+ - first official release

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="root" >
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/TabControl" Name="root/1" >
+            <Property Name="TabHeight" Value="{0,23.0107}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TabPanePosition" Value="Top" />
+            <Property Name="UnifiedAreaRect" Value="{{0.01875,0},{0.0270833,0},{0.973437,0},{0.9625,0}}" />
+            <Window Type="DefaultWindow" Name="root/maps" >
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.00287853,0},{-0.00288932,0},{1.00287,0},{0.99711,0}}" />
+                <Window Type="TaharezLook/Button" Name="root/maps/StartGameButton" >
+                    <Property Name="Text" Value="Start" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.370228,0},{0.835454,0},{0.605498,0},{0.969642,0}}" />
+                </Window>
+                <Window Type="TaharezLook/GroupBox" Name="root/maps/Type" >
+                    <Property Name="RiseOnClick" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.02703,0},{0.032294,0},{0.637437,0},{0.284521,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/DeathButton" >
+                    <Property Name="Text" Value="Deathmatch" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.036,0},{0.08,0},{0.29779,0},{0.16,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/CTFButton" >
+                    <Property Name="Text" Value="Capture The Flag" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.036,0},{0.13,0},{0.278314,0},{0.21,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/HTFButton" >
+                    <Property Name="Text" Value="Hold The Flag" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.036,0},{0.18,0},{0.299754,0},{0.26,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/PointButton" >
+                    <Property Name="Text" Value="Pointmatch" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.27,0},{0.08,0},{0.512684,0},{0.16,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/TeamButton" >
+                    <Property Name="Text" Value="Teammatch" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.27,0},{0.13,0},{0.52365,0},{0.21,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/RamboButton" >
+                    <Property Name="Text" Value="Rambomatch" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.47,0},{0.08,0},{0.723486,0},{0.16,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/maps/INFButton" >
+                    <Property Name="Text" Value="Infiltration" />
+                    <Property Name="GroupID" Value="4" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.47,0},{0.13,0},{0.712193,0},{0.21,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Listbox" Name="root/maps/MapList" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0399187,0},{0.502437,0},{0.2951,0},{0.798423,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/Spinn1" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="0" />
+                    <Property Name="MaximumValue" Value="100" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.224982,0},{0.842475,0},{0.332592,0},{0.894618,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/Spinn2" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="30" />
+                    <Property Name="MaximumValue" Value="100" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.222054,0},{0.91276,0},{0.329664,0},{0.968695,0}}" />
+                </Window>
+                <Window Type="TaharezLook/MultiLineEditbox" Name="root/maps/Description" >
+                    <Property Name="Text" >
+</Property>
+                    <Property Name="ReadOnly" Value="True" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.027005,0},{0.295101,0},{0.637071,0},{0.376618,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="root/maps/Desc1" >
+                    <Property Name="ReadOnly" Value="True" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0481331,0},{0.833402,0},{0.209753,0},{0.898005,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="root/maps/Desc2" >
+                    <Property Name="ReadOnly" Value="True" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0489101,0},{0.91067,0},{0.207256,0},{0.971722,0}}" />
+                </Window>
+                <Window Type="TaharezLook/GroupBox" Name="root/maps/Bots" >
+                    <Property Name="Text" Value="Bot Team" />
+                    <Property Name="RiseOnClick" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.711744,0},{0.62643,0},{0.930033,0},{0.970551,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/AlphaDesc" >
+                    <Property Name="Text" Value="Alpha" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.73,0},{0.68,0},{0.81,0},{0.74,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/BravoDesc" >
+                    <Property Name="Text" Value="Bravo" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.73,0},{0.75,0},{0.81,0},{0.812434,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/CharlieDesc" >
+                    <Property Name="Text" Value="Charlie" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.73,0},{0.82,0},{0.81,0},{0.881529,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/DeltaDesc" >
+                    <Property Name="Text" Value="Delta" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.73,0},{0.89,0},{0.812046,0},{0.95203,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/AlphaSpinner" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="1" />
+                    <Property Name="MaximumValue" Value="30" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.82,0},{0.68,0},{0.91,0},{0.74,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/BravoSpinner" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="1" />
+                    <Property Name="MaximumValue" Value="30" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.82,0},{0.75,0},{0.91,0},{0.81,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/CharlieSpinner" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="1" />
+                    <Property Name="MaximumValue" Value="30" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.82,0},{0.82,0},{0.91,0},{0.88,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/maps/DeltaSpinner" >
+                    <Property Name="StepSize" Value="1" />
+                    <Property Name="CurrentValue" Value="1" />
+                    <Property Name="MaximumValue" Value="30" />
+                    <Property Name="MinimumValue" Value="0" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.82,0},{0.89,0},{0.91,0},{0.95,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Listbox" Name="root/maps/PlayMapList" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.359645,0},{0.499044,0},{0.615825,0},{0.798162,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/MapListDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0383893,0},{0.396792,0},{0.298689,0},{0.496547,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/maps/PlayMapListDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.357771,0},{0.395666,0},{0.618071,0},{0.493978,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="root/player" >
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.00163666,0},{0,0},{1.00164,0},{1,0}}" />
+            </Window>
+            <Window Type="DefaultWindow" Name="root/options" >
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{-2.32831e-09,0},{0.00445443,0},{1,0},{1.00446,0}}" />
+                <Window Type="TaharezLook/Editbox" Name="root/options/StatusField" >
+                    <Property Name="ReadOnly" Value="True" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.766777,0},{0.101338,0},{0.936581,0},{0.199888,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Combobox" Name="root/options/InterfacesBox" >
+                    <Property Name="ReadOnly" Value="True" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.310147,0},{0.243876,0},{0.687808,0},{0.469377,0}}" />
+                    <Property Name="MaxEditTextLength" Value="1073741823" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/options/placeSoldatDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0199672,0},{0.104232,0},{0.3027,0},{0.19833,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/options/interfacesDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0217675,0},{0.226503,0},{0.299591,0},{0.311693,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="root/options/placeSoldat" >
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.31162,0},{0.110469,0},{0.682735,0},{0.193433,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="root/graphics" >
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Window Type="TaharezLook/Checkbox" Name="root/graphics/IsFullscreen" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.029951,0},{0.072829,0},{0.330687,0},{0.158018,0}}" />
+                </Window>
+                <Window Type="TaharezLook/GroupBox" Name="root/graphics/Deep" >
+                    <Property Name="RiseOnClick" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0284777,0},{0.161693,0},{0.278478,0},{0.411693,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/graphics/Deep16" >
+                    <Property Name="Text" Value="16" />
+                    <Property Name="GroupID" Value="2" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.041735,0},{0.221604,0},{0.144435,0},{0.300112,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/graphics/Deep32" >
+                    <Property Name="Text" Value="32" />
+                    <Property Name="GroupID" Value="2" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.039607,0},{0.280178,0},{0.143944,0},{0.36314,0}}" />
+                </Window>
+                <Window Type="TaharezLook/GroupBox" Name="root/graphics/Resol" >
+                    <Property Name="RiseOnClick" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.35892,0},{0.16637,0},{0.60892,0},{0.41637,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/graphics/Resol640" >
+                    <Property Name="Text" Value="640x480" />
+                    <Property Name="GroupID" Value="3" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.373813,0},{0.204009,0},{0.514157,0},{0.284744,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/graphics/Resol800" >
+                    <Property Name="Text" Value="800x600" />
+                    <Property Name="GroupID" Value="3" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.375614,0},{0.259466,0},{0.491407,0},{0.331292,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/graphics/Resol1024" >
+                    <Property Name="Text" Value="1024x768" />
+                    <Property Name="GroupID" Value="3" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.37676,0},{0.313586,0},{0.520376,0},{0.392094,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="root/music" >
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.00102291,0},{0.00140479,0},{1.00102,0},{1.0014,0}}" />
+                <Window Type="TaharezLook/Checkbox" Name="root/music/IsSounds" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.023404,0},{0.037194,0},{0.132651,0},{0.10902,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Checkbox" Name="root/music/IsMusic" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.476923,0},{0.034744,0},{0.564894,0},{0.115479,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/music/MusicSongDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.5,0},{0.313585,0},{0.9,0},{0.389866,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/music/MusicDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.504991,0},{0.164209,0},{0.731669,0},{0.232986,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="root/music/SoundsDesc" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0254501,0},{0.162805,0},{0.249263,0},{0.230177,0}}" />
+                </Window>
+                <Window Type="TaharezLook/GroupBox" Name="root/music/GroupQuality" >
+                    <Property Name="RiseOnClick" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.2509,0},{0.542761,0},{0.463257,0},{0.768262,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/music/MediumQuality" >
+                    <Property Name="GroupID" Value="1" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.27234,0},{0.640534,0},{0.397954,0},{0.705679,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/music/LowQuality" >
+                    <Property Name="GroupID" Value="1" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.272504,0},{0.58686,0},{0.424304,0},{0.658686,0}}" />
+                </Window>
+                <Window Type="TaharezLook/RadioButton" Name="root/music/HighQuality" >
+                    <Property Name="GroupID" Value="1" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.272013,0},{0.685523,0},{0.44509,0},{0.761804,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/music/SoundsSpinner" >
+                    <Property Name="StepSize" Value="5" />
+                    <Property Name="CurrentValue" Value="5" />
+                    <Property Name="MaximumValue" Value="100" />
+                    <Property Name="MinimumValue" Value="5" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.262398,0},{0.145213,0},{0.402946,0},{0.243496,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Spinner" Name="root/music/MusicSpinner" >
+                    <Property Name="StepSize" Value="5" />
+                    <Property Name="CurrentValue" Value="5" />
+                    <Property Name="MaximumValue" Value="100" />
+                    <Property Name="MinimumValue" Value="5" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.749592,0},{0.150207,0},{0.905483,0},{0.251298,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="root/exit" >
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Window Type="TaharezLook/Button" Name="root/exit/ExitButton" >
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.33437,0},{0.576169,0},{0.61383,0},{0.701447,0}}" />
+                </Window>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

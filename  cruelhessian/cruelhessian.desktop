@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Comment=Open source engine for Soldat
+Icon=cruelhessian.png
+Exec=cruelhessian
+Name=Cruel Hessian
+GenericName=CruelHessian
+Terminal=false
+Type=Application
+Categories=Application;Game;

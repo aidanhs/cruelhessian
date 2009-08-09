@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CruelHessian" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="./cruelhessian" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wshadow" />
+					<Add option="-Winit-self" />
+					<Add option="-Wredundant-decls" />
+					<Add option="-Wcast-align" />
+					<Add option="-Wundef" />
+					<Add option="-Winline" />
+					<Add option="-Wmissing-declarations" />
+					<Add option="-Wmissing-include-dirs" />
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-pg" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="./cruelhessian" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fomit-frame-pointer" />
+					<Add option="-O2" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-pedantic" />
+			<Add option="-Wall" />
+			<Add option="-W" />
+			<Add option="-DFREEIMAGE_LIB" />
+			<Add directory="/usr/include/SDL" />
+			<Add directory="/usr/include/CEGUI" />
+			<Add directory="/usr/include/freetype2" />
+		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="GLU" />
+			<Add library="SDL_mixer" />
+			<Add library="CEGUIBase" />
+			<Add library="CEGUIOpenGLRenderer" />
+		</Linker>
+		<Unit filename="../src/arms.h" />
+		<Unit filename="../src/bot.cpp" />
+		<Unit filename="../src/bullet.cpp" />
+		<Unit filename="../src/controls.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/draw.cpp" />
+		<Unit filename="../src/draw_extra.h" />
+		<Unit filename="../src/draw_menus.cpp" />
+		<Unit filename="../src/fonts.cpp" />
+		<Unit filename="../src/globals.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/grenade.cpp" />
+		<Unit filename="../src/gui.cpp" />
+		<Unit filename="../src/gui.h" />
+		<Unit filename="../src/load.cpp" />
+		<Unit filename="../src/main.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/moving_object.cpp" />
+		<Unit filename="../src/parser.cpp" />
+		<Unit filename="../src/parser/ConvertUTF.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/parser/ConvertUTF.h" />
+		<Unit filename="../src/parser/SimpleIni.h" />
+		<Unit filename="../src/physics.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/read_pms.cpp" />
+		<Unit filename="../src/soil/SOIL.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/soil/SOIL.h" />
+		<Unit filename="../src/soil/image_DXT.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/soil/image_DXT.h" />
+		<Unit filename="../src/soil/image_helper.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/soil/image_helper.h" />
+		<Unit filename="../src/soil/stb_image_aug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/soil/stb_image_aug.h" />
+		<Unit filename="../src/soil/stbi_DDS_aug.h" />
+		<Unit filename="../src/soil/stbi_DDS_aug_c.h" />
+		<Unit filename="../src/specials.cpp" />
+		<Unit filename="../src/src/AbstractRenderer.h" />
+		<Unit filename="../src/src/BitmapRenderer.h" />
+		<Unit filename="../src/src/FTFont.h" />
+		<Unit filename="../src/src/FTGlyph.h" />
+		<Unit filename="../src/src/GLGlyph.h" />
+		<Unit filename="../src/src/GLPixelGlyph.h" />
+		<Unit filename="../src/src/GLTextureGlyph.h" />
+		<Unit filename="../src/src/GlyphCache.h" />
+		<Unit filename="../src/src/OpenGL.h" />
+		<Unit filename="../src/src/PixmapRenderer.h" />
+		<Unit filename="../src/src/TextureRenderer.h" />
+		<Unit filename="../src/src/gltext.h" />
+		<Unit filename="../src/worldmap.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
