@@ -1,2 +1,0 @@
-#!/bin/bash
-xgettext -o messages.pot -k_ gui.cpp 
