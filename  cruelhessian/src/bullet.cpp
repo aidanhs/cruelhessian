@@ -29,6 +29,7 @@ std::list<Bullet *> ammo_list;
 
 Bullet::Bullet(float src_x, float src_y, float dest_x, float dest_y, int gunmodel, int _owner)
 {
+    type = 1;
     position = TVector2D(src_x, src_y);
     w = weapon[gunmodel].textureAmmo.w;
     h = weapon[gunmodel].textureAmmo.h;

@@ -198,16 +198,6 @@ WorldMap::~WorldMap()
     font2_12.clean();
     font2_28.clean();
 
-/*
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glViewport(0, 0, MAX_WIDTH, MAX_HEIGHT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, MAX_WIDTH, MAX_HEIGHT, 0, -1.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);
-*/
     //    glDeleteTextures( 1, &texture );
 //    glDeleteTextures(p.sceneryCount, text_scen);
 //    delete [] text_scen;
@@ -247,14 +237,13 @@ void WorldMap::run()
             movement_timer = getCurrentTime;
         }
 
+        glClear(GL_COLOR_BUFFER_BIT);
+
         draw_background();
         draw_gostek();
-
-// here shoud be draw_arms
-        draw_screen();
         draw_arms();
+        draw_screen();
         draw_interface();
-
         draw_mouse();
 
         SDL_GL_SwapBuffers();
@@ -516,43 +505,18 @@ void WorldMap::init_gl()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glShadeModel(GL_SMOOTH);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glViewport(0, 0, MAX_WIDTH, MAX_HEIGHT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    glDisable(GL_DEPTH_TEST);
     glOrtho(bgX, bgX + MAX_WIDTH, bgY + MAX_HEIGHT, bgY, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
 
-void WorldMap::calc_min_max()
-{
-    for (int i = 0; i < p.polygonCount; i++)
-    {
-        // mins and maxes of triangle
-        tr_maxx[i] = tr_minx[i] = p.polygon[i].vertex[0].x;
-        tr_maxy[i] = tr_miny[i] = p.polygon[i].vertex[0].y;
-
-        if (p.polygon[i].vertex[1].x > tr_maxx[i]) tr_maxx[i] = p.polygon[i].vertex[1].x;
-        if (p.polygon[i].vertex[1].x < tr_minx[i]) tr_minx[i] = p.polygon[i].vertex[1].x;
-        if (p.polygon[i].vertex[1].y > tr_maxy[i]) tr_maxy[i] = p.polygon[i].vertex[1].y;
-        if (p.polygon[i].vertex[1].y < tr_miny[i]) tr_miny[i] = p.polygon[i].vertex[1].y;
-
-        if (p.polygon[i].vertex[2].x > tr_maxx[i]) tr_maxx[i] = p.polygon[i].vertex[2].x;
-        if (p.polygon[i].vertex[2].x < tr_minx[i]) tr_minx[i] = p.polygon[i].vertex[2].x;
-        if (p.polygon[i].vertex[2].y > tr_maxy[i]) tr_maxy[i] = p.polygon[i].vertex[2].y;
-        if (p.polygon[i].vertex[2].y < tr_miny[i]) tr_miny[i] = p.polygon[i].vertex[2].y;
-
-        aa[i][0] = p.polygon[i].perpendicular[0].y / p.polygon[i].perpendicular[0].x;
-        aa[i][1] = p.polygon[i].perpendicular[1].y / p.polygon[i].perpendicular[1].x;
-        aa[i][2] = p.polygon[i].perpendicular[2].y / p.polygon[i].perpendicular[2].x;
-
-        con[i][0] = 1 / (aa[i][0] * aa[i][0] + 1);
-        con[i][1] = 1 / (aa[i][1] * aa[i][1] + 1);
-        con[i][2] = 1 / (aa[i][2] * aa[i][2] + 1);
-    }
-}
 
 std::string WorldMap::findInterface(const char* name)
 {

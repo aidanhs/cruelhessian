@@ -27,6 +27,8 @@
 class MovingObject
 {
 public:
+    int type;               // 0 - circle, 1 - segment
+    float r;                 // radius
     float w;                 // szerokosc
     float h;                 // wysokosc
     float mass;              // masa

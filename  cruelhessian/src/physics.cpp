@@ -331,9 +331,9 @@ void WorldMap::calculate_physics()
 
             // V -=  2 * N * dot(V • N)
 
-            (*tempg)->velocity.x -= (2*p.polygon[POL_NUMBER].perpendicular[LINE_NUMBER].x*
+            (*tempg)->velocity.x -= (1.8f*p.polygon[POL_NUMBER].perpendicular[LINE_NUMBER].x*
                                      p.polygon[POL_NUMBER].perpendicular[LINE_NUMBER].x*
-                                     (*tempg)->velocity.x)*0.9f;
+                                     (*tempg)->velocity.x);
             (*tempg)->velocity.y -= (2*p.polygon[POL_NUMBER].perpendicular[LINE_NUMBER].y*
                                      p.polygon[POL_NUMBER].perpendicular[LINE_NUMBER].y*
                                      (*tempg)->velocity.y)*0.9f;

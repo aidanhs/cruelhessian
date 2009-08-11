@@ -118,7 +118,7 @@ void WorldMap::load_configs()
     sFlying = 300.0;
     sJumping = 200.0;
 
-    calc_min_max();
+//    calc_min_max();
 
     column_names.push_back("Player:");
     column_names.push_back("Points:");
@@ -363,7 +363,7 @@ void WorldMap::load_textures()
     text_firebar_r  = SOIL_LoadTextureEx(findInterface("fire-bar-r.bmp"));
 
     // Loading guns' textures
-    weapon[0].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/0.bmp");
+    weapon[0].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/10.bmp");
     weapon[1].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/1.bmp");
     weapon[2].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/2.bmp");
     weapon[3].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/3.bmp");
@@ -373,7 +373,7 @@ void WorldMap::load_textures()
     weapon[7].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/7.bmp");
     weapon[8].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/8.bmp");
     weapon[9].textureGun   = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/9.bmp");
-    weapon[10].textureGun  = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/10.bmp");
+    weapon[10].textureGun  = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/0.bmp");
     weapon[14].textureGun  = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/knife.bmp");
     weapon[15].textureGun  = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/chainsaw.bmp");
     weapon[16].textureGun  = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/law.bmp");
@@ -403,36 +403,35 @@ void WorldMap::load_textures()
     // Loading weather texture
     if (p.weather != p.wtNONE)
     {
-        /*switch (p.weather)
-        {
-        case p.wtRAIN :
+        if (p.weather == p.wtRAIN)
             text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/rain.bmp");
-            break;
-        case p.wtSANDSTORM :
+        else if (p.weather == p.wtSANDSTORM)
             text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/sand.bmp");
-            break;
-        case p.wtSNOW :
+        else if (p.weather == p.wtSNOW)
             text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/snow.bmp");
-        default :
-            break;
-        }*/
-        if (p.weather == p.wtRAIN) text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/rain.bmp");
-        else if (p.weather == p.wtSANDSTORM) text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/sand.bmp");
-        else if (p.weather == p.wtSNOW) text_weath = SOIL_LoadTextureEx(SOL_PATH + "Sparks-gfx/snow.bmp");
 
     }
+    //else std::cout << "COS KEST " << std::endl;
 
     // Loading gostek textures
-    gost_stopa  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/stopa.bmp");
-    gost_klata  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/klata.bmp");
-    gost_ramie  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/ramie.bmp");
-    gost_morda  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/morda.bmp");
-    gost_reka   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/reka.bmp");
-    gost_dlon   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/dlon.bmp");
-    gost_biodro = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/biodro.bmp");
-    gost_udo    = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/udo.bmp");
-    gost_noga   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/noga.bmp");
-//    gost_x = SDL_GL_LoadTexture(SOL_PATH+"Gostek-gfx/noga.bmp", gost_x_xy);
+    gost_stopa[0]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/stopa.bmp");
+    gost_stopa[1]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/stopa2.bmp");
+    gost_klata[0]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/klata.bmp");
+    gost_klata[1]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/klata2.bmp");
+    gost_ramie[0]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/ramie.bmp");
+    gost_ramie[1]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/ramie2.bmp");
+    gost_morda[0]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/morda.bmp");
+    gost_morda[1]  = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/morda2.bmp");
+    gost_reka[0]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/reka.bmp");
+    gost_reka[1]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/reka2.bmp");
+    gost_dlon[0]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/dlon.bmp");
+    gost_dlon[1]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/dlon2.bmp");
+    gost_biodro[0] = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/biodro.bmp");
+    gost_biodro[1] = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/biodro2.bmp");
+    gost_udo[0]    = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/udo.bmp");
+    gost_udo[1]    = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/udo2.bmp");
+    gost_noga[0]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/noga.bmp");
+    gost_noga[1]   = SOIL_LoadTextureEx(SOL_PATH + "Gostek-gfx/noga2.bmp");
 
 }
 

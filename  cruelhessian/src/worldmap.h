@@ -33,7 +33,6 @@
 
 #include "globals.h"
 #include "bot.h"
-//#include "gun.h"
 #include "fonts.h"
 #include "moving_object.h"
 
@@ -85,7 +84,7 @@ public:
 
 private:
 
-
+    float getAngle(int x, int y);
     void chat_window();
     Uint32 lastOutChatEntity;
     typedef std::pair<std::string, std::string> string_pair;
@@ -177,8 +176,11 @@ private:
     int playMusic(int pos);
 
     void inputUser();
-    GLuint which_part(int nr);
-    GLfloat* which_part_xy(int nr);
+    //GLuint which_part(int nr);
+    //GLfloat* which_part_xy(int nr);
+
+    //Tex* which_part(int nr);
+//    Mix& which_part(int nr, MD dir);
 
     //int reload_gun(void *data);
 
@@ -240,14 +242,14 @@ private:
     Tex text_grenade[16];
     Tex gost_x;
     //Tex text_guns[14];
-    Tex gost_stopa, gost_klata, gost_ramie, gost_morda, gost_reka, gost_dlon, gost_udo, gost_biodro, gost_noga;
+    Tex gost_stopa[2], gost_klata[2], gost_ramie[2], gost_morda[2], gost_reka[2], gost_dlon[2], gost_udo[2], gost_biodro[2], gost_noga[2];
     float bgX, bgY;
     unsigned int MY_BOT_NR;
 
     int read_po(OBJECT_TYPE type);
     void make_lines(MT move, int frame, int kierunek, TEAM team);
 
-    void calc_min_max();
+    //void calc_min_max();
 
     void bots_control();
 
@@ -260,7 +262,7 @@ private:
     void draw_mouse();
     void draw_infos();
     void draw_gostek();
-    void draw_gostek_help(float dx, float dy, int part);
+    void draw_gostek_help(int partx, int party, float angle, Tex& xtex);
 
     // definitions in load.cpp
     void load_textures();

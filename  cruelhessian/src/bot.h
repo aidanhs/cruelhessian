@@ -32,7 +32,7 @@ class Bot : public MovingObject//, public Gun
 {
     //friend class Bullet;
 public:
-int collision_det_with_wall(float dx, float dy);
+//int collision_det_with_wall(float dx, float dy);
     std::string name;
     std::string chatKill;
     std::string chatDead;
@@ -40,7 +40,7 @@ int collision_det_with_wall(float dx, float dy);
     std::string chatSeeEnemy;
     std::string chatWinning;
 
-    float r;
+   // float r;
     int points;
     int deaths;
     int wayNumber;

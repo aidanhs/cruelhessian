@@ -31,16 +31,19 @@
 
 Bot::Bot(unsigned int bot_nr, const std::string& _name, int spawn_nr, int gunmodel, TEAM _team)
 {
+    type = 0;
     botNumber = bot_nr;
     team = _team;
     name = _name;
+    movementDirection = LEFT;
+    movementType = STOI;
+    position = TVector2D(p.spawnpoint[spawn_nr].x, p.spawnpoint[spawn_nr].y);
+
+    // treat as a circle (ellipse - that will the best)
     w = SOL_WIDTH[STOI];
     h = SOL_HEIGHT[STOI];
-    position = TVector2D(p.spawnpoint[spawn_nr].x, p.spawnpoint[spawn_nr].y);
-    r = SOL_HEIGHT[STOI] / 2;
-    //std::cout << "QW " << position.x << " " << position.y << std::endl;
-    //this->shotPointX = this->position.x + this->w/2;
-    //this->shotPointY = this->position.y + this->h/2;
+    r = SOL_HEIGHT[movementType] / 2;
+
     velocity = TVector2D(0.0f, 0.0f);
     mass = 100;
     massInv = 1 / mass;
@@ -49,8 +52,7 @@ Bot::Bot(unsigned int bot_nr, const std::string& _name, int spawn_nr, int gunmod
     isFlying = isReloading = isKilled = false;
     procJet = 1.0;
     actLife = fullLife;
-    movementDirection = LEFT;
-    movementType = STOI;
+
     gunModel = gunmodel;
     respawnTime = 0;
     lastShotTime = 0;

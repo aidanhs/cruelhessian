@@ -81,18 +81,82 @@ void WorldMap::make_lines(MT move, int frame, int kierunek, TEAM team)
 
 }
 
+// x - punkt startowy, y - koncowy
+float WorldMap::getAngle(int x, int y)
+{
+    int bot_nr = 0;
+    float sx  = part_x[bot[bot_nr]->movementType][x][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    float sy  = part_y[bot[bot_nr]->movementType][x][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    float fx  = part_x[bot[bot_nr]->movementType][y][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    float fy  = part_y[bot[bot_nr]->movementType][y][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    return _180overpi*atan2(fy-sy, fx-sx);
+    //return atan2(fy-sy, fx-sx);
+}
+
 
 void WorldMap::draw_gostek()
 {
-
-    for (unsigned int bot_nr = 0; bot_nr < bot.size(); bot_nr++)
+    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glPushMatrix();
+    for (unsigned int bot_nr = 0; bot_nr < bot.size(); ++bot_nr)
     {
+        int dir = 1-bot[bot_nr]->movementDirection;
         if (!bot[bot_nr]->isKilled)
         {
+
+            // biodro
+            draw_gostek_help(7, 4, getAngle(7,6), gost_biodro[dir]);
+
+            // lewe udo
+            draw_gostek_help(5, 5, getAngle(5,2), gost_udo[dir]);
+
+
+            // prawa noga
+            draw_gostek_help(2, 2, getAngle(2,1), gost_noga[dir]);
+
+            // prawe udo
+            draw_gostek_help(4, 4, getAngle(4,3), gost_udo[dir]);
+
+            // lewa noga
+            draw_gostek_help(3, 3, getAngle(3,0), gost_noga[dir]);
+
+            // lewa stopa
+            draw_gostek_help(0, 0, getAngle(0,16), gost_stopa[dir]);
+
+            // prawa stopa
+            draw_gostek_help(1, 1, getAngle(1,17), gost_stopa[dir]);
+
+            // prawe ramie
+            draw_gostek_help(10, 10, getAngle(13,10) - 270, gost_ramie[dir]);
+
+            // prawa reka
+            draw_gostek_help(13, 13, getAngle(13,14), gost_reka[dir]);
+
+            // prawa dlon
+            draw_gostek_help(14, 14, getAngle(14,18), gost_dlon[dir]);
+
+            // klata
+            draw_gostek_help(7, 9, getAngle(9,10), gost_klata[dir]);
+
+            // morda
+            draw_gostek_help(8, 8, getAngle(8,11), gost_morda[dir]);
+
+            // lewe ramie
+            draw_gostek_help(9, 9, getAngle(12,9) - 270, gost_ramie[dir]);
+
+            // lewa reka
+            draw_gostek_help(12, 12, getAngle(12,15), gost_reka[dir]);
+
+            // lewa dlon
+            draw_gostek_help(15, 15, getAngle(15,19), gost_dlon[dir]);
+
+/*
             glPushMatrix();
-            glTranslatef(bot[bot_nr]->position.x, bot[bot_nr]->position.y, 0.0f);
+            glTranslatef(bot[bot_nr]->position.x-bot[bot_nr]->r, bot[bot_nr]->position.y-bot[bot_nr]->r, 0.0f);
             make_lines(bot[bot_nr]->movementType, bot[bot_nr]->currentFrame, bot[bot_nr]->movementDirection, bot[bot_nr]->team);
-            glPopMatrix();
+            glPopMatrix();*/
         }
         else
         {
@@ -101,15 +165,18 @@ void WorldMap::draw_gostek()
                 bot[bot_nr]->isKilled = false;
         }
     }
+    glDisable(GL_TEXTURE_2D);
 }
 
 void WorldMap::printText(freetype::font_data& font, const std::string& text, ubyte* color, float x, float y)
 {
     glPushMatrix();
+    //glClear(GL_COLOR_BUFFER_BIT);
     glColor3ub(color[0], color[1], color[2]);
     //glColor4ub(color[0], color[1], color[2], color[3]);
     glLoadIdentity();
     freetype::print(font, x, static_cast<float>(MAX_HEIGHT)-y-12.0f, text.c_str());
+    glColor3ub(255,255,255);
     glPopMatrix();
 }
 
@@ -226,6 +293,7 @@ void WorldMap::draw_arms()
 
 void WorldMap::draw_background()
 {
+glDisable(GL_TEXTURE_2D);
 
     // przesun tlo ekranu w zaleznosci od polozenia Bota
     if (SHOW_GUN_MENU && ONLY_ONCE)
@@ -253,12 +321,14 @@ void WorldMap::draw_background()
     glVertex2f((GLfloat)p.rightoffs + MAX_WIDTH, (GLfloat)-p.bottomoffs);
     glVertex2f((GLfloat)p.leftoffs - MAX_WIDTH, (GLfloat)-p.bottomoffs);
     glEnd();
-
+glPopMatrix();
+//glFlush();
 }
 
 
 void WorldMap::draw_screen()
 {
+    //glPushMatrix();
     glEnable(GL_TEXTURE_2D);
 
     // draw scenery on the back
@@ -296,19 +366,6 @@ void WorldMap::draw_screen()
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < p.polygonCount; i++)
     {
-        /*for (int m = 0; m < 3; m++)
-        {
-            glTexCoord3f(p.polygon[i].vertex[m].tu, -p.polygon[i].vertex[m].tv, 1.0 / p.polygon[i].vertex[m].rhw);
-
-            glColor4ub(p.polygon[i].vertex[m].color.red,
-                       p.polygon[i].vertex[m].color.green,
-                       p.polygon[i].vertex[m].color.blue,
-                       p.polygon[i].vertex[m].color.alpha);
-
-            //glVertex3f(p.polygon[i].vertex[m].x, p.polygon[i].vertex[m].y, 0.0);
-            glVertex3f(p.polygon[i].vertex[m].x, p.polygon[i].vertex[m].y, p.polygon[i].vertex[m].z);
-        }*/
-
         glTexCoord3f(p.polygon[i].vertex[0].tu, -p.polygon[i].vertex[0].tv, 1.0f / p.polygon[i].vertex[0].rhw);
         glColor4ub(p.polygon[i].vertex[0].color.red,
                    p.polygon[i].vertex[0].color.green,
@@ -362,6 +419,32 @@ void WorldMap::draw_screen()
         }
     }
     glDisable(GL_TEXTURE_2D);
+    //glPopMatrix();
+}
+
+void WorldMap::draw_int_help(Tex& tex, float dx, float dy)
+{
+
+    glPushMatrix();
+
+    glLoadIdentity();
+    glTranslatef(bgX + dx, bgY + dy, 0.0f);
+
+    glBindTexture(GL_TEXTURE_2D, tex.tex);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0);
+    glVertex2f(0.0, 0.0);
+    glTexCoord2f(1.0, 1.0);
+    glVertex2f(tex.w, 0.0);
+    glTexCoord2f(1.0, 0.0);
+    glVertex2f(tex.w, tex.h);
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(0.0, tex.h);
+    glEnd();
+
+    glPopMatrix();
+
 }
 
 
@@ -369,7 +452,7 @@ void WorldMap::draw_interface()
 {
     int x, y;
     std::ostringstream oss;
-
+//glDisable(GL_TEXTURE_2D);
     // ----- Gun's name -----
 
     printText(font2_12, weapon[bot[MY_BOT_NR]->gunModel].name, textCol[2], 0.01f*MAX_WIDTH+170, static_cast<float>(MAX_HEIGHT-34));
@@ -377,23 +460,24 @@ void WorldMap::draw_interface()
     // ----- Ammo count -----
 
     oss << bot[MY_BOT_NR]->leftAmmos;
+    //printText(font2_12, oss.str(), textCol[2], 0.46f*MAX_WIDTH+33, static_cast<float>(MAX_HEIGHT-32));
     printText(font2_12, oss.str(), textCol[2], 0.46f*MAX_WIDTH+33, static_cast<float>(MAX_HEIGHT-32));
     oss.str("");
 
 
-    glEnable(GL_TEXTURE_2D);
+glEnable(GL_TEXTURE_2D);
 
     // ----- Health -----
 
     draw_int_help(text_health, 0.01f*MAX_WIDTH, static_cast<float>(MAX_HEIGHT-38));
 
     text_healthbar.w = 115.0f*bot[MY_BOT_NR]->actLife / fullLife;
-    draw_int_help(text_healthbar, 0.01f*MAX_WIDTH+40, static_cast<float>(MAX_HEIGHT-31));
+    draw_int_help(text_healthbar, 0.01f*MAX_WIDTH+40, static_cast<float>(MAX_HEIGHT-29));
 
 
     // ----- Ammo -----
 
-    draw_int_help(text_ammo, 0.46f*MAX_WIDTH, static_cast<float>(MAX_HEIGHT-44));
+    draw_int_help(text_ammo, 0.46f*MAX_WIDTH, static_cast<float>(MAX_HEIGHT-38));
 
     // grenades' count
     for (int i = 0; i < bot[MY_BOT_NR]->numGrenades; ++i)
@@ -403,7 +487,7 @@ void WorldMap::draw_interface()
 
     if (!bot[MY_BOT_NR]->isReloading)
         text_reloadbar.w = 115.0f*bot[MY_BOT_NR]->leftAmmos / weapon[bot[MY_BOT_NR]->gunModel].ammo;
-    draw_int_help(text_reloadbar, 0.46f*MAX_WIDTH+67, static_cast<float>(MAX_HEIGHT-31));
+    draw_int_help(text_reloadbar, 0.46f*MAX_WIDTH+67, static_cast<float>(MAX_HEIGHT-29));
 
 
     // -----  Little gold
@@ -416,9 +500,9 @@ void WorldMap::draw_interface()
 
     // ----- Flying -----
 
-    draw_int_help(text_jet, 0.75f*MAX_WIDTH, static_cast<float>(MAX_HEIGHT-44));
+    draw_int_help(text_jet, 0.75f*MAX_WIDTH, static_cast<float>(MAX_HEIGHT-38));
     text_jetbar.w = 115.0f*bot[MY_BOT_NR]->procJet;
-    draw_int_help(text_jetbar, 0.75f*MAX_WIDTH+40, static_cast<float>(MAX_HEIGHT-31));
+    draw_int_help(text_jetbar, 0.75f*MAX_WIDTH+40, static_cast<float>(MAX_HEIGHT-29));
 
     glDisable(GL_TEXTURE_2D);
 
@@ -635,155 +719,66 @@ void WorldMap::draw_mouse()
     glDisable(GL_TEXTURE_2D);
 }
 
-
-GLuint WorldMap::which_part(int nr)
+void WorldMap::draw_gostek_help(int partx, int party, float angle, Tex& xtex)
 {
-    switch (nr)
+    int bot_nr = MY_BOT_NR;
+    if (bot[bot_nr]->movementDirection == LEFT && (partx == 7 && party == 9))
     {
-        //case 0 : return gost_morda;
-        //case 1 : return gost_morda;
-    case 2 :
-        return gost_noga.tex;
-    case 3 :
-        return gost_noga.tex;
-    case 4 :
-        return gost_udo.tex;
-    case 5 :
-        return gost_udo.tex;
-        //case 6 : return gost_morda;
-    case 7 :
-        return gost_biodro.tex;
-        //case 8 : return gost_morda;
-    case 9 :
-        return gost_klata.tex;
-    case 10 :
-        return gost_ramie.tex;
-    case 11 :
-        return gost_morda.tex;
-    case 12 :
-        return gost_reka.tex;
-    case 13 :
-        return gost_reka.tex;
-    case 14 :
-        return gost_dlon.tex;
-    case 15 :
-        return gost_dlon.tex;
-    case 16 :
-        //return gost_x;
-        //case 17 : return gost_stopa;
-        //case 18 : return gost_dlon;
-        //case 19 : return gost_dlon;
-    default :
-        return gost_dlon.tex;
+        partx = 9;
+        party = 6;
     }
-//    return 0;
-
-}
-
-GLfloat* WorldMap::which_part_xy(int nr)
-{
-    nr++;
-    //fffffffffffff
-    /*switch (nr)
+    if (bot[bot_nr]->movementDirection == RIGHT && (partx == 7 && party == 4)) // biodro
     {
-        //case 0 : return gost_morda_xy;
-        //case 1 : return gost_morda_xy;
-    case 2 :
-        return gost_noga_xy;
-    case 3 :
-        return gost_noga_xy;
-    case 4 :
-        return gost_udo_xy;
-    case 5 :
-        return gost_udo_xy;
-        //case 6 : return gost_morda_xy;
-    case 7 :
-        return gost_biodro_xy;
-        //case 8 : return gost_morda_xy;
-    case 9 :
-        return gost_klata_xy;
-    case 10 :
-        return gost_ramie_xy;
-    case 11 :
-        return gost_morda_xy;
-    case 12 :
-        return gost_reka_xy;
-    case 13 :
-        return gost_reka_xy;
-    case 14 :
-        return gost_dlon_xy;
-    case 15 :
-        return gost_dlon_xy;
-    case 16 :
-        //return gost_x_xy;
-        //case 17 : return gost_stopa_xy;
-        //case 18 : return gost_dlon_xy;
-        //case 19 : return gost_dlon_xy;
-    default :
-        return gost_dlon_xy;
-    }*/
-    return 0;
+        partx = 7;
+        party = 6;
+    }
+    if (bot[bot_nr]->movementDirection == LEFT && (partx == 8 && party == 8)) // morda
+    {
+        partx = 10;
+        party = 8;
+    }
+    //Mix xtex;
 
-}
+    float sx  = part_x[bot[bot_nr]->movementType][partx][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    float sy  = part_y[bot[bot_nr]->movementType][party][bot[bot_nr]->currentFrame][bot[bot_nr]->movementDirection];
+    if (bot[bot_nr]->movementDirection == RIGHT && ((partx == 0 && party == 0) || (partx == 1 && party == 1)))
+    {
+        //sy -= 5.2*xtex.h;
+        sy -= xtex.h;
+    }
 
-
-
-void WorldMap::draw_gostek_help(float dx, float dy, int part)
-{
-
-    GLfloat *xtex = (GLfloat *)malloc(4*sizeof(GLfloat));
-    /*GLfloat xtex[4];
-    xtex[0] = *which_part_xy(part);
-    xtex[1] = *which_part_xy(part)+1;
-    xtex[2] = *which_part_xy(part)+2;
-    xtex[3] = *which_part_xy(part)+3;
-    */
-    xtex = which_part_xy(part);
-
-    glEnable(GL_TEXTURE_2D);
-    glPushMatrix();
-
-    glTranslatef(bot[MY_BOT_NR]->position.x+dx, bot[MY_BOT_NR]->position.y+dy, 0.0);
-
-    glBindTexture(GL_TEXTURE_2D, which_part(part));
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2f(0.0f, 0.0f);
-    glTexCoord2f((float)xtex[0], 0.0f);
-    glVertex2f((float)xtex[2], 0.0f);
-    glTexCoord2f((float)xtex[0], (float)xtex[1]);
-    glVertex2f((float)xtex[2], (float)xtex[3]);
-    glTexCoord2f(0.0f, (float)xtex[1]);
-    glVertex2f(0.0f, (float)xtex[3]);
-    glEnd();
-
-    glPopMatrix();
-    glDisable(GL_TEXTURE_2D);
-    //free(xtex);
-}
-
-
-
-void WorldMap::draw_int_help(Tex& tex, float dx, float dy)
-{
+    // xtex = which_part(parts, bot[bot_nr]->movementDirection);
 
     glPushMatrix();
 
-    glLoadIdentity();
-    glTranslatef(bgX + dx, bgY + dy, 0.0f);
+    glTranslatef(bot[MY_BOT_NR]->position.x - bot[bot_nr]->r + sx,
+                 bot[MY_BOT_NR]->position.y - bot[bot_nr]->r + sy,
+                 0.0);
 
-    glBindTexture(GL_TEXTURE_2D, tex.tex);
+    //glScalef(2*2.6f, 2*3.2f, 1.0f);
+    //glScalef(3.5f, 3.5f, 1.0f);
+    //glScalef(xtex.scale_x, xtex.scale_y, 1.0f);
+    //std::cout << "ANGLE " << angle << std::endl;
+    //if (bot[bot_nr]->movementDirection == RIGHT &&
+
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+
+    glBindTexture(GL_TEXTURE_2D, xtex.tex);
+    //glBindTexture(GL_TEXTURE_2D, xtex.tex.tex);
+
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 1.0);
     glVertex2f(0.0, 0.0);
     glTexCoord2f(1.0, 1.0);
-    glVertex2f(tex.w, 0.0);
+    //glVertex2f(xtex->tex.w, 0.0);
+    glVertex2f(xtex.w, 0.0);
     glTexCoord2f(1.0, 0.0);
-    glVertex2f(tex.w, tex.h);
+    //glVertex2f(xtex->tex.w, xtex->tex.h);
+    glVertex2f(xtex.w, xtex.h);
     glTexCoord2f(0.0, 0.0);
-    glVertex2f(0.0, tex.h);
+    //glVertex2f(0.0, xtex->tex.h);
+    glVertex2f(0.0, xtex.h);
     glEnd();
 
     glPopMatrix();
@@ -804,9 +799,7 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
                                  (
                                      file.c_str(),
                                      &temp_w, &temp_h, &channels,
-                                     SOIL_LOAD_RGBA //| SOIL_FLAG_INVERT_Y
-                                     //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-                                     //SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB
+                                     SOIL_LOAD_RGBA
                                  );
 
         if (imgdata == NULL)
@@ -827,7 +820,7 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
         res_tex.tex = SOIL_create_OGL_texture
                       (
                           imgdata, temp_w, temp_h, channels, SOIL_CREATE_NEW_ID,
-                          SOIL_LOAD_RGBA //| SOIL_FLAG_INVERT_Y
+                          SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
                       );
 
         SOIL_free_image_data(imgdata);
@@ -857,18 +850,13 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
 
     if (file[file.size()-1] == 'p')
     {
-        //glGenTextures(1,&texID);
-        //glBindTexture(GL_TEXTURE_2D,texID);
         int width, height, channels;
         unsigned char *imgdata = SOIL_load_image
                                  (
                                      file.c_str(),
                                      &width, &height, &channels,
                                      SOIL_LOAD_RGBA
-                                     //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-                                     //SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB
                                  );
-        //ubyte v;
         if (imgdata == NULL)
         {
             std::cout << "Image was not loaded : " << file << std::endl;
@@ -900,6 +888,7 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
                     SOIL_LOAD_AUTO,
                     SOIL_CREATE_NEW_ID,
                     SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
+                    //SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
                     //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
                 );
     }

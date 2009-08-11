@@ -24,7 +24,7 @@
 #include <set>
 
 
-
+/*
 // funkcja oblicza, czy rzuty przesunietego soldiera o [dx, dy] i trojkata [tr_number] na os o wspolcz. [aa] sie pokrywaja
 bool MovingObject::rzuty_bots(int tr_number, int vec_nr, float dx, float dy)
 {
@@ -64,14 +64,14 @@ bool MovingObject::rzuty_bots(int tr_number, int vec_nr, float dx, float dy)
 
     return !((max_s <= min_t) || (max_t <= min_s));
 }
-
+*/
 
 // improved version
 // dx, dy - przesuniecie obiektu
 // zwraca:
 // -1 - brak kolizji
 // i - jest kolizja z tym trojkatem
-
+/*
 static inline int minn(int a, int b)
 {
     return (a < b) ? a : b;
@@ -80,8 +80,8 @@ static inline int minn(int a, int b)
 static inline int maxx(int a, int b)
 {
     return (a > b) ? a : b;
-}
-
+}*/
+/*
 int MovingObject::collision_det_with_wall(float dx, float dy)
 {
     std::set<unsigned int> trian_num;
@@ -149,161 +149,164 @@ int MovingObject::collision_det_with_wall(float dx, float dy)
 
     return -1;
 }
-
+*/
 
 // use 'flounder' code from gamedev.net
-int Bot::collision_det_with_wall(float dx, float dy)
+int MovingObject::collision_det_with_wall(float dx, float dy)
 {
-    std::set<unsigned int> trian_num;
-    std::vector<unsigned int> sect_num;
-    TVector2D norm, pos, ta, tb, tc;
-    float d0, d1, col_dist, min, max;
-    int a[4];
-
-    pos.x = position.x + dx;
-    pos.y = position.y + dy;
-
-// punkt ciezkosci obiektu znajduje sie w sektorze:
-
-    a[0] = static_cast<int>((position.x - r + dx) / p.sectorDivisions) + p.numSectors;
-    a[1] = static_cast<int>((position.y - r + dy) / p.sectorDivisions) + p.numSectors;
-    a[2] = static_cast<int>((position.x + r + dx) / p.sectorDivisions) + p.numSectors;
-    a[3] = static_cast<int>((position.y + r + dy) / p.sectorDivisions) + p.numSectors;
-
-    // fix iterations
-    for (int j = minn(a[0], a[2])-1; j <= maxx(a[0], a[2])+1; ++j)
-    //for (int j = min(a[0], a[2]); j <= max(a[0], a[2]); ++j)
-        for (int k = minn(a[1], a[3])-1; k <= maxx(a[1], a[3])+1; ++k)
-        //for (int k = min(a[1], a[3]); k <= max(a[1], a[3]); ++k)
-        {
-            sect_num.push_back(51*j + k);
-        }
-
-
-// wyznacz numery trojkatow w tych sektorach do zbadania
-
-    for (std::vector<unsigned int>::iterator s = sect_num.begin(); s != sect_num.end(); ++s)
-        for (int j = 0; j < p.sector[*s].polyCount; j++)
-            trian_num.insert(p.sector[*s].polys[j]-1);
-
-
-    for (std::set<unsigned int>::iterator i = trian_num.begin(); i != trian_num.end(); ++i)
+    if (this->type == 0)
     {
 
-        if (p.polygon[*i].polyType != p.ptONLY_BULLETS_COLLIDE && p.polygon[*i].polyType != p.ptNO_COLLIDE)
+        std::set<unsigned int> trian_num;
+        std::vector<unsigned int> sect_num;
+        TVector2D norm, col_norm, pos, ta, tb, tc;
+        float d0, d1, col_dist, min, max;
+        int a[4];
+
+        pos.x = position.x + dx;
+        pos.y = position.y + dy;
+
+        // punkt ciezkosci obiektu znajduje sie w sektorze:
+
+        a[0] = static_cast<int>((position.x - r + dx) / p.sectorDivisions) + p.numSectors;
+        a[1] = static_cast<int>((position.y - r + dy) / p.sectorDivisions) + p.numSectors;
+        a[2] = static_cast<int>((position.x + r + dx) / p.sectorDivisions) + p.numSectors;
+        a[3] = static_cast<int>((position.y + r + dy) / p.sectorDivisions) + p.numSectors;
+
+        // fix iterations
+
+        for (int j = a[0]-1; j <= a[2]+1; ++j)
+            for (int k = a[1]-1; k <= a[3]+1; ++k)
+            {
+                sect_num.push_back(51*j + k);
+            }
+//if (sect_num.size() > 4) std::cout << "KKKKKKKKKKKKKKKKKKKKKK" << std::endl;
+
+        // wyznacz numery trojkatow w tych sektorach do zbadania
+
+        for (std::vector<unsigned int>::iterator s = sect_num.begin(); s != sect_num.end(); ++s)
+            for (int j = 0; j < p.sector[*s].polyCount; j++)
+                trian_num.insert(p.sector[*s].polys[j]-1);
+
+
+        for (std::set<unsigned int>::iterator i = trian_num.begin(); i != trian_num.end(); ++i)
         {
-            ta = TVector2D(p.polygon[*i].vertex[0].x, p.polygon[*i].vertex[0].y);
-            tb = TVector2D(p.polygon[*i].vertex[1].x, p.polygon[*i].vertex[1].y);
-            tc = TVector2D(p.polygon[*i].vertex[2].x, p.polygon[*i].vertex[2].y);
 
-            //normal tests
-            // first
-            norm = TVector2D(p.polygon[*i].perpendicular[0].x, p.polygon[*i].perpendicular[0].y);
-            d0 = (ta - pos) * norm;
-            d1 = (pos - tc) * norm;
-            col_dist = d0 > d1 ? d0 : d1;
-            if (col_dist > r)
+            if (p.polygon[*i].polyType != p.ptONLY_BULLETS_COLLIDE && p.polygon[*i].polyType != p.ptNO_COLLIDE)
             {
-                continue;
-            }
+                ta = TVector2D(p.polygon[*i].vertex[0].x, p.polygon[*i].vertex[0].y);
+                tb = TVector2D(p.polygon[*i].vertex[1].x, p.polygon[*i].vertex[1].y);
+                tc = TVector2D(p.polygon[*i].vertex[2].x, p.polygon[*i].vertex[2].y);
+                //  --------------              Normal tests             -----------------------
 
-            // second
-            norm = TVector2D(p.polygon[*i].perpendicular[1].x, p.polygon[*i].perpendicular[1].y);
-            d0 = (tb - pos) * norm;
-            d1 = (pos - ta) * norm;
-            d0 = d0 > d1 ? d0 : d1;
-            if (d0 > r)
-            {
-                continue;
-            }
-            if (d0 > col_dist)
-            {
-                col_dist = d0;
-            }
+                // first
+                col_norm = norm = TVector2D(p.polygon[*i].perpendicular[0].x, p.polygon[*i].perpendicular[0].y);
+                d0 = (ta - pos) * norm;
+                d1 = (pos - tc) * norm;
+                col_dist = d0 > d1 ? d0 : d1;
+                if (col_dist > r) continue;
 
-            // third
-            norm = TVector2D(p.polygon[*i].perpendicular[2].x, p.polygon[*i].perpendicular[2].y);
-            d0 = (tc - pos) * norm;
-            d1 = (pos - tb) * norm;
-            d0 = d0 > d1 ? d0 : d1;
-            if (d0 > r)
-            {
-                continue;
-            }
-            if (d0 > col_dist)
-            {
-                col_dist = d0;
-            }
+                // second
+                norm = TVector2D(p.polygon[*i].perpendicular[1].x, p.polygon[*i].perpendicular[1].y);
+                d0 = (tb - pos) * norm;
+                d1 = (pos - ta) * norm;
+                d0 = d0 > d1 ? d0 : d1;
+                if (d0 > r) continue;
+                if (d0 > col_dist)
+                {
+                    col_norm = norm;
+                    col_dist = d0;
+                }
 
-            //  vertex test
-            // first
-            norm = ta - pos;
-            norm.normalize();
-            d0 = tb * norm;
-            d1 = tc * norm;
-            max = d0 > d1 ? d0 : d1;
-            min = d0 + d1 - max;
-            d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
-            d0 = pos * norm;
-            max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
-            if (max > r)
-            {
-                continue;
-            }
-            if (max > col_dist)
-            {
-                col_dist = max;
-            }
+                // third
+                norm = TVector2D(p.polygon[*i].perpendicular[2].x, p.polygon[*i].perpendicular[2].y);
+                d0 = (tc - pos) * norm;
+                d1 = (pos - tb) * norm;
+                d0 = d0 > d1 ? d0 : d1;
+                if (d0 > r) continue;
+                if (d0 > col_dist)
+                {
+                    col_norm = norm;
+                    col_dist = d0;
+                }
 
-            // second
-            norm = tb - pos;
-            norm.normalize();
-            d0 = tb * norm;
-            d1 = tc * norm;
-            max = d0 > d1 ? d0 : d1;
-            min = d0 + d1 - max;
-            d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
-            d0 = pos * norm;
-            max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
-            if (max > r)
-            {
-                continue;
-            }
-            if (max > col_dist)
-            {
-                col_dist = max;
-            }
+                //  --------------              Vertex tests             -----------------------
 
-            // third
-            norm = tc - pos;
-            norm.normalize();
-            d0 = tb * norm;
-            d1 = tc * norm;
-            max = d0 > d1 ? d0 : d1;
-            min = d0 + d1 - max;
-            d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
-            d0 = pos * norm;
-            max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
-            if (max > r)
-            {
-                continue;
-            }
+                // first
+                norm = ta - pos;
+                norm.normalize();
+                d0 = tb * norm;
+                d1 = tc * norm;
+                max = d0 > d1 ? d0 : d1;
+                min = d0 + d1 - max;
+                d0 = ta * norm;
+                max = d0 > max ? d0 : max;
+                min = d0 < min ? d0 : min;
+                d0 = pos * norm;
+                max = d0 - max;
+                min = min - d0;
+                max = max > min ? max : min;
+                if (max > r) continue;
+                if (max > col_dist)
+                {
+                    col_norm = norm;
+                    col_dist = max;
+                }
 
-            return *i;
+                // second
+                norm = tb - pos;
+                norm.normalize();
+                d0 = tb * norm;
+                d1 = tc * norm;
+                max = d0 > d1 ? d0 : d1;
+                min = d0 + d1 - max;
+                d0 = ta * norm;
+                max = d0 > max ? d0 : max;
+                min = d0 < min ? d0 : min;
+                d0 = pos * norm;
+                max = d0 - max;
+                min = min - d0;
+                max = max > min ? max : min;
+                if (max > r) continue;
+                if (max > col_dist)
+                {
+                    col_norm = norm;
+                    col_dist = max;
+                }
+
+                // third
+                norm = tc - pos;
+                norm.normalize();
+                d0 = tb * norm;
+                d1 = tc * norm;
+                max = d0 > d1 ? d0 : d1;
+                min = d0 + d1 - max;
+                d0 = ta * norm;
+                max = d0 > max ? d0 : max;
+                min = d0 < min ? d0 : min;
+                d0 = pos * norm;
+                max = d0 - max;
+                min = min - d0;
+                max = max > min ? max : min;
+                if (max > r) continue;
+                if (max > col_dist)
+                {
+                    col_norm = norm;
+                    col_dist = max;
+                }
+                col_dist -= r;
+                pos += col_norm*col_dist;
+               // std::cout << "KOLIZJA " << col_dist << " " << pos.x << " " << pos.y << std::endl;
+
+                return *i;
+            }
         }
+        return -1;
+
     }
-    return -1;
+    else
+    {
+
+    }
 }
 

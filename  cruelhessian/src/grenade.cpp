@@ -27,9 +27,11 @@ std::list<Grenade *> gren_list;
 
 Grenade::Grenade(float src_x, float src_y, float dest_x, float dest_y, int _owner, Uint32 push_time)
 {
+    type = 0;
     position = TVector2D(src_x, src_y);
     w = 10;
     h = 10;
+    r = 5;
     owner = _owner;
     timer_change_frame = 0;
     currentFrame = 0;
