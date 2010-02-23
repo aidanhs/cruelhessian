@@ -1,4 +1,4 @@
-/* stbi-1.18 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* stbi-1.16 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
                       when you control the images you're loading
 
    QUICK NOTES:
@@ -6,7 +6,7 @@
           avoid problematic images and only need the trivial interface
 
       JPEG baseline (no JPEG progressive, no oddball channel decimations)
-      PNG 8-bit only
+      PNG non-interlaced
       BMP non-1bpp, non-RLE
       TGA (not sure what subset, if a subset)
       PSD (composited view only, no extra channels)
@@ -14,13 +14,11 @@
       writes BMP,TGA (define STBI_NO_WRITE to remove code)
       decoded from memory or through stdio FILE (define STBI_NO_STDIO to remove code)
       supports installable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
-        
+
    TODO:
       stbi_info_*
-  
+
    history:
-      1.18   fix a threading bug (local mutable static)
-      1.17   support interlaced PNG
       1.16   major bugfix - convert_format converted one too many pixels
       1.15   initialize some fields for thread safety
       1.14   fix threadsafe conversion bug; header-file-only version (#define STBI_HEADER_FILE_ONLY before including)
@@ -68,7 +66,7 @@
 #ifndef HEADER_STB_IMAGE_AUGMENTED
 #define HEADER_STB_IMAGE_AUGMENTED
 
-////   begin header file  ////////////////////////////////////////////////////
+//   begin header file  ////////////////////////////////////////////////////
 //
 // Limitations:
 //    - no progressive/interlaced support (jpeg, png)
@@ -80,7 +78,7 @@
 // Basic usage (see HDR discussion below):
 //    int x,y,n;
 //    unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
-//    // ... process data if not NULL ... 
+//    // ... process data if not NULL ...
 //    // ... x = width, y = height, n = # 8-bit components per pixel ...
 //    // ... replace '0' with '1'..'4' to force that many components per pixel
 //    stbi_image_free(data)
@@ -141,7 +139,7 @@
 // (linear) floats to preserve the full dynamic range:
 //
 //    float *data = stbi_loadf(filename, &x, &y, &n, 0);
-// 
+//
 // If you load LDR images through this interface, those images will
 // be promoted to floating point values, run through the inverse of
 // constants corresponding to the above:
@@ -169,7 +167,7 @@ enum
    STBI_grey       = 1,
    STBI_grey_alpha = 2,
    STBI_rgb        = 3,
-   STBI_rgb_alpha  = 4,
+   STBI_rgb_alpha  = 4
 };
 
 typedef unsigned char stbi_uc;
@@ -216,7 +214,7 @@ extern void   stbi_ldr_to_hdr_scale(float scale);
 
 // get a VERY brief reason for failure
 // NOT THREADSAFE
-extern char    *stbi_failure_reason  (void); 
+extern char    *stbi_failure_reason  (void);
 
 // free the loaded image -- this is just free()
 extern void     stbi_image_free      (void *retval_from_stbi_load);
@@ -302,7 +300,7 @@ extern stbi_uc *stbi_psd_load_from_file   (FILE *f,                  int *x, int
 extern int      stbi_hdr_test_memory      (stbi_uc const *buffer, int len);
 
 extern float *  stbi_hdr_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern float *  stbi_hdr_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+//extern float *  stbi_hdr_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 extern stbi_uc *stbi_hdr_load_rgbe        (char const *filename,           int *x, int *y, int *comp, int req_comp);
 extern float *  stbi_hdr_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_STDIO

@@ -5,7 +5,7 @@
         <tr><th>File        <td>SimpleIni.h
         <tr><th>Author      <td>Brodie Thiesfield [code at jellycan dot com]
         <tr><th>Source      <td>http://code.jellycan.com/simpleini/
-        <tr><th>Version     <td>4.11
+        <tr><th>Version     <td>4.12
     </table>
 
     Jump to the @link CSimpleIniTempl CSimpleIni @endlink interface documentation.
@@ -2212,7 +2212,12 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     ) const
 {
 #ifdef _WIN32
-    FILE * fp = _wfopen(a_pwszFile, L"wb");
+    FILE * fp = NULL;
+#if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
+    _wfopen_s(&fp, a_pwszFile, L"wb");
+#else // !__STDC_WANT_SECURE_LIB__
+    fp = _wfopen(a_pwszFile, L"wb");
+#endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
     fclose(fp);
