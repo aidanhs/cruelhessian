@@ -18,42 +18,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <libintl.h>
-#ifndef WIN32
-	#include <dirent.h>
-	#include <sys/stat.h>
-#endif
 
-#include "globals.h"
-#include "gui.h"
-
+#include "game.h"
 
 
 int main(int argc, char *argv[])
 {
 
-    CH_GUI ch;
-
-    TVector2D a(3,4);
-    a.normalize();
-    std::cout << " QWE " << a.x << " "<< a.y;
-
-#ifndef WIN32
-    CH_DATA_DIRECTORY = "/usr/share/cruelhessian/data/";
-    //CH_DATA_DIRECTORY = "../data/";
-    CH_HOME_DIRECTORY = getenv("HOME");
-    CH_HOME_DIRECTORY += "/.config/cruelhessian/";
-    mkdir(CH_HOME_DIRECTORY.c_str(), 0755);
-#endif
-
-    CH_CONFIG_FILE = CH_HOME_DIRECTORY + "options.ini";
-    setlocale(LC_ALL, "");
-    bindtextdomain("pl", "locale");
-    textdomain("pl");
-
-    ch.init();
-    ch.run();
-    ch.quit();
+    Game *game = new Game;
+    game->run(argc, argv);
+    delete game;
 
     return 0;
 }

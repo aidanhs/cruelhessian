@@ -2,7 +2,7 @@ project (CruelHessian)
 
 cmake_minimum_required(VERSION 2.6)
 if(POLICY CMP0011)
-   cmake_policy(SET CMP0011 NEW) # or even better, NEW
+   cmake_policy(SET CMP0011 NEW)
 endif(POLICY CMP0011)
 
 
@@ -17,44 +17,56 @@ ADD_CUSTOM_TARGET(uninstall
 
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -fomit-frame-pointer")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fomit-frame-pointer -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2 -pipe -fomit-frame-pointer")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -ansi -pedantic -O2 -pipe -fomit-frame-pointer")
 
 FIND_PACKAGE( SDL_mixer REQUIRED)
 FIND_PACKAGE( SDL REQUIRED)
-FIND_PACKAGE( CEGUI REQUIRED)
+FIND_PACKAGE( CEGUI 0.6 REQUIRED)
 FIND_PACKAGE( Freetype REQUIRED)
+FIND_PACKAGE( Boost 1.38 REQUIRED COMPONENTS filesystem regex)
 
 INCLUDE_DIRECTORIES( ${SDLMIXER_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${SDL_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${CEGUI_INCLUDE_DIRS} )
 INCLUDE_DIRECTORIES( ${FREETYPE_INCLUDE_DIR_freetype2} )
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
 SET(src_executable
+	src/bonus.cpp
     src/bot.cpp
 	src/bullet.cpp
+	src/chat.cpp
+	src/collisions.cpp
+	src/console.cpp
 	src/controls.cpp
+	src/disk_object.cpp
 	src/draw.cpp
-	src/draw_menus.cpp
 	src/fonts.cpp
+	src/game.cpp
 	src/globals.cpp
 	src/grenade.cpp
     src/gui.cpp
+    src/gui_fselector.cpp
 	src/load.cpp
     src/main.cpp
+    src/map.cpp
+    src/mouse.cpp
     src/moving_object.cpp
 	src/parser.cpp
 	src/parser/ConvertUTF.c
 	src/parser/ConvertUTF.h
 	src/parser/SimpleIni.h
-	src/physics.cpp
-    src/read_pms.cpp
 	src/soil/SOIL.c
 	src/soil/image_DXT.c
 	src/soil/image_helper.c
 	src/soil/stb_image_aug.c
 	src/specials.cpp
+	src/tvector2d.cpp
+	src/window_exit.cpp
+	src/window_guns.cpp
+	src/window_scores.cpp
 	src/worldmap.cpp
 )
 
@@ -64,6 +76,8 @@ LINK_LIBRARIES(GLU)
 LINK_LIBRARIES(GL)
 LINK_LIBRARIES(SDL_mixer)
 LINK_LIBRARIES(freetype)
+LINK_LIBRARIES(boost_filesystem-mt)
+LINK_LIBRARIES(boost_regex-mt)
 
 ADD_EXECUTABLE(cruelhessian ${src_executable})
 

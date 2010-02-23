@@ -21,27 +21,31 @@
 #ifndef BULLET_H
 #define BULLET_H
 
+#include "globals.h"
 #include "moving_object.h"
-#include "worldmap.h"
-//#include "bot.h"
 
 
 class Bullet : public MovingObject
 {
-    //friend class Bot;
+    const Tex& texture;
 public:
-//list<Bullet *> ammo_list;
-    int gunModel;
-    unsigned int owner;
+    unsigned int gunModel;   ///< Model of gun
 
-    Bullet(float src_x, float src_y, float dest_x, float dest_y, int gunmodel, int owner);
-    int collision_det_with_bots();
 
-//private:
-  //  float mMass();
-    //float mStartSpeed();
+    /**
+     *
+     * Constructor
+     *
+     * @param  src Start point
+     * @param  dest Destination point
+     * @param  gunmodel Gun model
+     * @param  _owner Snipper number
+     */
+    Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, Tex& tex);
+
+    void draw() const;
+    void update();
 };
 
-extern std::list<Bullet *> ammo_list;
 
 #endif

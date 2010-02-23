@@ -1,7 +1,7 @@
 /*   bot.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,18 +21,20 @@
 #ifndef BOT_H
 #define BOT_H
 
-
+#include <iostream>
 #include "moving_object.h"
-#include "bullet.h"
-//#include "worldmap.h"
+#include "globals.h"
+//#include "SDL.h"
 
-//class WorldMap;
 
-class Bot : public MovingObject//, public Gun
+class Bot : public MovingObject
 {
-    //friend class Bullet;
+    const Tex* texture[9][2];
+    void draw_gostek_help(int partx, int party, float angle, const Tex* xtex);
+    float getAngle(int x, int y);
+
 public:
-//int collision_det_with_wall(float dx, float dy);
+
     std::string name;
     std::string chatKill;
     std::string chatDead;
@@ -40,17 +42,21 @@ public:
     std::string chatSeeEnemy;
     std::string chatWinning;
 
-   // float r;
-    int points;
-    int deaths;
+    unsigned int points;
+    //float r;
+   // Uint8 *colorShirt;
+    unsigned int color[4][3];
+    unsigned int deaths;
     int wayNumber;
-    int botNumber;
-    int killer;
-    int killed;
-    int gunModel;
-    int numGrenades;
-    int leftAmmos;
-    int currentFrame;       // aktualnie wyswietlana ramka
+    unsigned int botNumber;
+    unsigned int killer;
+    unsigned int killed;
+    unsigned int killedNr;
+    unsigned int ping;
+    unsigned int gunModel;
+    unsigned int numGrenades;
+    unsigned int leftAmmos;
+    unsigned int currentFrame;       // aktualnie wyswietlana ramka
     int destinationPoint;
     Uint32 lastShotTime;
     Uint32 startReloadingTime;
@@ -64,8 +70,7 @@ public:
     bool isFlying;
     bool isReloading;
 
-    float shotPointX;
-    float shotPointY;
+    TVector2D shotPoint;
     float procJet;
     float actLife;
 
@@ -74,25 +79,15 @@ public:
     MT movementType;        // sposob poruszania sie
     MD movementDirection;   // kierunek poruszania sie bota
 
-/*    void move_left(WorldMap& wor);
-    void move_right(WorldMap& wor);
-    void move_up(WorldMap& wor);
-    void move_down(WorldMap& wor);
-    void move_jet(WorldMap& wor);
-*/
-    //Bot() {};
-    Bot(unsigned int bot_nr, const std::string& name, int spawn_nr, int gunmodel, TEAM team);
-    //Bot(int bot_nr, std::string name, float posx, float posy, int gunmodel, int spawn_nr);
+    Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest, Tex text[9][2]);
 
-    int find_nearest_waypoint_nr(int spawn_nr);
-    //static void make_lines(MT move, int frame, int kierunek);
-//private:
+
+    void draw();
+    void update();
     bool is_inside(int x, int y);
+
 };
 
-//void read_poas();
-void make_lines(MT move, int frame, int kierunek, TEAM team);
-extern std::vector<Bot *> bot;
 
 
 #endif

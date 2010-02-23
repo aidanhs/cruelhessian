@@ -1,6 +1,56 @@
+0.1.0-rc8
+ - 
+
+0.1.0-rc7
+ - colored bots in all modes
+ - show death dot in stats window
+ - reset playlist in GUI when change game mode
+ - next part of classes' refactoring
+ - added initial support for arguments line
+ - use 'Txt/weaponnames.txt' file
+ - use versioning for config file - prevents a segmentation fault at startup
+ - other improvements
+
+0.1.0-rc6
+ - better controls, time based movement
+ - added player status above the jet fuel bar
+ - colored bots in DM mode
+ - added next sounds
+ - expanded player tab in GUI
+ - some other fixes and improvements
+
+0.1.0-rc5
+ - improved chat and command line
+ - improved DM mode (added time's and kills' limit)
+ - colored names of bots (based on .bot files)
+ - drawing bonuses on the screen (initial work)
+ - next part of minor improvements
+
+0.1.0-rc4
+ - update stb_image_aug.c file from SOIL library to 1.18 version and fix some warnings
+ - improvements in grenades collisions
+ - added next few sounds
+ - start to implement command line, improved chat window
+ - refactoring classes
+ - many others fixes and improvements
+
+0.1.0-rc3
+ - use folder selector in GUI system
+ - use Boost library
+ - update SimpleIni to 4.12 version
+ - many minor fixes and improvements
+
 0.1.0-rc2
- - improve collision detection system; using the fact, that edges of polygons
-	are placed in map file in clockwise direction
+ - improved collision detection system; using the fact, that the edges 
+    of polygons are placed in the map file in clockwise direction; 
+    character (gostek) is now treated as circle (ellipse will be the best),
+	ammo as point (segment - the most accurate), grenade also as circle
+	and, in the future, bonuses - as squares
+ - start to gostek's texturing
+ - improved chat window
+ - improved spawnpoints calculating in DM, PM, RM, TM modes - should be
+	much less segmentation faults
+ - some fixes in graphics system
 
 0.1.0-rc1
  - possibility to select gun with a key

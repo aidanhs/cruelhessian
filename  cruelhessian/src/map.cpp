@@ -1,4 +1,4 @@
-/*   read_pms.cpp
+/*   map.cpp
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -27,12 +27,9 @@
 #include <vector>
 #include <string>
 
-#include "read_pms.h"
-#include "worldmap.h"
+#include "map.h"
 #include "parser/SimpleIni.h"
 
-
-Map p;
 
 
 template<class T> T read_bin(std::istream& is)
@@ -107,28 +104,23 @@ cout << i;
 */
 
 
-/** @param  fsdfsd
-    @return opis
-*/
-
-
-int Map::read(const std::string& mname)
+Map::Map(const std::string& mname)
 {
 
     std::ifstream is(mname.c_str(), std::ios::binary);
 //cout << "test " << sizeof(int) << " " << sizeof(int) << endl;
-    p.version = read_bin<int>(is);
-    p.name = read_string(is, 38);
-    p.texture = read_string(is, 24);
-    p.bgColorTop = read_bin<PMS_COLOR>(is);
-    p.bgColorBottom = read_bin<PMS_COLOR>(is);
-    p.jetAmount = read_bin<int>(is);
-    p.grenades = read_bin<ubyte>(is);
-    p.medikits = read_bin<ubyte>(is);
-    p.weather = PMS_WEATHERTYPE(read_bin<ubyte>(is));
-    p.steps = PMS_STEPSTYPE(read_bin<ubyte>(is));
-    p.randID = read_bin<int>(is);
-    p.polygonCount = read_bin<int>(is);
+    version = read_bin<int>(is);
+    name = read_string(is, 38);
+    texture = read_string(is, 24);
+    bgColorTop = read_bin<PMS_COLOR>(is);
+    bgColorBottom = read_bin<PMS_COLOR>(is);
+    jetAmount = read_bin<int>(is);
+    grenades = read_bin<ubyte>(is);
+    medikits = read_bin<ubyte>(is);
+    weather = PMS_WEATHERTYPE(read_bin<ubyte>(is));
+    steps = PMS_STEPSTYPE(read_bin<ubyte>(is));
+    randID = read_bin<int>(is);
+    polygonCount = read_bin<int>(is);
 
 
     /*
@@ -147,7 +139,7 @@ int Map::read(const std::string& mname)
     */
 //std::cout << " P " << p.polygonCount << "\n";
 
-    for (int i = 0; i < p.polygonCount; i++)
+    for (int i = 0; i < polygonCount; ++i)
     {
         PMS_POLYGON temp;
         temp.vertex[0] = read_bin<PMS_VERTEX>(is);
@@ -157,7 +149,7 @@ int Map::read(const std::string& mname)
         temp.perpendicular[1] = read_bin<PMS_VECTOR>(is);
         temp.perpendicular[2] = read_bin<PMS_VECTOR>(is);
         temp.polyType = PMS_POLYTYPE(read_bin<ubyte>(is));
-        p.polygon.push_back(temp);
+        polygon.push_back(temp);
 
        // aa[i][0] = p.polygon[i].perpendicular[0].y / p.polygon[i].perpendicular[0].x;
        // aa[i][1] = p.polygon[i].perpendicular[1].y / p.polygon[i].perpendicular[1].x;
@@ -175,26 +167,26 @@ int Map::read(const std::string& mname)
             cpSpaceAddStaticShape(spaceMap, cpPolyShapeNew(staticBodyMap, 3, tr_temp, cpvzero));
         }*/
     }
-    p.sectorDivisions = read_bin<int>(is);
-    p.numSectors = read_bin<int>(is);
+    sectorDivisions = read_bin<int>(is);
+    numSectors = read_bin<int>(is);
 
-    p.topoffs = (float)(p.sectorDivisions * -p.numSectors);
-    p.bottomoffs = (float)(p.sectorDivisions * p.numSectors);
-    p.leftoffs = (float)(p.sectorDivisions * -p.numSectors);
-    p.rightoffs = (float)(p.sectorDivisions * p.numSectors);
+    topoffs = static_cast<float>(sectorDivisions * -numSectors);
+    bottomoffs = static_cast<float>(sectorDivisions * numSectors);
+    leftoffs = static_cast<float>(sectorDivisions * -numSectors);
+    rightoffs = static_cast<float>(sectorDivisions * numSectors);
 
-    for (int i = 0; i < ((p.numSectors*2)+1)*((p.numSectors*2)+1); i++)
+    for (int i = 0; i < ((numSectors*2)+1)*((numSectors*2)+1); ++i)
     {
         PMS_SECTOR temp;
         temp.polyCount = read_bin<word>(is);
-        for (int m = 0; m < temp.polyCount; m++)
+        for (int m = 0; m < temp.polyCount; ++m)
         {
             temp.polys.push_back(read_bin<word>(is));
         }
-        p.sector.push_back(temp);
+        sector.push_back(temp);
     }
-    p.propCount = read_bin<int>(is);
-    for (int i = 0; i < p.propCount; i++)
+    propCount = read_bin<int>(is);
+    for (int i = 0; i < propCount; ++i)
     {
         PMS_PROP temp;
         //temp.active = bool(read_bin<ubyte>(is));
@@ -217,19 +209,19 @@ int Map::read(const std::string& mname)
         temp.filler3[0] = read_bin<ubyte>(is);
         temp.filler3[1] = read_bin<ubyte>(is);
         temp.filler3[2] = read_bin<ubyte>(is);
-        p.prop.push_back(temp);
+        prop.push_back(temp);
     }
-    p.sceneryCount = read_bin<int>(is);
-    for (int i = 0; i < p.sceneryCount; i++)
+    sceneryCount = read_bin<int>(is);
+    for (int i = 0; i < sceneryCount; ++i)
     {
         PMS_SCENERY temp;
         //temp.nameLen = read_bin<ubyte>( is );
         temp.name = read_string(is, 50);
         temp.timestamp = read_bin<PMS_TIMESTAMP>(is);
-        p.scenery.push_back(temp);
+        scenery.push_back(temp);
     }
-    p.colliderCount = read_bin<int>(is);
-    for (int i = 0; i < p.colliderCount; i++)
+    colliderCount = read_bin<int>(is);
+    for (int i = 0; i < colliderCount; ++i)
     {
         PMS_COLLIDER temp;
         //temp.active = bool(read_bin<ubyte>(is));
@@ -240,11 +232,11 @@ int Map::read(const std::string& mname)
         temp.x = read_bin<float>(is);
         temp.y = read_bin<float>(is);
         temp.radius = read_bin<float>(is);
-        p.collider.push_back(temp);
+        collider.push_back(temp);
     }
-    p.spawnpointCount = read_bin<int>(is);
+    spawnpointCount = read_bin<int>(is);
     //std::cout << "SPAWMsd " << p.spawnpointCount << std::endl;
-    for (int i = 0; i < p.spawnpointCount; i++)
+    for (int i = 0; i < spawnpointCount; ++i)
     {
         PMS_SPAWNPOINT temp;
         //temp.active = bool(read_bin<ubyte>(is));
@@ -255,10 +247,10 @@ int Map::read(const std::string& mname)
         temp.x = read_bin<int>(is);
         temp.y = read_bin<int>(is);
         temp.team = PMS_SPAWNTEAM(read_bin<unsigned int>(is));
-        p.spawnpoint.push_back(temp);
+        spawnpoint.push_back(temp);
     }
-    p.waypointCount = read_bin<int>(is);
-    for (int i = 0; i < p.waypointCount; i++)
+    waypointCount = read_bin<int>(is);
+    for (int i = 0; i < waypointCount; ++i)
     {
         PMS_WAYPOINT temp;
         //temp.active = bool(read_bin<ubyte>(is));
@@ -287,12 +279,12 @@ int Map::read(const std::string& mname)
         temp.filler2[1] = read_bin<ubyte>(is);
         temp.filler2[2] = read_bin<ubyte>(is);
         temp.numConnections = read_bin<int>(is);
-        for (int c = 0; c < 20; c++)
+
+        for (int c = 0; c < 20; ++c)
             temp.connections[c] = read_bin<int>(is);
-        p.waypoint.push_back(temp);
+
+        waypoint.push_back(temp);
     }
     is.close();
 
-    return 0;
 }
-

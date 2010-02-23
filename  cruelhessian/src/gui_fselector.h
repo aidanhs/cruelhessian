@@ -1,4 +1,4 @@
-/*   moving_objects.cpp
+/*   gui_fselector.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -14,24 +14,36 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * aint with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 
-#include "moving_object.h"
-#include "globals.h"
+
+#ifndef FSEC_H
+#define FSEC_H
+
+#include "CEGUI.h"
+#include "disk_object.h"
 
 
-void MovingObject::gravity()
+class GUI_FolderSelector
 {
+public:
+    GUI_FolderSelector();
+    virtual ~GUI_FolderSelector();
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+    void show(CEGUI::Window* root);
+    void hide();
+    std::string getResult();
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+private:
+    virtual bool handleClick(const CEGUI::EventArgs& e);
+    virtual void wireEvents();
+    void updateFolderList();
+	DiskObject* disk;
+    CEGUI::Window* frame;
+};
 
-    velocity += massInv * fTimeStep * forces;
 
-}
+#endif

@@ -1,4 +1,4 @@
-/*   read_pms.h
+/*   map.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _READPMS_
-#define _READPMS_
+#ifndef _PMSMAP_
+#define _PMSMAP_
 
 #include <vector>
 #include <string>
@@ -31,9 +31,18 @@ typedef unsigned short word;
 
 class Map
 {
-    public:
 
-    int read(const std::string& name);
+public:
+
+    /**
+     *
+     * Constructor
+     *
+     * @param  mname Name of map file
+     */
+    Map(const std::string& mname);
+
+	~Map() {};
 
     typedef enum
     {
@@ -55,8 +64,8 @@ class Map
         dbBEHIND_MAP,
         dbBEHIND_NONE
     } PMS_DRAWBEHIND;
-
-    typedef enum SPECIALACTIONS
+//private:
+    typedef enum
     {
         saNONE = 0,
         saSTOP_AND_CAMP,
@@ -67,7 +76,7 @@ class Map
         saWAIT_20_SECONDS
     } PMS_SPECIALACTIONS;
 
-    typedef enum WEATHERTYPE
+    typedef enum
     {
         wtNONE = 0,
         wtRAIN,
@@ -75,14 +84,14 @@ class Map
         wtSNOW
     } PMS_WEATHERTYPE;
 
-    typedef enum STEPSTYPE
+    typedef enum
     {
         stHARD_GROUND = 0,
         stSOFT_GROUND,
         stNONE
     } PMS_STEPSTYPE;
 
-    typedef enum SPAWNTEAM
+    typedef enum
     {
         stGENERAL = 0,
         stALPHA,
@@ -103,14 +112,14 @@ class Map
         stSTAT_GUN
     } PMS_SPAWNTEAM;
 
-    typedef struct tagPMS_VECTOR
+    typedef struct
     {
         float x;
         float y;
         float z;
     } PMS_VECTOR;
 
-    typedef struct tagPMS_COLOR
+    typedef struct
     {
         ubyte blue;
         ubyte green;
@@ -118,9 +127,7 @@ class Map
         ubyte alpha;
     } PMS_COLOR;
 
-// more stuff
-
-    typedef struct tagPMS_VERTEX
+    typedef struct
     {
         float x;
         float y;
@@ -131,20 +138,20 @@ class Map
         float tv;
     } PMS_VERTEX;
 
-    typedef struct tagPMS_POLYGON
+    typedef struct
     {
         PMS_VERTEX vertex[3];
         PMS_VECTOR perpendicular[3];
         PMS_POLYTYPE polyType;
     } PMS_POLYGON;
 
-    typedef struct tagPMS_SECTOR
+    typedef struct
     {
         word polyCount;
         std::vector<word> polys;
     } PMS_SECTOR;
 
-    typedef struct tagPMS_PROP
+    typedef struct
     {
         bool active;
         ubyte filler1;
@@ -163,7 +170,7 @@ class Map
         ubyte filler3[3];
     } PMS_PROP;
 
-    typedef struct tagDOSTIME
+    typedef struct
     {
 word second :
         5;
@@ -173,7 +180,7 @@ word hour :
         5;
     } DOSTIME;
 
-    typedef struct tagDOSDATE
+    typedef struct
     {
 word day :
         5;
@@ -183,19 +190,19 @@ word year :
         7;
     } DOSDATE;
 
-    typedef struct tagPMS_TIMESTAMP
+    typedef struct
     {
         DOSTIME time;
         DOSDATE date;
     } PMS_TIMESTAMP;
 
-    typedef struct tagPMS_SCENERY
+    typedef struct
     {
         std::string name;
         PMS_TIMESTAMP timestamp;
     } PMS_SCENERY;
 
-    typedef struct tagPMS_COLLIDER
+    typedef struct
     {
         bool active;
         ubyte filler[3];
@@ -204,7 +211,7 @@ word year :
         float radius;
     } PMS_COLLIDER;
 
-    typedef struct tagPMS_SPAWNPOINT
+    typedef struct
     {
         bool active;
         ubyte filler[3];
@@ -213,7 +220,7 @@ word year :
         PMS_SPAWNTEAM team;
     } PMS_SPAWNPOINT;
 
-    typedef struct tagPMS_WAYPOINT
+    typedef struct
     {
         bool active;
         ubyte filler1[3];
@@ -235,42 +242,39 @@ word year :
     } PMS_WAYPOINT;
 
 // Pms structure
+public:
+    long version;
+    std::string name;
+    std::string texture;
+    PMS_COLOR bgColorTop;
+    PMS_COLOR bgColorBottom;
+    long jetAmount;
+    ubyte grenades;
+    ubyte medikits;
+    PMS_WEATHERTYPE weather;
+    PMS_STEPSTYPE steps;
+    long randID;
+    long polygonCount;
+    std::vector<PMS_POLYGON> polygon;
+    long sectorDivisions;
+    long numSectors;
+    std::vector<PMS_SECTOR> sector;
+    long propCount;
+    std::vector<PMS_PROP> prop;
+    long sceneryCount;
+    std::vector<PMS_SCENERY> scenery;
+    long colliderCount;
+    std::vector<PMS_COLLIDER> collider;
+    long spawnpointCount;
+    std::vector<PMS_SPAWNPOINT> spawnpoint;
+    long waypointCount;
+    std::vector<PMS_WAYPOINT> waypoint;
+    float leftoffs;
+    float rightoffs;
+    float topoffs;
+    float bottomoffs;
 
-    //struct pms
-//    {
-        long version;
-        std::string name;
-        std::string texture;
-        PMS_COLOR bgColorTop;
-        PMS_COLOR bgColorBottom;
-        long jetAmount;
-        ubyte grenades;
-        ubyte medikits;
-        PMS_WEATHERTYPE weather;
-        PMS_STEPSTYPE steps;
-        long randID;
-        long polygonCount;
-        std::vector<PMS_POLYGON> polygon;
-        long sectorDivisions;
-        long numSectors;
-        std::vector<PMS_SECTOR> sector;
-        long propCount;
-        std::vector<PMS_PROP> prop;
-        long sceneryCount;
-        std::vector<PMS_SCENERY> scenery;
-        long colliderCount;
-        std::vector<PMS_COLLIDER> collider;
-        long spawnpointCount;
-        std::vector<PMS_SPAWNPOINT> spawnpoint;
-        long waypointCount;
-        std::vector<PMS_WAYPOINT> waypoint;
-        float leftoffs;
-        float rightoffs;
-        float topoffs;
-        float bottomoffs;
-    //};
 };
 
-extern Map p;
 
 #endif

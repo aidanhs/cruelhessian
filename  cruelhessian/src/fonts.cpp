@@ -92,13 +92,13 @@ namespace freetype
         //first we need to move over a little so that
         //the character has the right amount of space
         //between it and the one before it.
-        glTranslatef(bitmap_glyph->left,0,0);
+        glTranslatef(static_cast<float>(bitmap_glyph->left), 0.0f, 0.0f);
 
         //Now we move down a little in the case that the
         //bitmap extends past the bottom of the line
         //(this is only true for characters like 'g' or 'y'.
         glPushMatrix();
-        glTranslatef(0,bitmap_glyph->top-bitmap.rows,0);
+        glTranslatef(0.0f, static_cast<float>(bitmap_glyph->top-bitmap.rows), 0.0f);
 
         //Now we need to account for the fact that many of
         //our textures are filled with empty padding space.
@@ -117,21 +117,21 @@ namespace freetype
         //so that the result will be properly aligned.
         glBegin(GL_QUADS);
         glTexCoord2d(0,0);
-        glVertex2f(0,bitmap.rows);
+        glVertex2f(0, static_cast<float>(bitmap.rows));
         glTexCoord2d(0,y);
         glVertex2f(0,0);
         glTexCoord2d(x,y);
-        glVertex2f(bitmap.width,0);
+        glVertex2f(static_cast<float>(bitmap.width),0);
         glTexCoord2d(x,0);
-        glVertex2f(bitmap.width,bitmap.rows);
+        glVertex2f(static_cast<float>(bitmap.width), static_cast<float>(bitmap.rows));
         glEnd();
         glPopMatrix();
-        glTranslatef(face->glyph->advance.x >> 6 ,0,0);
+        glTranslatef(static_cast<GLfloat>(face->glyph->advance.x >> 6) ,0.0f, 0.0f);
 
 
         //increment the raster position as if we were a bitmap font.
         //(only needed if you want to calculate text length)
-        glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
+        glBitmap(0,0,0,0,static_cast<GLfloat>(face->glyph->advance.x >> 6),0,NULL);
 
         //Finnish the display list
         glEndList();
@@ -146,7 +146,7 @@ namespace freetype
         //Allocate some memory to store the texture ids.
         textures = new GLuint[128];
 
-        this->h=h;
+        this->h=static_cast<float>(h);
 
         //Create and initilize a freetype font library.
         FT_Library library;

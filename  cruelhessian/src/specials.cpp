@@ -20,13 +20,8 @@
 
 #include <sstream>
 #include <fstream>
-#include "regex.h"
-#ifndef WIN32
-#include <dirent.h>
-#include <sys/stat.h>
-#else
-#include <direct.h>
-#endif
+#include "boost/filesystem/operations.hpp"
+
 #include "soil/SOIL.h"
 #include "worldmap.h"
 #include "globals.h"
@@ -36,27 +31,22 @@
 int WorldMap::takeScreenshot()
 {
     std::string screens_dir = CH_HOME_DIRECTORY + "Screens/";
-#ifdef WIN32
-    _mkdir(screens_dir.c_str());
-#else
-    mkdir(screens_dir.c_str(), 0755);
-#endif
     std::ostringstream oss;
-    std::string filename = screens_dir + "screen";
+    boost::filesystem::create_directory(screens_dir);
+    std::string filename = screens_dir + "screen", temp;
 
-    int part2 = rand()%RAND_MAX;
-    oss << part2;
+    oss << rand()%RAND_MAX;
     filename += oss.str();
     filename += ".bmp";
 
-    if (SOIL_save_screenshot(filename.c_str(), SOIL_SAVE_TYPE_BMP, 0, 0, MAX_WIDTH, MAX_HEIGHT) == 0)
+    if (SOIL_save_screenshot(filename.c_str(), SOIL_SAVE_TYPE_BMP, 0, 0, static_cast<int>(MAX_WIDTH), static_cast<int>(MAX_HEIGHT)) == 0)
     {
-        std::cout << "Cannot save screenshot" << std::endl;
-        return 1;
+        chat->addMessage("Cannot save screenshot");
+        return -1;
     }
     else
     {
-        std::cout << "Screenshot saved as 'screen" << part2 << ".bmp" << std::endl;
+        chat->addMessage("Screenshot saved as 'screen" + oss.str() + ".bmp'");
         return 0;
     }
 }
@@ -77,23 +67,23 @@ int WorldMap::playMusic(int pos)
             CURRENT_SONG_NUMBER = 0;
         }
 
-        std::cout << "Loading track : " << gMusicList[CURRENT_SONG_NUMBER] << std::endl;
-
         if (Mix_PlayingMusic())
         {
             Mix_HaltMusic();
             Mix_FreeMusic(music);
         }
 
+        chat->addMessage("Loading track : " + gMusicList[CURRENT_SONG_NUMBER]);
+
         if ((music = Mix_LoadMUS(gMusicList[CURRENT_SONG_NUMBER].c_str())) == NULL)
         {
             std::cout << "Error Mixer: " << Mix_GetError() << std::endl;
-            return 1;
+            return -1;
         }
         if (Mix_PlayMusic(music, 0) == -1)
         {
             std::cout << "Unable to play file: " << Mix_GetError() << std::endl;
-            return 1;
+            return -1;
         }
     }
     return 0;

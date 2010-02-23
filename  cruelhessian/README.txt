@@ -1,13 +1,18 @@
 
+
+Notice, that if you don't remove previous version (especially config file),
+game may crash at start.
+
+
 0. Prologue
 
 This game has not been playable yet. That means, that you can go 
 wherever you want on the map, shot at everything you see and hope 
 that someone will shot you, but don't expect some thrilling contest ;).
-Besides some maps can cause game to crash - this is due to bad waypoints 
-calculating - to avoid this, just set number of bots to 0 (on Maps tab).
 
 You have been warned ;)
+
+Project's site : http://code.google.com/p/cruelhessian/
 
 
 1. Prerequisites
@@ -15,9 +20,12 @@ You have been warned ;)
 You'll need to have these libraries to build Cruel Hessian:
 
  cmake >= 2.6.0              (www.cmake.org)
+ cegui = 0.6.0 - 0.6.2       (www.cegui.org.uk)
  libsdl >= 1.2.13            (www.libsdl.org)
  libsdl_mixer >= 1.2.8       (www.libsdl.org/projects/SDL_mixer)
- cegui >= 0.6.0              (www.cegui.org.uk)
+ boost_filesystem >= 1.38.0
+ boost_regex >= 1.38.0
+ boost_system >= 1.38.0
 
  and of course Soldat ( >= 1.4.2) from www.soldat.pl to run Cruel Hessian.
 
@@ -27,24 +35,24 @@ You'll need to have these libraries to build Cruel Hessian:
 Check INSTALL.txt file
 
 
-3. Controls
+3. Default controls
 
 A - move left
 D - move right
 S - crouching
 W - jumping
 R - reload gun
+/ - enter command
+T - chat
 SPACE - throw grenade
 LMB - shooting
 RMB - flying
 F1 - players list with scores
 F3 - statistics (FPS)
-F4 - take screenshot (save to ~/.config/cruelhessian/Screens dir on UNIX)
+F4 - take screenshot (save to ~/.config/cruelhessian/Screens/ dir on UNIX)
 F5 - stops/plays music
 F6 - previous music track
 F7 - next music track
-
-You can change this controls (except LMB, RMB, F1-F7) in options.ini file.
 
 
 4. Running

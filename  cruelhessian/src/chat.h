@@ -1,4 +1,4 @@
-/*   moving_objects.cpp
+/*   chat.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -18,20 +18,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef CHAT_H
+#define CHAT_H
 
-#include "moving_object.h"
-#include "globals.h"
+
+#include <iostream>
+#include <list>
+#include "SDL.h"
 
 
-void MovingObject::gravity()
+class Chat
 {
+    typedef std::pair<std::string, std::string> string_pair;
+    std::list<string_pair> chat_list;
+    Uint32 lastOutChatEntity;
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+public:
+    Chat();
+    ~Chat();
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+    void addMessage(const std::string& part1, const std::string& part2);
+    void addMessage(const std::string& part);
 
-    velocity += massInv * fTimeStep * forces;
+    void update();
+    void draw();
+};
 
-}
+
+#endif

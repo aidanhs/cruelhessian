@@ -21,25 +21,37 @@
 #ifndef GRENADE_H
 #define GRENADE_H
 
+#include "globals.h"
 #include "moving_object.h"
-//#include "arms.h"
 
 
 class Grenade : public MovingObject
 {
+
+    const Tex* texture[17];
+
 public:
-    int currentFrame;
-    Uint32 timer_change_frame;
-    Uint32 timer_throw;
-    unsigned int owner;
+    int currentFrame;           ///< Counter of the current frame
+    Uint32 timer_change_frame;  ///< Time when the previous frame was changed
+    Uint32 timer_throw;         ///< Time when the grenade was thrown
+    //float r;
+    bool killMyself;
 
-    Grenade(float src_x, float src_y, float dest_x, float dest_y, int owner, Uint32 push_time);
-    int collision_det_with_bots();
+    /**
+     *
+     * Constructor
+     *
+     * @param  src start point
+     * @param  dest destination point
+     * @param  owner owner of the grenade
+     * @param  push_time time when grenade was pushed
+     */
+    Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, Tex* text);
 
-//private:
-  //  float mStartSpeed();
+    void draw() const;
+    void update();
+
 };
 
-extern std::list<Grenade *> gren_list;
 
 #endif

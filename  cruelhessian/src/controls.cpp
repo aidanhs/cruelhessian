@@ -20,14 +20,16 @@
 
 
 #include "worldmap.h"
+#include "game.h"
 
-
-SDL_Event event;
-Uint8* key;
 
 
 void WorldMap::inputUser()
 {
+
+    SDL_Event event;
+    Uint8* key;
+
     key = SDL_GetKeyState(NULL);
 
     while (SDL_PollEvent(&event))
@@ -36,13 +38,23 @@ void WorldMap::inputUser()
         {
             CHOICE_EXIT = true;
         }
-        getGLpos();
+//        getGLpos();
         if (event.type == SDL_KEYDOWN)
         {
             KEY_PRESSED = event.key.keysym.sym;
+
             if (KEY_PRESSED == SDLK_ESCAPE)
             {
-                SHOW_ESC = !SHOW_ESC;
+                if (SHOW_ESC)
+                {
+                    delete window_exit;
+                    SHOW_ESC = false;
+                }
+                else
+                {
+                    window_exit = new WindowExit();
+                    SHOW_ESC = true;
+                }
             }
             if (KEY_PRESSED == SDLK_F1)
             {
@@ -79,15 +91,34 @@ void WorldMap::inputUser()
             {
                 if (!CHOICE_GUN && (bot[MY_BOT_NR]->numGrenades >= 1))
                 {
-                    addGrenade(MY_BOT_NR, static_cast<float>(MOUSE_X), static_cast<float>(MOUSE_Y), 200);
+                    addGrenade(MY_BOT_NR, mouse->getGlobalPosition(), 200);
                 }
             }
             if (KEY_PRESSED == SDLK_s)
             {
                 bot[MY_BOT_NR]->movementType = KUCA;
             }
+
+            if (SHOW_COMMAND_LINE && !SHOW_MYCHAT_LINE)
+            {
+                cons.Query(KEY_PRESSED);
+            }
+            if (KEY_PRESSED == '/' && !SHOW_MYCHAT_LINE)
+            {
+                SHOW_COMMAND_LINE = true;
+            }
+
+            if (SHOW_MYCHAT_LINE && !SHOW_COMMAND_LINE)
+            {
+                myChat.Query(KEY_PRESSED);
+            }
+            if (KEY_PRESSED == KEY_CHAT && !SHOW_COMMAND_LINE)
+            {
+                SHOW_MYCHAT_LINE = true;
+            }
+
         }
-        if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT) return;
+        if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT || SHOW_COMMAND_LINE || SHOW_MYCHAT_LINE) return;
 
         // single shot
         // only USSCOM, Dessert Eagles, M79, ...
@@ -96,7 +127,7 @@ void WorldMap::inputUser()
             if (bot[MY_BOT_NR]->gunModel == 0 || bot[MY_BOT_NR]->gunModel == 1 || bot[MY_BOT_NR]->gunModel == 5 ||
                     bot[MY_BOT_NR]->gunModel == 6 || bot[MY_BOT_NR]->gunModel == 8)
             {
-                addBullet(MY_BOT_NR, static_cast<float>(MOUSE_X), static_cast<float>(MOUSE_Y));
+                addBullet(MY_BOT_NR, mouse->getGlobalPosition());
             }
         }
     }
@@ -105,12 +136,12 @@ void WorldMap::inputUser()
 
     // ************  mouse
 
-    if (MOUSE_X <= bot[MY_BOT_NR]->position.x)
+    if (mouse->getGlobalX() <= bot[MY_BOT_NR]->position.x)
     {
         bot[MY_BOT_NR]->movementDirection = LEFT;
         bot[MY_BOT_NR]->movementType = STOI;
     }
-    else if (MOUSE_X > bot[MY_BOT_NR]->position.x)
+    else if (mouse->getGlobalX() > bot[MY_BOT_NR]->position.x)
     {
         bot[MY_BOT_NR]->movementDirection = RIGHT;
         bot[MY_BOT_NR]->movementType = STOI;
@@ -143,7 +174,7 @@ void WorldMap::inputUser()
         if (bot[MY_BOT_NR]->gunModel == 2 || bot[MY_BOT_NR]->gunModel == 3 || bot[MY_BOT_NR]->gunModel == 4 ||
                 bot[MY_BOT_NR]->gunModel == 7 || bot[MY_BOT_NR]->gunModel == 9 || bot[MY_BOT_NR]->gunModel == 10)
         {
-            addBullet(MY_BOT_NR, static_cast<float>(MOUSE_X), static_cast<float>(MOUSE_Y));
+            addBullet(MY_BOT_NR, mouse->getGlobalPosition());
         }
     }
 
@@ -183,7 +214,7 @@ void WorldMap::inputUser()
         moveBotJumpRight(MY_BOT_NR);
     }
 
-    if ((key[KEY_RELOAD] && bot[MY_BOT_NR]->leftAmmos < weapon[bot[MY_BOT_NR]->gunModel].ammo) || bot[MY_BOT_NR]->isReloading)
+    if ((key[KEY_RELOAD] && bot[MY_BOT_NR]->leftAmmos < weapon_base[bot[MY_BOT_NR]->gunModel].ammo) || bot[MY_BOT_NR]->isReloading)
     {
         gunReloading(MY_BOT_NR);
     }
@@ -205,7 +236,7 @@ static inline bool ccw(TVector2D A, TVector2D B, float cx, float cy)
 // sprawdzanie, czy boty sie widza
 // first - numer pierwszego bota
 // second numer drugiego
-bool WorldMap::do_bots_see(int first, int second)
+bool WorldMap::do_bots_see(unsigned int first, unsigned int second)
 {
 
     // A - bot[first].position.x, bot[first].position.y
@@ -213,22 +244,22 @@ bool WorldMap::do_bots_see(int first, int second)
     // C - xpoly[i].vertex[k].x, xpoly[i].vertex[k].y
     // D - xpoly[i].vertex[k+1].x, xpoly[i].vertex[k+1].y
 
-    for (int i = 0; i < (int)p.polygonCount; ++i) // sprawdz kazdy trojkat, czy koliduje z linia
+    for (unsigned int i = 0; i < static_cast<unsigned int>(map->polygonCount); ++i) // sprawdz kazdy trojkat, czy koliduje z linia
     {
-        if (p.polygon[i].polyType != p.ptONLY_BULLETS_COLLIDE && p.polygon[i].polyType != p.ptNO_COLLIDE)
+        if (map->polygon[i].polyType != map->ptONLY_BULLETS_COLLIDE && map->polygon[i].polyType != map->ptNO_COLLIDE)
         {
             // 0, 1
-            if ((ccw(bot[first]->position, p.polygon[i].vertex[0].x, p.polygon[i].vertex[0].y, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y) !=
-                    ccw(bot[second]->position, p.polygon[i].vertex[0].x, p.polygon[i].vertex[0].y, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y)) &&
-                    (ccw(bot[first]->position, bot[second]->position, p.polygon[i].vertex[0].x, p.polygon[i].vertex[0].y) !=
-                     ccw(bot[first]->position, bot[second]->position, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y)))
+            if ((ccw(bot[first]->position, map->polygon[i].vertex[0].x, map->polygon[i].vertex[0].y, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y) !=
+                    ccw(bot[second]->position, map->polygon[i].vertex[0].x, map->polygon[i].vertex[0].y, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y)) &&
+                    (ccw(bot[first]->position, bot[second]->position, map->polygon[i].vertex[0].x, map->polygon[i].vertex[0].y) !=
+                     ccw(bot[first]->position, bot[second]->position, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y)))
                 return false;
 
             // 1, 2
-            if ((ccw(bot[first]->position, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y, p.polygon[i].vertex[2].x, p.polygon[i].vertex[2].y) !=
-                    ccw(bot[second]->position, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y, p.polygon[i].vertex[2].x, p.polygon[i].vertex[2].y)) &&
-                    (ccw(bot[first]->position, bot[second]->position, p.polygon[i].vertex[1].x, p.polygon[i].vertex[1].y) !=
-                     ccw(bot[first]->position, bot[second]->position, p.polygon[i].vertex[2].x, p.polygon[i].vertex[2].y)))
+            if ((ccw(bot[first]->position, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y, map->polygon[i].vertex[2].x, map->polygon[i].vertex[2].y) !=
+                    ccw(bot[second]->position, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y, map->polygon[i].vertex[2].x, map->polygon[i].vertex[2].y)) &&
+                    (ccw(bot[first]->position, bot[second]->position, map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y) !=
+                     ccw(bot[first]->position, bot[second]->position, map->polygon[i].vertex[2].x, map->polygon[i].vertex[2].y)))
                 return false;
 
         }
@@ -253,17 +284,16 @@ void WorldMap::bots_control()
             for (j = 0; j < bot.size(); ++j)
             {
                 // stworz liste mozliwych ostrzeliwanych
-                if (!bot[i]->isKilled && !bot[j]->isKilled && i != j && do_bots_see(i, j))
+                if (!bot[i]->isKilled && !bot[j]->isKilled && do_bots_see(i, j))
                 {
                     if ((bot[i]->team == bot[j]->team && FRIENDLY_FIRE) || bot[i]->team != bot[j]->team)
                     {
                         // bot i saw bot j
                         ostrz_list.push_back(j);
-                        //chat_list.push_back(bot[i]->chatSeeEnemy);
                     }
                 }
             }
-            if (ostrz_list.size() > 0)
+            if (!ostrz_list.empty())
             {
                 // j - wylosuj ostrzeliwanego
                 j = ostrz_list[rand() % ostrz_list.size()];
@@ -277,7 +307,7 @@ void WorldMap::bots_control()
                     if (bot[i]->movementDirection == RIGHT)
                         bot[i]->movementDirection = LEFT;
                 }
-                addBullet(i, bot[j]->position.x, bot[j]->position.y);
+                addBullet(i, bot[j]->position);
                 ostrz_list.clear();
             }
         }
@@ -290,32 +320,33 @@ void WorldMap::bots_control()
             // waypoints
             dest = bot[i]->destinationPoint;
 
-            if (p.waypoint[dest].right)
+            if (map->waypoint[dest].right)
             {
                 moveBotRight(i);
                 bot[i]->movementDirection = RIGHT;
             }
-            if (p.waypoint[dest].left)
+            if (map->waypoint[dest].left)
             {
                 moveBotLeft(i);
                 bot[i]->movementDirection = LEFT;
             }
-            if (p.waypoint[dest].up) moveBotUp(i);
-            if (p.waypoint[dest].down) moveBotDown(i);
-            if (p.waypoint[dest].jet) moveBotJet(i);
+            if (map->waypoint[dest].up) moveBotUp(i);
+            if (map->waypoint[dest].down) moveBotDown(i);
+            if (map->waypoint[dest].jet) moveBotJet(i);
 
 
             //if (doszedl(i))
-            if (bot[i]->is_inside(p.waypoint[bot[i]->destinationPoint].x, p.waypoint[bot[i]->destinationPoint].y))
+            if (bot[i]->is_inside(map->waypoint[bot[i]->destinationPoint].x, map->waypoint[bot[i]->destinationPoint].y))
             {
                 //cout << "Doszedl";
-                if (p.waypoint[dest].numConnections == 0)
-                    bot[i]->destinationPoint = p.waypoint[dest].connections[0]-1;
+                if (map->waypoint[dest].numConnections == 0)
+                    bot[i]->destinationPoint = map->waypoint[dest].connections[0]-1;
                 else
-                    bot[i]->destinationPoint = p.waypoint[dest].connections[static_cast<int>(rand() % p.waypoint[dest].numConnections)]-1;
+                    bot[i]->destinationPoint = map->waypoint[dest].connections[static_cast<int>(rand() % map->waypoint[dest].numConnections)]-1;
             }
         }
     }
 
 }
+
 

@@ -24,53 +24,21 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
-#include "SDL_mixer.h"
 
 #include "globals.h"
+#include "bonus.h"
 #include "bot.h"
-#include "fonts.h"
+#include "bullet.h"
+#include "grenade.h"
 #include "moving_object.h"
+#include "map.h"
+#include "console.h"
+#include "mouse.h"
+#include "chat.h"
+#include "window_scores.h"
+#include "window_exit.h"
+#include "window_guns.h"
 
-
-class Weapon
-{
-public:
-    //Weapon() {};
-    std::string name;
-    Mix_Chunk *fireSound;
-    Mix_Chunk *reloadSound;
-    int damage;
-    Uint32 fireInterval;
-    int ammo;
-    Uint32 reloadTime;
-    int speed;
-    int bulletStyle;
-    float startUpTime;
-    float bink;
-    int movementAcc;
-    int recoil;
-    Tex textureAmmo;
-    Tex textureGun;
-};
-
-class Bots
-{
-    public:
-    std::string name;
-    std::string chatKill;
-    std::string chatDead;
-    std::string chatLowhealth;
-    std::string chatSeeEnemy;
-    std::string chatWinning;
-};
-
-
-extern Weapon weapon[20];
 
 
 class WorldMap
@@ -79,44 +47,79 @@ class WorldMap
 public:
 
     WorldMap(const std::string& map, int alpha_cnt, int bravo_cnt, int charlie_cnt, int delta_cnt);
+    WorldMap(const std::string& map, int bots_cnt);
     ~WorldMap();
     void run();
 
 private:
 
-    float getAngle(int x, int y);
-    void chat_window();
-    Uint32 lastOutChatEntity;
-    typedef std::pair<std::string, std::string> string_pair;
-    std::list<string_pair> chat_list;
+    struct BotsBase
+    {
+        std::string name;
+        int favouriteWeapon;
+        unsigned int* color[4];
+        std::string chatKill;
+        std::string chatDead;
+        std::string chatLowhealth;
+        std::string chatSeeEnemy;
+        std::string chatWinning;
+    };
+
+
+
+    std::vector<BotsBase> bots_base;
+    std::vector<WeaponBase> weapon_base;
+    Map *map;
+    Mouse *mouse;
+    Chat *chat;
+    WindowExit *window_exit;
+    WindowScores *window_scores;
+    WindowGuns *window_guns;
+    Console cons, myChat;
+    std::vector<Bot *> bot;
+    std::list<Bullet *> bullet_list;
+    std::list<Bonus *> bonus_list;
+    //std::list<MovingObject *> m_objects;
+    std::list<Grenade *> gren_list;
+    int nearestWaypoint(int spawn_nr);
+    bool collisionCircle2Wall(const MovingObject& ob, float dx, float dy, int& triangle, int& line);
+    int collisionPoint2Wall(const MovingObject& ob, float dx, float dy);
+    int collisionPoint2Circle(const MovingObject& ob1, const MovingObject& ob2);
+    int collisionCircle2Circle(const MovingObject& ob1, const MovingObject& ob2);
+    float distance(const TVector2D &point, int triangle, int ver1, int ver2);
+    int nearestLine(const TVector2D &point, int triangle);
+    Uint8 textColor[4];
+
+
+
+    TVector2D OLD_POS;
+    bool FRIENDLY_FIRE;
+
+    //float getAngle(unsigned int bot_nr, int x, int y);
+    void addMessageToChat(const std::string& part1, const std::string& part2);
+    void addMessageToChat(const std::string& part);
+    void displayChat();
+
+
     SDLKey KEY_PRESSED; // = int
     bool YOU_KILLED;
-    Uint32 getCurrentTime;
-    std::vector<std::string> column_names;
-    void scores_menu();
+    Uint32 getStartGameTime;//, getTimePassed;
+    //void scores_menu();
+    void command_line();
+    void mychat_line();
     Mix_Chunk* loadSoundFile(const std::string& file);
     int takeScreenshot();
-    void hurt_bot(unsigned int shooted, unsigned int owner);
-    void calculate_physics();
-    void load_spawnpoints();
+    void hurt_bot(unsigned int shooted, unsigned int owner, float damage);
+    void collisions();
+    void game_control();
 
+//    std::string COMMAND_LINE_TEXT;
     std::vector<std::vector<int> > spawnpoint;
-//cpFloat dt;
-//cpBody *staticBodyMap;
-    float sGravity; // Przyspieszenie ziemskie
-    float sDrag; // Wspólczynnik oporu
-    float sDragWalking; // Wspólczynnik oporu podczas chodzenia
-    float sDragFly; // Wspólczynnik oporu podczas latania (im mniejszy tym wyzej dolatuje)
-    //static float sElasticity = 0.05; // Elastycznosc odbicia
-    //float sFriction = 1.5; // Tarcie
-    //float sFriction = 1; // Tarcie
+    std::vector<std::vector<int> > bonus;
 
-    float sWalking; // Szybkosc chodzenia
-    //float getsWalking(){return sWalking;};
-    float sFlying; // Szybkosc latania
-    float sJumping; // Sila skoku
+
     //float sUp;
-    float sBulletTime; //Zwolnienie czasu
+    //float sBulletTime; //Zwolnienie czasu
     int currentFPS;
     bool SHOW_STATS;
     bool SHOW_SCORES;
@@ -135,97 +138,110 @@ private:
     int FontWeaponMenuBold;
     int FontConsoleSmallBold;
     int KillConsoleNameSpace;
-    int MOUSE_X;
-    int NMOUSE_X;
-    int MOUSE_Y;
-    int NMOUSE_Y;
-
-// roznica od ostatniego polozenia
-    int REL_MOUSE_X;
-    int REL_MOUSE_Y;
 
     int SOUNDS_VOL_INT;
 
-    freetype::font_data font1_16, font2_12, font2_28;
-    std::string findInterface(const char* name);
-    void printText(freetype::font_data& font, const std::string& text, ubyte* color, float x, float y);
-    void printTextMovable(freetype::font_data& font, const std::string& text, ubyte* color, float x, float y);
+
+    //OGLFT::Monochrome *font1_16, *font2_12, *font2_28;
+    //std::string findInterface(const char* name);
+    std::string findInterface(const std::string& name);
+
+
+    //void printText(OGLFT::Monochrome* font, const std::string& text, Uint8* color, float x, float y);
+    //void printText(OGLFT::Monochrome* font, const std::string& text, unsigned int* color, float x, float y);
+//    void printTextMovable(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y);
     Uint8* keys;
 
     // std::vector<Constraints> constr[5];//, bconstr;
 
-    void addBullet(unsigned int bot_nr, float dest_x, float dest_y);
-    void addGrenade(unsigned int bot_nr, float dest_x, float dest_y, Uint32 push_time);
-    void addBot(const std::string& name, int spawn_nr, int gunmodel, TEAM team, unsigned int bot_nr);
-    void addBot(const Bots& bots, int spawn_nr, TEAM team, unsigned int bot_nr);
-    void getGLpos();
+    void addBullet(unsigned int bot_nr, const TVector2D& dest);
+    void addGrenade(unsigned int bot_nr, const TVector2D& dest, Uint32 push_time);
+    unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
+//    void getGLpos();
 
     GLuint SOIL_LoadTexture(const std::string& file);
     Tex SOIL_LoadTextureEx(const std::string& file);
 
     Mix_Music *music;
 
-    void moveBotLeft(int bot_nr);
-    void moveBotRight(int bot_nr);
-    void moveBotUp(int bot_nr);
-    void moveBotDown(int bot_nr);
-    void moveBotJet(int bot_nr);
-    void moveBotJumpLeft(int bot_nr);
-    void moveBotJumpRight(int bot_nr);
+    void moveBotLeft(unsigned int bot_nr);
+    void moveBotRight(unsigned int bot_nr);
+    void moveBotUp(unsigned int bot_nr);
+    void moveBotDown(unsigned int bot_nr);
+    void moveBotJet(unsigned int bot_nr);
+    void moveBotJumpLeft(unsigned int bot_nr);
+    void moveBotJumpRight(unsigned int bot_nr);
 
     int playMusic(int pos);
 
     void inputUser();
-    //GLuint which_part(int nr);
-    //GLfloat* which_part_xy(int nr);
-
-    //Tex* which_part(int nr);
-//    Mix& which_part(int nr, MD dir);
-
-    //int reload_gun(void *data);
-
-    float fTimeStep; // Krok czasowy fizyki
-    float fTimeStepMS; // Krok czasowy fizyki ( ms )
-
-//    TVector2D aGravity; // Przyspieszenie ziemskie
-//    TVector2D aWalkingLeft;
-//    TVector2D aWalkingRight;
-//    TVector2D aJumpUp;
-
-    int FRAMES_MAX[50], BODYPARTS_MAX[50];
+    Uint32 prev_time;
 
     bool ONLY_ONCE;
     bool CHOICE_EXIT;
 
-    std::string MESSAGE[700];
     int MAX_RESPAWN_TIME;
     float JET_CHANGE;
-    //int REL_TIME;
-    float GUN_MENU_START_X;
-    float GUN_MENU_START_Y;
-    //bool GAME_LOOP;
     bool CHOICE_GUN;
     bool SHOW_GUN_MENU;
-    //bool CLEAN_WORLD;
-    //bool CHOICE_EXIT;
+    bool SHOW_COMMAND_LINE;
+    bool SHOW_MYCHAT_LINE;
     bool SHOW_ESC;
-
-    void gun_menu();
-    void gun_menu_select();
-    void exit_menu();
-    void exit_menu_select();
 
     GLuint *text_scen;
 
     GLuint text_poly;
-    //GLfloat text_poly_xy[4];
-    /*ubyte textColor[4];
-    ubyte textGunColor[4];
-    ubyte textYellow[4];
-    ubyte textRed[4];
-    */
 
-    Mix_Chunk *grenade_throw, *grenade_explosion, *sound_new_life, *sound_heaven, *sound_death[3], *sound_spawn, *menu_click;
+    Tex gostek[9][2];
+    Tex text_grenade[17];
+    Tex text_bonus[7];
+
+
+    unsigned int MY_BOT_NR;
+
+    int read_po(OBJECT_TYPE type);
+    void make_lines(MT move, int frame, int kierunek, TEAM team);
+
+    void bots_control();
+
+    // definitions in draw.cpp
+    void draw_background();
+    void draw_interface();
+    void draw_int_help(Tex& tex, float dx, float dy);
+    void draw_screen();
+    void draw_infos();
+
+    void insertMe(TEAM team);
+
+    // definitions in load.cpp
+    void load_textures();
+    void load_animations();
+    void load_weapons_base();
+    void load_configs();
+    int load_map(const std::string& name);
+    int load_audio();
+    void load_spawnpoints();
+    void load_bonuses();
+    int load_fonts();
+    int load_bots_base();
+    int load_bots(unsigned int bots_count, TEAM team);
+    int getWeaponNumber(const std::string& gun);
+    //Uint8* getRGB(const std::string& col);
+    //public:
+    unsigned int* getRGB(const std::string& col);
+    //private:
+    void init_gl();
+
+    bool do_bots_see(unsigned int first, unsigned int second);
+
+    std::string anim_type(MT name);
+    int read_poa(MT name);
+
+    //void load_constraints();
+    void gunReloading(unsigned int bot_nr);
+
+    unsigned int MY_CURRENT_POS;
+    int DISTANCE_SCORE;
 
     Tex text_mouse;
     Tex text_health;
@@ -239,53 +255,7 @@ private:
     Tex text_firebar;
     Tex text_firebar_r;
     Tex text_weath;
-    Tex text_grenade[16];
-    Tex gost_x;
-    //Tex text_guns[14];
-    Tex gost_stopa[2], gost_klata[2], gost_ramie[2], gost_morda[2], gost_reka[2], gost_dlon[2], gost_udo[2], gost_biodro[2], gost_noga[2];
-    float bgX, bgY;
-    unsigned int MY_BOT_NR;
-
-    int read_po(OBJECT_TYPE type);
-    void make_lines(MT move, int frame, int kierunek, TEAM team);
-
-    //void calc_min_max();
-
-    void bots_control();
-
-    // definitions in draw.cpp
-    void draw_background();
-    void draw_arms();
-    void draw_interface();
-    void draw_int_help(Tex& tex, float dx, float dy);
-    void draw_screen();
-    void draw_mouse();
-    void draw_infos();
-    void draw_gostek();
-    void draw_gostek_help(int partx, int party, float angle, Tex& xtex);
-
-    // definitions in load.cpp
-    void load_textures();
-    void load_animations();
-    void load_weapons();
-    void load_configs();
-    int load_map(const std::string& name);
-    int load_audio();
-    int load_fonts();
-    int load_bots(int alpha_cnt, int bravo_cnt, int charlie_cnt, int delta_cnt);
-
-    void init_gl();
-
-    void hurtBot(unsigned int shooted, unsigned int owner);
-
-    bool do_bots_see(int first, int second);
-
-    std::string anim_type(MT name);
-    int read_poa(MT name);
-
-    //void load_constraints();
-    void gunReloading(int bot_nr);
-
+    Tex text_deaddot;
 };
 
 

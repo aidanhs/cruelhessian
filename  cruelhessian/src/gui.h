@@ -23,25 +23,20 @@
 
 #include "CEGUI.h"
 #include "RendererModules/OpenGLGUIRenderer/openglrenderer.h"
-#include "CEGUIDefaultResourceProvider.h"
-#include "worldmap.h"
+#include "gui_fselector.h"
 
 
-class CH_GUI// : public WorldMap
+class GUI
 {
 
 public:
-    void init();
-    void run();
-    void quit();
 
-    //CH_GUI() {};
-    //~CH_GUI() {};
+    GUI();
+    ~GUI();
+    void run();
 
 private:
 
-    SDL_Surface *screen;
-    bool must_quit;
     class MyListItem : public CEGUI::ListboxTextItem
     {
     public:
@@ -51,17 +46,24 @@ private:
         }
     };
 
-    bool FULLSCREEN;
+    GUI_FolderSelector fs;
 
-    int MAX_BPP;
+    bool must_quit;
 
-    void defaults();
-    int read_configs();
+
+    int GUI_KEY_PRESSED;
+
+
+    bool FOLDER_SELECTOR;
+
+//    void defaults();
+//    int read_configs();
     int apply_configs();
-    int save_configs();
+  //  int save_configs();
     void showMaps(const char* mask);
     void showInterfaces();
     void inject_input(bool & must_quit);
+    bool handleClick(const CEGUI::EventArgs& );
     void setBotStates(bool a, bool b, bool c, bool d);
     void setMusicStates(bool state);
     int readM3U();
@@ -81,7 +83,15 @@ private:
     bool onCTFClick(const CEGUI::EventArgs& );
     bool onHTFClick(const CEGUI::EventArgs& );
     bool onINFClick(const CEGUI::EventArgs& );
-    bool checkSoldat();
+    bool onPlayerName(const CEGUI::EventArgs& );
+    bool onJumpButton(const CEGUI::EventArgs& );
+    bool onMoveLeftButton(const CEGUI::EventArgs& );
+    bool onMoveRightButton(const CEGUI::EventArgs& );
+    bool onCrouchButton(const CEGUI::EventArgs& );
+    bool onThrowGrenadeButton(const CEGUI::EventArgs& );
+    bool onReloadWeaponButton(const CEGUI::EventArgs& );
+    bool onChatButton(const CEGUI::EventArgs& );
+    bool onTeamChatButton(const CEGUI::EventArgs& );
     bool onSearchSoldat(const CEGUI::EventArgs& );
     bool onGraphicsChanged(const CEGUI::EventArgs& );
 
@@ -99,16 +109,16 @@ private:
     CEGUI::Listbox *mMapPlayList;
     CEGUI::Editbox *mMapListDesc;
     CEGUI::Editbox *mMapPlayListDesc;
+    CEGUI::Editbox *mRandomBotsDesc;
+    CEGUI::Spinner *mRandomBotsSpinner;
 
-//CEGUI::PushButton* mDolaczGameButton;
-//CEGUI::Editbox* mIPNumberBox;
-//CEGUI::Editbox* mPortNumberBox;
     CEGUI::PushButton *mExitButton;
     CEGUI::MultiLineEditbox *mDescription;
     CEGUI::Editbox *mDesc1;
     CEGUI::Editbox *mDesc2;
     CEGUI::Spinner *mSpinn1;
     CEGUI::Spinner *mSpinn2;
+    CEGUI::GroupBox *mBotsGroup;
     CEGUI::Spinner *mAlphaSpinner;
     CEGUI::Spinner *mBravoSpinner;
     CEGUI::Spinner *mCharlieSpinner;
@@ -124,6 +134,24 @@ private:
     CEGUI::RadioButton *mPointmatch;
     CEGUI::RadioButton *mRambomatch;
     CEGUI::RadioButton *mTeammatch;
+
+// player
+    CEGUI::Editbox *mPlayerName;
+    CEGUI::PushButton *mFireButton;
+    CEGUI::PushButton *mFlyButton;
+    CEGUI::PushButton *mJumpButton;
+    CEGUI::PushButton *mMoveLeftButton;
+    CEGUI::PushButton *mMoveRightButton;
+    CEGUI::PushButton *mCrouchButton;
+    CEGUI::PushButton *mProneButton;
+    CEGUI::PushButton *mThrowGrenadeButton;
+    CEGUI::PushButton *mDropWeaponButton;
+    CEGUI::PushButton *mChatButton;
+    CEGUI::PushButton *mWeaponsMenuButton;
+    CEGUI::PushButton *mChangeWeaponButton;
+    CEGUI::PushButton *mReloadWeaponButton;
+    CEGUI::PushButton *mTeamChatButton;
+    CEGUI::PushButton *mRadioMenuButton;
 
 // graphics
     CEGUI::Checkbox *mIsFullscreen;
@@ -155,7 +183,7 @@ private:
 //CEGUI::Combobox* mLanguage;
     CEGUI::Combobox* mInterfaces;
     CEGUI::Editbox* mInterfacesDesc;
-    CEGUI::Editbox *mPlaceSoldat;
+    CEGUI::PushButton *mPlaceSoldat;
     CEGUI::Editbox *mPlaceSoldatDesc;
 //CEGUI::Combobox *mPlaceSoldat;
     CEGUI::Editbox *mStatusField;

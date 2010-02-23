@@ -22,27 +22,35 @@
 #define MOV_OBJ_H
 
 #include "globals.h"
+#include "tvector2d.h"
 
 
 class MovingObject
 {
-public:
-    int type;               // 0 - circle, 1 - segment
-    float r;                 // radius
-    float w;                 // szerokosc
-    float h;                 // wysokosc
-    float mass;              // masa
-    float massInv;           // odwrotnosc masy
-    float maxSpeedX;          // predkosc max po X
-    float maxSpeedY;          // predkosc max po Y
-    TVector2D velocity;      // predkosc chwilowa obiektu
-    TVector2D forces;        // sila wypadkowa obiektu
-    TVector2D position;      // polozenie obiektu
-
-    int collision_det_with_wall(float dx, float dy);
 
 private:
-    bool rzuty_bots(int tr_number, int vec_nr, float dx, float dy);
+    TVector2D temp;
+
+protected:
+    //int type;               // 0 - circle, 1 - segment
+    float mass;              // masa
+    float massInv;           // odwrotnosc masy
+    TVector2D maxSpeed;      // predkosc max
+    TVector2D forces;        // sila wypadkowa obiektu
+
+    //  TVector2D old_position;
+    // TVector2D a;
+
+public:
+    OBJECT_SHAPE type;
+    unsigned int owner;
+    TVector2D position;      // polozenie obiektu
+    TVector2D velocity;      // predkosc chwilowa obiektu
+    float r;                 // radius      -          nie zawsze trzeba !!!!!!!
+    float w;                 // szerokosc               niekoniecznie
+    float h;                 // wysokosc                niekoniecznie
+    virtual void draw() {};        // niekoniecznie
+    void gravity();
 };
 
 

@@ -8,6 +8,10 @@
 #include <freetype/ftoutln.h>
 #include <freetype/fttrigon.h>
 
+#ifdef WIN32
+	#include <windows.h>
+#endif
+
 //OpenGL Headers 
 #include <GL/gl.h>
 #include <GL/glu.h>

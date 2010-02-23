@@ -1,7 +1,7 @@
-/*   moving_objects.cpp
+/*   mouses.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,44 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef MOUSE_H
+#define MOUSE_H
 
-#include "moving_object.h"
+
 #include "globals.h"
+#include "tvector2d.h"
 
 
-void MovingObject::gravity()
+class Mouse
 {
+    Tex& texture;
+    TVector2D mGlobalPos;
+    TVector2D mLocalPos;
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+public:
+    TVector2D getGlobalPosition() const;
+    TVector2D getLocalPosition() const;
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+    float getGlobalX() const;
+    float getGlobalY() const;
 
-    velocity += massInv * fTimeStep * forces;
+    float getLocalX() const;
+    float getLocalY() const;
 
-}
+  //  void setPosition(const TVector2D& pos);
+
+    /**
+     *
+     * Constructor
+     *
+     * @param  dest Destination point
+     */
+    Mouse(float x, float y, Tex& tex);
+    ~Mouse() {};
+
+    void draw() const;
+    void update();
+};
+
+
+#endif

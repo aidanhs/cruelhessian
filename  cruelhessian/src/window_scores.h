@@ -1,7 +1,7 @@
-/*   moving_objects.cpp
+/*   window_scores.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef WINDOW_SCORES_H
+#define WINDOW_SCORES_H
 
-#include "moving_object.h"
 #include "globals.h"
+#include "bot.h"
+#include <iostream>
 
 
-void MovingObject::gravity()
+class WindowScores
 {
+    const Tex& texture;
+    std::vector<std::string> column_names;
+    std::vector<float> off;
+    float list_long;
+    void draw_help(const Tex& tex, float dx, float dy) const;
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+public:
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+    std::vector<Bot *> scores;
+    WindowScores(const Tex& tex);
+    ~WindowScores();
 
-    velocity += massInv * fTimeStep * forces;
+    void draw() const;
+    void update(const std::vector<Bot *>& bb);
+};
 
-}
+
+#endif

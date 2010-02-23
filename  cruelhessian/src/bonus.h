@@ -1,7 +1,7 @@
-/*   moving_objects.cpp
+/*   bonus.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,32 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef BONUS_H
+#define BONUS_H
 
-#include "moving_object.h"
 #include "globals.h"
+#include "moving_object.h"
 
 
-void MovingObject::gravity()
+class Bonus : public MovingObject
 {
+    const Tex& texture;
+public:
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+    int typeBonus;
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+    /**
+     *
+     * Constructor
+     *
+     * @param  dest Destination point
+     */
+    Bonus(const TVector2D& dest, int type, Tex& tex);
+    ~Bonus() {};
 
-    velocity += massInv * fTimeStep * forces;
+    void draw();
+    void update();
+};
 
-}
+
+#endif

@@ -1,4 +1,4 @@
-/*   moving_objects.cpp
+/*   console.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -18,20 +18,39 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef CMD_H
+#define CMD_H
 
-#include "moving_object.h"
-#include "globals.h"
+
+#include <iostream>
+#include <list>
+#include "SDL.h"
 
 
-void MovingObject::gravity()
+class Console
 {
+private:
+    typedef std::list<std::string> InputList;
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+    enum Result
+    {
+        NOTHING = 0,
+        ENTERED,
+        //ESCAPED
+        BACKSPACED
+    };
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+public:
+    const std::string& GetInput() const;
+    const std::string GetInputEntered() const;
+    bool isEscaped() const;
+    void clearCache();
+    Result Query(SDLKey lastKey);
 
-    velocity += massInv * fTimeStep * forces;
+protected:
+    Result lastResult;
+    std::string input, lastInput;
+};
 
-}
+
+#endif

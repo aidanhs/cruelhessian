@@ -1,4 +1,4 @@
-/*   moving_objects.cpp
+/*   disk_object.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -14,24 +14,31 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * aint with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 
-#include "moving_object.h"
-#include "globals.h"
+
+#include <string>
+#include <vector>
 
 
-void MovingObject::gravity()
+class DiskObject
 {
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+public:
+    DiskObject() {};
+    ~DiskObject() {};
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+    void upDir();
 
-    velocity += massInv * fTimeStep * forces;
+#ifdef WIN32
+    void fillWinMainDir();
+#endif
 
-}
+    void fillDir(const std::string& dir);
+
+    std::vector<std::string> dirList;
+    std::string mStartPath;
+};

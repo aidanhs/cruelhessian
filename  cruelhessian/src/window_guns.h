@@ -1,7 +1,7 @@
-/*   moving_objects.cpp
+/*   window_guns.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef WINDOW_GUNS_H
+#define WINDOW_GUNS_H
 
-#include "moving_object.h"
 #include "globals.h"
+#include "tvector2d.h"
 
 
-void MovingObject::gravity()
+class WindowGuns
 {
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+    TVector2D m_mouse_pos;
+    float x, y, w, h;
+    int m_number;
+    void draw_help(const Tex& tex, float dx, float dy) const;
+    const std::vector<WeaponBase>& m_weapon;
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+public:
 
-    velocity += massInv * fTimeStep * forces;
+    /**
+     *
+     * Constructor
+     *
+     * @param  dest Destination point
+     */
+    WindowGuns(const std::vector<WeaponBase>& wb);
+    ~WindowGuns() {};
 
-}
+    void draw(const TVector2D& pos);
+    int select() const;
+};
+
+
+#endif

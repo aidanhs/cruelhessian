@@ -1,4 +1,4 @@
-/*   bullet.cpp
+/*   bonus.cpp
  *
  *   Cruel Hessian
  *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
@@ -19,41 +19,33 @@
  */
 
 
-#include "bullet.h"
+#include "bonus.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
-#include <cmath>
+#include "SDL_opengl.h"
 
 
-Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, Tex& tex) : texture(tex)
+Bonus::Bonus(const TVector2D& dest, int type, Tex& tex) : texture(tex)
 {
-    type = XPOINT;
-    position = src;
+    type = SQUARE;
+    typeBonus = type;
+    position = dest;
     w = texture.w;
     h = texture.h;
-    gunModel = gunmodel;
-    owner = _owner;
-    mass = 100;
+    r = 13;
+    mass = 10;
     massInv = 1 / mass;
     maxSpeed = TVector2D(10000, 10000);
-
-    float tang = (dest.y - src.y) / (dest.x - src.x);
-    // popr
-    //float sq = 5*weapon[gunmodel].speed / sqrt(1+tang*tang);
-    float sq = 5*100 / sqrt(1+tang*tang);
-
-    velocity = (dest.x - src.x > 0) ? TVector2D(-sq, -sq * tang) : TVector2D(sq, sq * tang);
+    velocity = TVector2D(0.0f, 0.0f);
+   // texture = text;
 
 }
 
 
-void Bullet::draw() const
+void Bonus::draw()
 {
 
     glPushMatrix();
-
     glTranslatef(position.x, position.y, 0.0f);
-    glRotatef(_180overpi * atan(velocity.y / velocity.x), 0.0f, 0.0f, 1.0f);
 
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
@@ -67,11 +59,14 @@ void Bullet::draw() const
     glTexCoord2f(0.0, 0.0);
     glVertex2f(0.0, texture.h);
     glEnd();
+
     glPopMatrix();
 
 }
 
-void Bullet::update()
+
+void Bonus::update()
 {
     gravity();
 }
+

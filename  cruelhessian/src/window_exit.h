@@ -1,7 +1,7 @@
-/*   moving_objects.cpp
+/*   window_exit.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef WINDOW_EXIT_H
+#define WINDOW_EXIT_H
 
-#include "moving_object.h"
-#include "globals.h"
+#include "tvector2d.h"
 
 
-void MovingObject::gravity()
+class WindowExit
 {
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+  TVector2D m_mouse_pos;
+  float x, y, w, h;
+  int m_number;
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+public:
 
-    velocity += massInv * fTimeStep * forces;
+    /**
+     *
+     * Constructor
+     *
+     * @param  dest Destination point
+     */
+    WindowExit();
+    ~WindowExit() {};
 
-}
+    void draw(const TVector2D& pos);
+    int select() const;
+};
+
+
+#endif

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="FolderSelector" >
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="FolderSelector/Frame" >
+            <Property Name="Text" Value="Select Folder" />
+            <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.322461,0},{0.237659,0},{0.728711,0},{0.79682,0}}" />
+            <Window Type="TaharezLook/Button" Name="FolderSelector/Frame/Ok" >
+                <Property Name="Text" Value="OK" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.711539,0},{0.898179,0},{0.915865,0},{0.963879,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="FolderSelector/Frame/Cancel" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="CANCEL" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.461058,0},{0.898122,0},{0.665385,0},{0.963823,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Editbox" Name="FolderSelector/Frame/Address" >
+                <Property Name="ReadOnly" Value="True" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0908655,0},{0.111149,0},{0.903365,0},{0.1814,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Listbox" Name="FolderSelector/Frame/FolderList" >
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0874999,0},{0.213425,0},{0.907212,0},{0.866154,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
