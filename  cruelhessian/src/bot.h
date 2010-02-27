@@ -48,7 +48,7 @@ public:
     unsigned int color[4][3];
     unsigned int deaths;
     int wayNumber;
-    unsigned int botNumber;
+    unsigned int number;
     unsigned int killer;
     unsigned int killed;
     unsigned int killedNr;

@@ -24,10 +24,11 @@
 #include "SDL_opengl.h"
 
 
-Bonus::Bonus(const TVector2D& dest, int type, Tex& tex) : texture(tex)
+Bonus::Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS bontype) : texture(tex), typeBonus(bontype)
 {
+
     type = SQUARE;
-    typeBonus = type;
+   // typeBonus = _type;
     position = dest;
     w = texture.w;
     h = texture.h;
@@ -41,12 +42,12 @@ Bonus::Bonus(const TVector2D& dest, int type, Tex& tex) : texture(tex)
 }
 
 
-void Bonus::draw()
+void Bonus::draw() const
 {
 
     glPushMatrix();
     glTranslatef(position.x, position.y, 0.0f);
-
+    glScalef(0.7f, 0.7f, 0.0);
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);

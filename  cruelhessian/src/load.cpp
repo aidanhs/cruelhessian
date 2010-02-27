@@ -102,7 +102,7 @@ void WorldMap::load_configs()
 
     JET_CHANGE = 0.0005f;
     sGravity = 9.81f;
-    sDrag = 1;
+    sDrag = 0.3;
     sDragWalking = 300;
     sWalking = 100;
     sFlying = 2000.0;
@@ -110,9 +110,9 @@ void WorldMap::load_configs()
 
     DISTANCE_SCORE = MY_CURRENT_POS = 0;
 
-    mouse = new Mouse(MAX_WIDTH/2, MAX_HEIGHT/2, text_mouse);
+    mouse = new Mouse(text_mouse);
     chat = new Chat();
-    window_scores = new WindowScores(text_deaddot);
+    window_scores = new WindowScores(text_deaddot, text_smalldot);
     window_guns = new WindowGuns(weapon_base);
 
 }
@@ -148,7 +148,7 @@ void WorldMap::load_bonuses()
             num = bonus[i][j];
             p.x = static_cast<float>(map->spawnpoint[num].x);
             p.y = static_cast<float>(map->spawnpoint[num].y);
-            Bonus *newbon = new Bonus(p, i, text_bonus[i]);
+            Bonus *newbon = new Bonus(p, i, text_bonus[i], BONUS_GRENADES);
             bonus_list.push_back(newbon);
 //            m_objects.push_back(newbon);
         }
@@ -435,14 +435,17 @@ void WorldMap::load_textures()
     std::cout << "Loading textures ... " << std::endl;
 
     std::cout << "   loading scenery textures ... " << std::endl;
-    text_scen = new GLuint[map->sceneryCount];
-    for (int i = 0; i < map->sceneryCount; ++i)
-    {
-        text_scen[i] = SOIL_LoadTexture(SOL_PATH + "Scenery-gfx/" + map->scenery[i].name);
-    }
+	GLuint *text_scen = new GLuint[map->sceneryCount];
+	std::vector<std::string> names(map->getTextScen());
+	for (int i = 0; i < names.size(); ++i)
+	{
+		text_scen[i] = SOIL_LoadTexture(SOL_PATH + "Scenery-gfx/" + names[i]);
+	}
+	map->setScen(text_scen);
 
     std::cout << "   loading triangles texture ... " << std::endl;
-    text_poly = SOIL_LoadTexture(SOL_PATH + "Textures/" + map->texture);
+	GLuint text_poly = SOIL_LoadTexture(SOL_PATH + "Textures/" + map->getTextPoly());
+	map->setPoly(text_poly);
 
     std::cout << "   loading interface textures ... " << std::endl;
     text_mouse     = SOIL_LoadTextureEx(findInterface("cursor.bmp"));
@@ -456,6 +459,7 @@ void WorldMap::load_textures()
     text_firebar   = SOIL_LoadTextureEx(findInterface("fire-bar.bmp"));
     text_firebar_r = SOIL_LoadTextureEx(findInterface("fire-bar-r.bmp"));
     text_deaddot   = SOIL_LoadTextureEx(findInterface("deaddot.bmp"));
+    text_smalldot  = SOIL_LoadTextureEx(findInterface("smalldot.bmp"));
 
     std::cout << "   loading bonuses' textures ... " << std::endl;
     text_bonus[BONUS_BERSERKER] = SOIL_LoadTextureEx(SOL_PATH + "Textures/Objects/berserkerkit.bmp");
@@ -483,17 +487,17 @@ void WorldMap::load_textures()
     weapon_base[16].textureGun = SOIL_LoadTextureEx(SOL_PATH + "Interface-gfx/Guns/law.bmp");
 
     std::cout << "   loading bullets' textures ... " << std::endl;
-    weapon_base[0].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/minigun-bullet.bmp");
-    weapon_base[1].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/eagles-bullet.bmp");
-    weapon_base[2].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ak74-bullet.bmp");
-    weapon_base[3].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ak74-bullet.bmp");
-    weapon_base[4].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/steyraug-bullet.bmp");
-    weapon_base[5].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.bmp");
-    weapon_base[6].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ruger77-bullet.bmp");
+    weapon_base[0].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/minigun-bullet.png");
+    weapon_base[1].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/eagles-bullet.png");
+    weapon_base[2].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ak74-bullet.png");
+    weapon_base[3].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ak74-bullet.png");
+    weapon_base[4].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/steyraug-bullet.png");
+    weapon_base[5].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.png");
+    weapon_base[6].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/ruger77-bullet.png");
     weapon_base[7].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/m79-bullet.bmp");
-    weapon_base[8].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/barretm82-bullet.bmp");
-    weapon_base[9].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.bmp");
-    weapon_base[10].textureAmmo = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.bmp");
+    weapon_base[8].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/barretm82-bullet.png");
+    weapon_base[9].textureAmmo  = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.png");
+    weapon_base[10].textureAmmo = SOIL_LoadTextureEx(SOL_PATH + "Weapons-gfx/spas12-bullet.png");
 
     std::cout << "   loading grenade's textures ... " << std::endl;
     text_grenade[0] = text_nade;

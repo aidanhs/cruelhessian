@@ -1,7 +1,7 @@
 /*   grenade.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ public:
      * @param  owner owner of the grenade
      * @param  push_time time when grenade was pushed
      */
-    Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, Tex* text);
+    Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, const Tex* text);
 
     void draw() const;
     void update();

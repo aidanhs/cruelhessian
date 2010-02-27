@@ -27,7 +27,7 @@
 Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest, Tex text[9][2]) : name(_name), team(_team)
 {
     type = CIRCLE;
-    botNumber = bot_nr;
+    number = bot_nr;
     //team = _team;
     //name = _name;
     movementDirection = LEFT;

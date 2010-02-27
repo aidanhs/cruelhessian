@@ -24,6 +24,7 @@
 #include <vector>
 #include <string>
 
+#include "SDL_opengl.h"
 
 typedef unsigned char ubyte;
 typedef unsigned short word;
@@ -31,9 +32,11 @@ typedef unsigned short word;
 
 class Map
 {
+    GLuint *text_scen;
+    GLuint text_poly;
 
 public:
-
+	void draw();
     /**
      *
      * Constructor
@@ -274,6 +277,11 @@ public:
     float topoffs;
     float bottomoffs;
 
+	std::string getTextPoly() const;
+	std::vector<std::string> getTextScen() const;
+
+	void setPoly(GLuint text);
+	void setScen(GLuint *text);
 };
 
 

@@ -40,6 +40,9 @@
 */
 #define _(string) (string)
 
+namespace global
+{
+
 
 extern int CONFIG_VERSION;
 extern     Uint8 textColorGunOnTouch[4];
@@ -55,8 +58,8 @@ extern int defaults();
 extern  int setSDL();
 
 extern freetype::font_data font1_16, font2_12, font2_28;
-extern   void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y);
-extern   void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
+ void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y);
+ void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
 
 extern float bgX, bgY;
 
@@ -248,25 +251,27 @@ typedef enum
 } BODY_COLOR;
 
 
-    class WeaponBase
-    {
-        public:
-        std::string name;
-        Mix_Chunk *fireSound;
-        Mix_Chunk *reloadSound;
-        float damage;
-        Uint32 fireInterval;
-        unsigned int ammo;
-        Uint32 reloadTime;
-        int speed;
-        int bulletStyle;
-        float startUpTime;
-        float bink;
-        int movementAcc;
-        int recoil;
-        Tex textureAmmo;
-        Tex textureGun;
-    };
+class WeaponBase
+{
+public:
+    std::string name;
+    Mix_Chunk *fireSound;
+    Mix_Chunk *reloadSound;
+    float damage;
+    Uint32 fireInterval;
+    unsigned int ammo;
+    Uint32 reloadTime;
+    int speed;
+    int bulletStyle;
+    float startUpTime;
+    float bink;
+    int movementAcc;
+    int recoil;
+    Tex textureAmmo;
+    Tex textureGun;
+};
 
+}
 
+using namespace global;
 #endif

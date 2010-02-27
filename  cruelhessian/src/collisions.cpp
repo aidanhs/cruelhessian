@@ -315,13 +315,13 @@ int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 
     // wyznacz numery trojkatow w tych sektorach do zbadania
 
-    for (std::vector<unsigned int>::iterator s = sect_num.begin(); s != sect_num.end(); ++s)
+    for (std::vector<unsigned int>::const_iterator s = sect_num.begin(); s != sect_num.end(); ++s)
         for (unsigned int j = 0; j < map->sector[*s].polyCount; ++j)
             trian_num.insert(map->sector[*s].polys[j]-1);
 
 // http://www.gamedev.net/community/forums/topic.asp?topic_id=406403
 
-    for (std::set<unsigned int>::iterator i = trian_num.begin(); i != trian_num.end(); ++i)
+    for (std::set<unsigned int>::const_iterator i = trian_num.begin(); i != trian_num.end(); ++i)
     {
 
         if (map->polygon[*i].polyType != map->ptONLY_BULLETS_COLLIDE && map->polygon[*i].polyType != map->ptNO_COLLIDE)
@@ -437,7 +437,7 @@ void WorldMap::collisions()
     }
 
     // bonuses
-	for (std::list<Bonus *>::iterator temp = bonus_list.begin(); temp != bonus_list.end();)
+	for (std::list<Bonus *>::const_iterator temp = bonus_list.begin(); temp != bonus_list.end();)
     {
 
         // if bonus touched the wall

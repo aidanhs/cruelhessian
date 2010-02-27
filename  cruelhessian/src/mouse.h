@@ -28,7 +28,7 @@
 
 class Mouse
 {
-    Tex& texture;
+    const Tex& texture;
     TVector2D mGlobalPos;
     TVector2D mLocalPos;
 
@@ -44,13 +44,7 @@ public:
 
   //  void setPosition(const TVector2D& pos);
 
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
-    Mouse(float x, float y, Tex& tex);
+    Mouse(const Tex& tex);
     ~Mouse() {};
 
     void draw() const;

@@ -24,7 +24,7 @@
 
 
 
-Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, Tex* tex)
+Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, const Tex* tex)
 {
     type = CIRCLE;
     position = src;

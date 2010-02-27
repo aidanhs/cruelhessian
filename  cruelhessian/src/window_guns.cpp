@@ -26,7 +26,7 @@
 
 
 WindowGuns::WindowGuns(const std::vector<WeaponBase>& wb)
-    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(300), h(350), m_weapon(wb)
+    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(300), h(350), m_number(-1), m_weapon(wb)
 {
     /*
          x = MAX_WIDTH/4;

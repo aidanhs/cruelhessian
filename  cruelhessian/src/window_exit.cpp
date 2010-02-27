@@ -25,14 +25,14 @@
 
 
 WindowExit::WindowExit()
-    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(200), h(80)
+    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(200), h(80), m_number(0)
 {
-/*
-    x = MAX_WIDTH/4;
-    y = MAX_HEIGHT/7;
-    w = 200;
-    h = 80;
-*/
+    /*
+        x = MAX_WIDTH/4;
+        y = MAX_HEIGHT/7;
+        w = 200;
+        h = 80;
+    */
 }
 
 
@@ -50,11 +50,11 @@ void WindowExit::draw(const TVector2D& pos)
     glTranslatef(bgX, bgY, 0.0f);
 
     // obramowanie
-    glColor4ub(200, 10, 200, 50);
+    glColor4ub(85, 85, 85, 200);
     glRectf(x, y, x + w, y + h);
 
     // inner rectangle
-    glColor4ub(0, 0, 210, 125);
+    glColor4ub(100, 100, 100, 200);
     glBegin(GL_QUADS);
     glVertex2f(x - 1, y - 1);
     glVertex2f(x + w + 1, y - 1);
@@ -65,7 +65,7 @@ void WindowExit::draw(const TVector2D& pos)
 
     // tekst
     TVector2D start = TVector2D(x + 10, y + 20);
-    m_number = -1;
+    m_number = 0;
 
     if (stan1 && m_mouse_pos.y > start.y-7 && m_mouse_pos.y < start.y+7)
     {
@@ -76,6 +76,9 @@ void WindowExit::draw(const TVector2D& pos)
     {
         printText(font1_16, "Exit", textColorGunNormal, start.x, start.y);
     }
+
+    start.y += 25;
+    printText(font2_12, "Esc - back to game", textColorGunNormal, start.x, start.y);
 
 }
 

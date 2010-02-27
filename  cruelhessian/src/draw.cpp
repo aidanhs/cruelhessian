@@ -30,120 +30,6 @@
 #include "window_guns.h"
 
 
-/*
-float GetAngle(const float dX, const float dY)
-{
-
-    if (dX > 0.0)
-    {
-        if (dY > 0.0)
-        {
-            //dX > 0.0 && dY > 0.0
-            assert(dX > 0.0 && dY > 0.0);
-            const float angle = (1.0 * M_PI) - std::atan(dX / dY);
-            assert(angle > 0.5 * M_PI && angle < 1.0 * M_PI);
-            return angle;
-        }
-        else if (dY < 0.0)
-        {
-            //dX > 0.0 && dY <= 0.0
-            assert(dX > 0.0 && dY < 0.0);
-            const float angle = (0.0 * M_PI) - std::atan(dX / dY);
-            assert(angle > 0.0 * M_PI && angle < 0.5 * M_PI);
-            return angle;
-        }
-        else
-        {
-            //dX > 0.0 && dY == 0.0
-            assert(dX > 0.0 && dY == 0.0);
-            const float angle = 0.5 * M_PI;
-            return angle;
-        }
-    }
-    else if (dX < 0.0)
-    {
-        if (dY > 0.0)
-        {
-            //dX < 0.0 && dY > 0.0
-            assert(dX < 0.0 && dY > 0.0);
-            const float angle = (1.0 * M_PI) - std::atan(dX / dY);
-            assert(angle > 1.0 * M_PI && angle < 1.5 * M_PI);
-            return angle;
-        }
-        else if (dY < 0.0)
-        {
-
-            //dX < 0.0 && dY < 0.0
-            assert(dX < 0.0 && dY < 0.0);
-            const float angle = (2.0 * M_PI) - std::atan(dX / dY);
-            assert(angle > 1.5 * M_PI && angle < 2.0 * M_PI);
-            return angle;
-        }
-        else
-        {
-
-            //dX < 0.0 && dY == 0.0
-            assert(dX < 0.0 && dY == 0.0);
-            const float angle = 1.5 * M_PI;
-            return angle;
-        }
-    }
-    else
-    {
-        if (dY > 0.0)
-        {
-            //dX == 0 && dY > 0.0)
-            assert(dX==0.0 && dY > 0.0);
-            const float angle = 1.0 * M_PI;
-            return angle;
-        }
-        else if (dY < 0.0)
-        {
-            //dX == 0 && dY < 0.0)
-            assert(dX==0.0 && dY < 0.0);
-            const float angle = 0.0 * M_PI;
-            return angle;
-        }
-        else
-        {
-            //dX == 0.0 && dY == 0.0)
-            assert(dX==0.0 && dY == 0.0);
-            const float angle = 0.0 * M_PI;
-            return angle;
-        }
-    }
-    //return 0;
-}
-*/
-
-
-
-/*
-void WorldMap::printText(OGLFT::Monochrome* font, const std::string& text, Uint8* color, float x, float y)
-{
-    glPushMatrix();
-    glLoadIdentity();
-    glColor3f(1.0f, 1.0f, 1.0f);
-    //font->setForegroundColor(static_cast<float>(color[0])/255., static_cast<float>(color[1]/255.), static_cast<float>(color[2]/255.));
-    font->setForegroundColor(1.,1.,1.);
-    font->draw(x, MAX_HEIGHT-y-12.0f, text.c_str());
-
-    glPopMatrix();
-}
-
-
-void WorldMap::printText(OGLFT::Monochrome* font, const std::string& text, unsigned int* color, float x, float y)
-{
-    glPushMatrix();
-    glLoadIdentity();
-    glColor3f(1.0f, 1.0f, 1.0f);
-    //font->setForegroundColor(static_cast<float>(color[0])/255., static_cast<float>(color[1]/255.), static_cast<float>(color[2]/255.));
-    font->setForegroundColor(1.,1.,1.);
-    font->draw(x, MAX_HEIGHT-y-12.0f, text.c_str());
-    //glColor3f(1.0f, 1.0f, 1.0f);
-    glPopMatrix();
-}
-*/
 /*void WorldMap::printTextMovable(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y)
 {
 
@@ -152,9 +38,6 @@ void WorldMap::printText(OGLFT::Monochrome* font, const std::string& text, unsig
 
 }
 */
-
-
-
 
 void WorldMap::draw_background()
 {
@@ -191,104 +74,7 @@ void WorldMap::draw_background()
 }
 
 
-void WorldMap::draw_screen()
-{
-    // glEnable(GL_TEXTURE_2D);
-
-    // draw scenery on the back
-    for (int i = 0; i < map->propCount; ++i)
-    {
-        if (map->prop[i].level != map->dbBEHIND_NONE)
-        {
-            glPushMatrix();
-            glTranslatef(map->prop[i].x, map->prop[i].y, 0.0);
-            glRotatef(-map->prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(map->prop[i].scaleX, map->prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[map->prop[i].style-1]);
-
-            glBegin(GL_QUADS);
-
-            glColor4ub(map->prop[i].color.red, map->prop[i].color.green,
-                       map->prop[i].color.blue, map->prop[i].alpha);
-
-            glTexCoord2f(0.0, 1.0);
-            glVertex2f(0.0, 0.0);
-            glTexCoord2f(1.0, 1.0);
-            glVertex2f(static_cast<float>(map->prop[i].width), 0.0);
-            glTexCoord2f(1.0, 0.0);
-            glVertex2f(static_cast<float>(map->prop[i].width), static_cast<float>(map->prop[i].height));
-            glTexCoord2f(0.0, 0.0);
-            glVertex2f(0.0, static_cast<float>(map->prop[i].height));
-
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-
-    glBindTexture(GL_TEXTURE_2D, text_poly);
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < map->polygonCount; ++i)
-    {
-        glTexCoord3f(map->polygon[i].vertex[0].tu, -map->polygon[i].vertex[0].tv, 1.0f / map->polygon[i].vertex[0].rhw);
-        glColor4ub(map->polygon[i].vertex[0].color.red,
-                   map->polygon[i].vertex[0].color.green,
-                   map->polygon[i].vertex[0].color.blue,
-                   map->polygon[i].vertex[0].color.alpha);
-        glVertex3f(map->polygon[i].vertex[0].x, map->polygon[i].vertex[0].y, map->polygon[i].vertex[0].z);
-
-        glTexCoord3f(map->polygon[i].vertex[1].tu, -map->polygon[i].vertex[1].tv, 1.0f / map->polygon[i].vertex[1].rhw);
-        glColor4ub(map->polygon[i].vertex[1].color.red,
-                   map->polygon[i].vertex[1].color.green,
-                   map->polygon[i].vertex[1].color.blue,
-                   map->polygon[i].vertex[1].color.alpha);
-        glVertex3f(map->polygon[i].vertex[1].x, map->polygon[i].vertex[1].y, map->polygon[i].vertex[1].z);
-
-        glTexCoord3f(map->polygon[i].vertex[2].tu, -map->polygon[i].vertex[2].tv, 1.0f / map->polygon[i].vertex[2].rhw);
-        glColor4ub(map->polygon[i].vertex[2].color.red,
-                   map->polygon[i].vertex[2].color.green,
-                   map->polygon[i].vertex[2].color.blue,
-                   map->polygon[i].vertex[2].color.alpha);
-        glVertex3f(map->polygon[i].vertex[2].x, map->polygon[i].vertex[2].y, map->polygon[i].vertex[2].z);
-    }
-    glEnd();
-
-    // draw scenery on the front
-    for (size_t i = 0; i < map->prop.size(); i++)
-    {
-        if (map->prop[i].level == map->dbBEHIND_NONE)
-        {
-            glPushMatrix();
-            glTranslatef(map->prop[i].x, map->prop[i].y, 0.0);
-            glRotatef(-map->prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(map->prop[i].scaleX, map->prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[map->prop[i].style-1]);
-
-            glBegin(GL_QUADS);
-
-            glColor4ub(map->prop[i].color.red, map->prop[i].color.green,
-                       map->prop[i].color.blue, map->prop[i].alpha);
-
-            glTexCoord2f(0.0, 1.0);
-            glVertex2f(0.0, 0.0);
-            glTexCoord2f(1.0, 1.0);
-            glVertex2f(static_cast<float>(map->prop[i].width), 0.0);
-            glTexCoord2f(1.0, 0.0);
-            glVertex2f(static_cast<float>(map->prop[i].width), static_cast<float>(map->prop[i].height));
-            glTexCoord2f(0.0, 0.0);
-            glVertex2f(0.0, static_cast<float>(map->prop[i].height));
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-    // glDisable(GL_TEXTURE_2D);
-
-}
-
-
-
-void WorldMap::draw_int_help(Tex& tex, float dx, float dy)
+void WorldMap::draw_int_help(const Tex& tex, float dx, float dy)
 {
 
     glPushMatrix();
@@ -492,7 +278,7 @@ void WorldMap::draw_interface()
     // scores
     if (SHOW_SCORES)
     {
-        window_scores->update(bot);
+        window_scores->update(bot, MY_BOT_NR);
         window_scores->draw();
     }
 
@@ -514,6 +300,7 @@ void WorldMap::draw_interface()
         if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
         {
             CHOICE_EXIT = window_exit->select();
+            // std::cout << "C " << CHOICE_EXIT << std::endl;
         }
         //glutSetCursor(GLUT_CURSOR_NONE);
     }
@@ -521,13 +308,12 @@ void WorldMap::draw_interface()
 
 }
 
-
+/*
 Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
 {
     Tex res_tex;
     res_tex.tex = 0;
-    int temp_w = 0;
-    int temp_h = 0;
+    int width = 0, height = 0;
     //std::cout << "FILE " << file << std::endl;
     if (file[file.size()-1] == 'p')
     {
@@ -535,19 +321,18 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
         unsigned char *imgdata = SOIL_load_image
                                  (
                                      file.c_str(),
-                                     &temp_w, &temp_h, &channels,
+                                     &width, &height, &channels,
                                      SOIL_LOAD_RGBA
                                  );
 
         if (imgdata == NULL)
         {
             std::cout << "   Image was not loaded : " << file << std::endl;
-            res_tex.w = 0;
-            res_tex.h = 0;
+            res_tex.w = res_tex.h = 0;
             return res_tex;
         }
 
-        for (int i = 0; i < temp_w*temp_h*channels; i += 4)
+        for (int i = 0; i < width*height*channels; i += 4)
         {
             if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
             {
@@ -556,7 +341,7 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
         }
         res_tex.tex = SOIL_create_OGL_texture
                       (
-                          imgdata, temp_w, temp_h, channels, SOIL_CREATE_NEW_ID,
+                          imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
                           SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
                       );
 
@@ -571,17 +356,61 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
                           SOIL_LOAD_AUTO,
                           SOIL_CREATE_NEW_ID,
                           SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-                          //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+                          //SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB
                       );
     }
 
 
-    res_tex.w = static_cast<float>(temp_w);
-    res_tex.h = static_cast<float>(temp_h);
+
+    res_tex.w = static_cast<float>(width);
+    res_tex.h = static_cast<float>(height);
+    return res_tex;
+}
+*/
+
+
+Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
+{
+    Tex res_tex;
+    int width = 0, height = 0;
+
+    int channels;
+    unsigned char *imgdata = SOIL_load_image
+                             (
+                                 file.c_str(),
+                                 &width, &height, &channels,
+                                 SOIL_LOAD_RGBA
+                             );
+
+    if (imgdata == NULL)
+    {
+        std::cout << "   Image was not loaded : " << file << std::endl;
+        res_tex.w = res_tex.h = res_tex.tex = 0;
+        return res_tex;
+    }
+
+    for (int i = 0; i < width*height*channels; i += 4)
+    {
+        if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
+        {
+            imgdata[i+1] = imgdata[i+3] = 0;
+        }
+    }
+    res_tex.tex = SOIL_create_OGL_texture
+                  (
+                      imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
+                      SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
+                  );
+
+    SOIL_free_image_data(imgdata);
+
+    res_tex.w = static_cast<float>(width);
+    res_tex.h = static_cast<float>(height);
     return res_tex;
 }
 
 
+/*
 GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
 {
     GLuint texID = 0;
@@ -626,9 +455,46 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
                     SOIL_LOAD_AUTO,
                     SOIL_CREATE_NEW_ID,
                     SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-                    //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+                    //SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB
                 );
     }
 
     return texID;
 }
+*/
+
+GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
+{
+
+    int width, height, channels;
+    unsigned char *imgdata = SOIL_load_image
+                             (
+                                 file.c_str(),
+                                 &width, &height, &channels,
+                                 SOIL_LOAD_RGBA
+                             );
+    if (imgdata == NULL)
+    {
+        std::cout << "   Image was not loaded : " << file << std::endl;
+        return 0;
+    }
+
+    for (int i = 0; i < width*height*channels; i += 4)
+    {
+        if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
+        {
+            imgdata[i+1] = imgdata[i+3] = 0;
+        }
+    }
+
+    GLuint texID = SOIL_create_OGL_texture
+                   (
+                       imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
+                       SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
+                   );
+
+    SOIL_free_image_data(imgdata);
+
+    return texID;
+}
+

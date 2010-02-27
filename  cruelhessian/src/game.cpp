@@ -57,6 +57,9 @@ Game::~Game()
     if (START_MODE == 1)
         delete world;
     else if (START_MODE == 2)
+  //  {
+        //delete worldl
+    //}
         delete ch;
 }
 
@@ -90,10 +93,10 @@ void Game::run(int argc, char *argv[])
             START_MODE = 1;
             FIRST_LIMIT = 5;
             TIME_LIMIT = 15*60;
-            CURRENT_GAME_MODE = DM;
+            CURRENT_GAME_MODE = CTF;
             setSDL();
-            world = new WorldMap(SOL_PATH + "Maps/RatCave.PMS", 6);
-            //world = new WorldMap(SOL_PATH + "Maps/ctf_Ash.PMS", 2, 2, 2, 2);
+            //world = new WorldMap(SOL_PATH + "Maps/RatCave.PMS", 6);
+            world = new WorldMap(SOL_PATH + "Maps/ctf_Ash.PMS", 2, 2, 2, 2);
             world->run();
         }
         else

@@ -120,7 +120,7 @@ WorldMap::~WorldMap()
     {
         delete text_scen[i];
     }*/
-    delete text_scen;
+//    delete text_scen;
 
     //cout << "Koniec" << endl;
 //    int i;
@@ -295,7 +295,8 @@ void WorldMap::run()
         for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->draw();
         for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->draw();
 
-        draw_screen();
+        //draw_screen();
+		map->draw();
 
         glDisable(GL_TEXTURE_2D);
 
@@ -420,7 +421,7 @@ unsigned int WorldMap::addBot(const BotsBase& botss, int spawn_nr, TEAM team)
     bot.push_back(newbot);
     // m_objects.push_back(newbot);
 
-    return newbot->botNumber;
+    return newbot->number;
 }
 
 
@@ -523,7 +524,7 @@ void WorldMap::addBullet(unsigned int bot_nr, const TVector2D& dest)
 
 }
 
-std::string WorldMap::anim_type(MT name)
+const std::string WorldMap::anim_type(MT name) const
 {
     switch (name)
     {
@@ -565,7 +566,7 @@ std::string WorldMap::anim_type(MT name)
 
 
 
-int WorldMap::read_poa(MT name)
+int WorldMap::read_poa(const MT name)
 {
     std::string buffer;
     int i = 0, k = 0;
@@ -689,36 +690,6 @@ std::string WorldMap::findInterface(const std::string& name)
     //return "Error in findInterface function while loading " + name;
 }
 
-/*
-void WorldMap::getGLpos()
-{
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY;
-    GLdouble winZ = 0.0f;
-    GLdouble posZ = 0;
-    GLdouble tempx = 0.0f;
-    GLdouble tempy = 0.0f;
-    int tx, ty;
-
-    SDL_GetMouseState(&tx, &ty);
-
-    NMOUSE = TVector2D(static_cast<float>(tx), static_cast<float>(ty));
-
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-
-    winX = NMOUSE.x;
-    winY = static_cast<float>(viewport[3]) - NMOUSE.y;
-    glReadPixels(static_cast<GLint>(NMOUSE.x), static_cast<GLint>(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-    gluUnProject(winX, winY, winZ, modelview, projection, viewport, &tempx, &tempy, &posZ);
-
-    MOUSE = TVector2D(static_cast<float>(tempx), static_cast<float>(tempy));
-    //std::cout << "M " << MOUSE.x << " " << MOUSE.y << std::endl;
-}
-*/
 
 Mix_Chunk* WorldMap::loadSoundFile(const std::string& file)
 {

@@ -28,9 +28,11 @@
 class Bonus : public MovingObject
 {
     const Tex& texture;
+    //BONUS typeBonus;
+
 public:
 
-    int typeBonus;
+    BONUS typeBonus;
 
     /**
      *
@@ -38,10 +40,10 @@ public:
      *
      * @param  dest Destination point
      */
-    Bonus(const TVector2D& dest, int type, Tex& tex);
+    Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS _type);
     ~Bonus() {};
 
-    void draw();
+    void draw() const;
     void update();
 };
 

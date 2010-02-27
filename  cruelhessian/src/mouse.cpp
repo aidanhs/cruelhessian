@@ -23,13 +23,10 @@
 #include "SDL_opengl.h"
 
 
-Mouse::Mouse(float x, float y, Tex& tex)
-    : texture(tex), mGlobalPos(TVector2D(x, y)), mLocalPos(TVector2D(0.0, 0.0))
+Mouse::Mouse(const Tex& tex)
+    //: texture(tex), mGlobalPos(TVector2D(0.0, 0.0)), mLocalPos(TVector2D(0.0, 0.0))
+    : texture(tex), mGlobalPos(TVector2D(MAX_WIDTH/2, MAX_HEIGHT/2)), mLocalPos(TVector2D(MAX_WIDTH/2, MAX_HEIGHT/2))
 {
-
-    //  mGlobalPos.x = x;
-    //  mGlobalPos.y = y;
-    //mLocalPos = TVector2D(0.0, 0.0);
 
 }
 

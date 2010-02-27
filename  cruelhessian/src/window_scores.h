@@ -28,20 +28,22 @@
 
 class WindowScores
 {
-    const Tex& texture;
+    const Tex& texture_d;
+    const Tex& texture_s;
     std::vector<std::string> column_names;
     std::vector<float> off;
     float list_long;
+    unsigned int my_bot_nr;
     void draw_help(const Tex& tex, float dx, float dy) const;
 
 public:
 
     std::vector<Bot *> scores;
-    WindowScores(const Tex& tex);
+    WindowScores(const Tex& tex_d, const Tex& tex_s);
     ~WindowScores();
 
     void draw() const;
-    void update(const std::vector<Bot *>& bb);
+    void update(const std::vector<Bot *>& bb, unsigned int nr);
 };
 
 

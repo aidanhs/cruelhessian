@@ -25,7 +25,7 @@
 #include <cmath>
 
 
-Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, Tex& tex) : texture(tex)
+Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, const Tex& tex) : texture(tex)
 {
     type = XPOINT;
     position = src;

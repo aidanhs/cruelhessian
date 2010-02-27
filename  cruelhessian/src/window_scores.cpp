@@ -25,7 +25,7 @@
 #include "globals.h"
 
 
-WindowScores::WindowScores(const Tex& tex) : texture(tex)
+WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s) : texture_d(tex_d), texture_s(tex_s)
 {
 
     column_names.push_back("Player:");
@@ -66,9 +66,9 @@ inline bool cmp(const Bot* bot1, const Bot* bot2)
 
 
 
-void WindowScores::update(const std::vector<Bot *>& bb)
+void WindowScores::update(const std::vector<Bot *>& bb, unsigned int nr)
 {
-
+    my_bot_nr = nr;
     list_long = static_cast<float>(bb.size()*15+80);
 
     // aktualizacja statystyk
@@ -141,9 +141,14 @@ void WindowScores::draw() const
     {
         for (unsigned int j = 0; j < scores.size(); ++j)
         {
+            // is it me ?
+            if (scores[j]->number == my_bot_nr)
+                draw_help(texture_s, off[0]-10, offset+j*15+5);
+
             // is dead ?
-            if (scores[j]->isKilled)
-                draw_help(texture, off[0]-10, offset+j*15+5);
+            else if (scores[j]->isKilled)
+                draw_help(texture_d, off[0]-10, offset+j*15+5);
+
             printText(font2_12, scores[j]->name, textCol[scores[j]->team], off[0], offset+j*15);
             oss << scores[j]->points;
             printText(font2_12, oss.str(), textCol[scores[j]->team], off[1], offset+j*15);
@@ -161,9 +166,14 @@ void WindowScores::draw() const
     {
         for (unsigned int j = 0; j < scores.size(); ++j)
         {
+            // is it me ?
+            if (scores[j]->number == my_bot_nr)
+                draw_help(texture_s, off[0]-10, offset+j*15+5);
+
             // is dead ?
-            if (scores[j]->isKilled)
-                draw_help(texture, off[0]-10, offset+j*15+5);
+            else if (scores[j]->isKilled)
+                draw_help(texture_d, off[0]-10, offset+j*15+5);
+
             printText(font2_12, scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
             oss << scores[j]->killedNr;
             printText(font2_12, oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);

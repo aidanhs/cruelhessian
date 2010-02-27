@@ -26,11 +26,13 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <iostream>
+
 
 #include "map.h"
 #include "parser/SimpleIni.h"
 
-
+const float _180overpi = 57.29f;
 
 template<class T> T read_bin(std::istream& is)
 {
@@ -103,6 +105,37 @@ cout << i;
 }
 */
 
+std::string Map::getTextPoly() const
+{
+    return texture;
+}
+
+
+std::vector<std::string> Map::getTextScen() const
+{
+    std::vector<std::string> text_name(sceneryCount);
+
+    for (int i = 0; i < sceneryCount; ++i)
+        text_name[i] = scenery[i].name;
+    return text_name;
+}
+
+
+void Map::setPoly(GLuint text)
+{
+    text_poly = text;
+}
+
+
+void Map::setScen(GLuint *text)
+{
+    text_scen = new GLuint[sceneryCount];
+
+    for (int i = 0; i < sceneryCount; ++i)
+        text_scen[i] = text[i];
+    //	std::cout << "SC " << sceneryCount << std::endl;
+}
+
 
 Map::Map(const std::string& mname)
 {
@@ -151,21 +184,21 @@ Map::Map(const std::string& mname)
         temp.polyType = PMS_POLYTYPE(read_bin<ubyte>(is));
         polygon.push_back(temp);
 
-       // aa[i][0] = p.polygon[i].perpendicular[0].y / p.polygon[i].perpendicular[0].x;
-       // aa[i][1] = p.polygon[i].perpendicular[1].y / p.polygon[i].perpendicular[1].x;
-       // aa[i][2] = p.polygon[i].perpendicular[2].y / p.polygon[i].perpendicular[2].x;
+        // aa[i][0] = p.polygon[i].perpendicular[0].y / p.polygon[i].perpendicular[0].x;
+        // aa[i][1] = p.polygon[i].perpendicular[1].y / p.polygon[i].perpendicular[1].x;
+        // aa[i][2] = p.polygon[i].perpendicular[2].y / p.polygon[i].perpendicular[2].x;
 
-/*        if (temp.polyType != ptNO_COLLIDE && temp.polyType != ptONLY_BULLETS_COLLIDE)
-        {
-            cpVect tr_temp[] =
-            {
-                // clockwise direction
-                cpv(temp.vertex[2].x, temp.vertex[2].y),
-                cpv(temp.vertex[1].x, temp.vertex[1].y),
-                cpv(temp.vertex[0].x, temp.vertex[0].y),
-            };
-            cpSpaceAddStaticShape(spaceMap, cpPolyShapeNew(staticBodyMap, 3, tr_temp, cpvzero));
-        }*/
+        /*        if (temp.polyType != ptNO_COLLIDE && temp.polyType != ptONLY_BULLETS_COLLIDE)
+                {
+                    cpVect tr_temp[] =
+                    {
+                        // clockwise direction
+                        cpv(temp.vertex[2].x, temp.vertex[2].y),
+                        cpv(temp.vertex[1].x, temp.vertex[1].y),
+                        cpv(temp.vertex[0].x, temp.vertex[0].y),
+                    };
+                    cpSpaceAddStaticShape(spaceMap, cpPolyShapeNew(staticBodyMap, 3, tr_temp, cpvzero));
+                }*/
     }
     sectorDivisions = read_bin<int>(is);
     numSectors = read_bin<int>(is);
@@ -286,5 +319,105 @@ Map::Map(const std::string& mname)
         waypoint.push_back(temp);
     }
     is.close();
+
+}
+
+
+void Map::draw()
+{
+    // glEnable(GL_TEXTURE_2D);
+
+    // draw scenery on the back
+    for (size_t i = 0; i < prop.size(); ++i)
+    {
+        if (prop[i].level != dbBEHIND_NONE)
+        {
+            glPushMatrix();
+            glTranslatef(prop[i].x, prop[i].y, 0.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+
+            glBegin(GL_QUADS);
+//std::cout << "E " << prop[i].color.alpha << std::endl;
+            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
+
+            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+
+            glTexCoord2f(0.0, 1.0);
+            glVertex2f(0.0, 0.0);
+            glTexCoord2f(1.0, 1.0);
+            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glTexCoord2f(1.0, 0.0);
+            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glTexCoord2f(0.0, 0.0);
+            glVertex2f(0.0, static_cast<float>(prop[i].height));
+
+            glEnd();
+
+            glPopMatrix();
+        }
+    }
+
+    glBindTexture(GL_TEXTURE_2D, text_poly);
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < polygonCount; ++i)
+    {
+        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[0].color));
+        glColor4ub(polygon[i].vertex[0].color.red,
+                   polygon[i].vertex[0].color.green,
+                   polygon[i].vertex[0].color.blue,
+                   polygon[i].vertex[0].color.alpha);
+        glTexCoord3f(polygon[i].vertex[0].tu, -polygon[i].vertex[0].tv, 1.0f / polygon[i].vertex[0].rhw);
+        glVertex3f(polygon[i].vertex[0].x, polygon[i].vertex[0].y, polygon[i].vertex[0].z);
+
+        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[1].color));
+        glColor4ub(polygon[i].vertex[1].color.red,
+                   polygon[i].vertex[1].color.green,
+                   polygon[i].vertex[1].color.blue,
+                   polygon[i].vertex[1].color.alpha);
+        glTexCoord3f(polygon[i].vertex[1].tu, -polygon[i].vertex[1].tv, 1.0f / polygon[i].vertex[1].rhw);
+        glVertex3f(polygon[i].vertex[1].x, polygon[i].vertex[1].y, polygon[i].vertex[1].z);
+
+        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[2].color));
+        glColor4ub(polygon[i].vertex[2].color.red,
+                   polygon[i].vertex[2].color.green,
+                   polygon[i].vertex[2].color.blue,
+                   polygon[i].vertex[2].color.alpha);
+        glTexCoord3f(polygon[i].vertex[2].tu, -polygon[i].vertex[2].tv, 1.0f / polygon[i].vertex[2].rhw);
+        glVertex3f(polygon[i].vertex[2].x, polygon[i].vertex[2].y, polygon[i].vertex[2].z);
+    }
+    glEnd();
+
+    // draw scenery on the front
+    for (size_t i = 0; i < prop.size(); ++i)
+    {
+        if (prop[i].level == dbBEHIND_NONE)
+        {
+            glPushMatrix();
+            glTranslatef(prop[i].x, prop[i].y, 0.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+
+            glBegin(GL_QUADS);
+
+            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
+            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+
+            glTexCoord2f(0.0, 1.0);
+            glVertex2f(0.0, 0.0);
+            glTexCoord2f(1.0, 1.0);
+            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glTexCoord2f(1.0, 0.0);
+            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glTexCoord2f(0.0, 0.0);
+            glVertex2f(0.0, static_cast<float>(prop[i].height));
+            glEnd();
+
+            glPopMatrix();
+        }
+    }
+    // glDisable(GL_TEXTURE_2D);
 
 }

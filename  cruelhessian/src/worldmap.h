@@ -90,8 +90,6 @@ private:
     int nearestLine(const TVector2D &point, int triangle);
     Uint8 textColor[4];
 
-
-
     TVector2D OLD_POS;
     bool FRIENDLY_FIRE;
 
@@ -188,9 +186,7 @@ private:
     bool SHOW_MYCHAT_LINE;
     bool SHOW_ESC;
 
-    GLuint *text_scen;
 
-    GLuint text_poly;
 
     Tex gostek[9][2];
     Tex text_grenade[17];
@@ -200,15 +196,15 @@ private:
     unsigned int MY_BOT_NR;
 
     int read_po(OBJECT_TYPE type);
-    void make_lines(MT move, int frame, int kierunek, TEAM team);
+    //void make_lines(MT move, int frame, int kierunek, TEAM team);
 
     void bots_control();
 
     // definitions in draw.cpp
     void draw_background();
     void draw_interface();
-    void draw_int_help(Tex& tex, float dx, float dy);
-    void draw_screen();
+    void draw_int_help(const Tex& tex, float dx, float dy);
+  //  void draw_screen();
     void draw_infos();
 
     void insertMe(TEAM team);
@@ -234,8 +230,8 @@ private:
 
     bool do_bots_see(unsigned int first, unsigned int second);
 
-    std::string anim_type(MT name);
-    int read_poa(MT name);
+    const std::string anim_type(MT name) const;
+    int read_poa(const MT name);
 
     //void load_constraints();
     void gunReloading(unsigned int bot_nr);
@@ -256,6 +252,7 @@ private:
     Tex text_firebar_r;
     Tex text_weath;
     Tex text_deaddot;
+    Tex text_smalldot;
 };
 
 

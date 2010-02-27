@@ -25,16 +25,21 @@
 #include "parser/SimpleIni.h"
 #include "boost/filesystem/fstream.hpp"
 
+
+
+namespace global
+{
+
 SDL_Surface *screen;
 
 int CONFIG_VERSION = 1;
 
 GAME_MODE CURRENT_GAME_MODE;
 
-    Uint8 textColorGunOnTouch[4];
-    Uint8 textColorGunNormal[4];
-    Uint8 textCol[5][4];
-        Uint8 textGunColor[4];
+Uint8 textColorGunOnTouch[4];
+Uint8 textColorGunNormal[4];
+Uint8 textCol[5][4];
+Uint8 textGunColor[4];
 
 float SOUNDS_VOL, MUSIC_VOL;
 //std::string SONG_NAME;
@@ -226,24 +231,24 @@ int read_configs()
     KEY_CHAT = ini.GetLongValue("controls", "Chat");
     KEY_TEAMCHAT = ini.GetLongValue("controls", "TeamChat");
 
-	/*if (SOL_PATH[SOL_PATH.length()-1] == '\\')
+    /*if (SOL_PATH[SOL_PATH.length()-1] == '\\')
     {
-		std::cout << "JEA" << std::endl;
+    	std::cout << "JEA" << std::endl;
         SOL_PATH[SOL_PATH.length()-1] = '/';
     }*/
-	if (!SOL_PATH.empty())
-	{
-		if (SOL_PATH[SOL_PATH.length()-1] == '\\')
-		{
-			//std::cout << "JEA" << std::endl;
-			//SOL_PATH[SOL_PATH.length()-1] = '/';
-		}
-		else if (SOL_PATH[SOL_PATH.length()-1] != '/')
-		{
-			SOL_PATH += '/';
-		}
-		INTERF_PATH = SOL_PATH + "Interface-gfx/";
-	}
+    if (!SOL_PATH.empty())
+    {
+        if (SOL_PATH[SOL_PATH.length()-1] == '\\')
+        {
+            //std::cout << "JEA" << std::endl;
+            //SOL_PATH[SOL_PATH.length()-1] = '/';
+        }
+        else if (SOL_PATH[SOL_PATH.length()-1] != '/')
+        {
+            SOL_PATH += '/';
+        }
+        INTERF_PATH = SOL_PATH + "Interface-gfx/";
+    }
 //	std::cout << "JEA" << INTERF_PATH << std::endl;
     /*
     //std::locale loc("");
@@ -372,4 +377,6 @@ int setSDL()
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     return 0;
+}
+
 }

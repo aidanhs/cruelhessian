@@ -41,7 +41,7 @@ public:
      * @param  gunmodel Gun model
      * @param  _owner Snipper number
      */
-    Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, Tex& tex);
+    Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, const Tex& tex);
 
     void draw() const;
     void update();
