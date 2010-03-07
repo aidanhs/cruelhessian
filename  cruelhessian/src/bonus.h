@@ -28,6 +28,7 @@
 class Bonus : public MovingObject
 {
     const Tex& texture;
+    float scaleX, scaleY;
     //BONUS typeBonus;
 
 public:

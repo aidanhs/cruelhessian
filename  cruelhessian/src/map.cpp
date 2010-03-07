@@ -37,11 +37,7 @@ const float _180overpi = 57.29f;
 template<class T> T read_bin(std::istream& is)
 {
     T tmp;
-    //float tmp;
-    //if (T == int) return tmp;
     is.read(reinterpret_cast<char*>(&tmp), sizeof(T));
-
-    //is.read(reinterpret_cast<char*>(&tmp), siz);
     return tmp;
 }
 
@@ -52,58 +48,7 @@ static std::string read_string(std::istream& is, int full_length)
     is.read( &tmp[0], tmp.size() );
     return std::string(tmp.begin(), tmp.begin() + length);
 }
-/*
-int read_messages(const char *name)
-{
-    FILE * pFile;
-   char mystring[100];
 
-   pFile = fopen (name , "r");
-
-   //while (fgets (mystring , 100 , pFile)) {printf("%s\n",mystring);}
-//   while (pFile.getline(MESSAGE[i++], '\r')){}
-for (int i=0;i<700;i++)
-{
-pFile.get(mystring, sizeof(mystring));
-cout << mystring;
-}
-    return 1;
-}
-*/
-/*
-int read_messages(const char *name)
-{
-    wifstream is;
-    is.open(name);
-    wcout.imbue( locale("") );
-    //is.imbue( locale( "pl_PL.UTF-8" ) ) ;
-    int i = 0;
-    wstring test;
-    //char bufor[256];
-
- //std::wstring resultstring;
-    if (is == NULL)
-    {
-        cout << "Blad odczytu pliku\n";
-        return 0;
-    }
-    //is.get();
-    //is.get();
-    while (getline(is, test)) {wcout << test;i++;}
-    //while (getline(is, MESSAGE[i++], '\r'))
-    {
-        //MESSAGE.push_back(test);
-        //is.get();
-    }
-cout << i;
-    is.close();
-
-    //for (int k = 0; k < i; k++) cout << MESSAGE[k] << "";
-    //cout << i;
-
-    return 1;
-}
-*/
 
 std::string Map::getTextPoly() const
 {
@@ -420,4 +365,17 @@ void Map::draw()
     }
     // glDisable(GL_TEXTURE_2D);
 
+}
+
+
+Map::~Map()
+{
+    waypoint.clear();
+    spawnpoint.clear();
+    collider.clear();
+    polygon.clear();
+    sector.clear();
+    prop.clear();
+    scenery.clear();
+    texture.clear();
 }

@@ -138,14 +138,6 @@ WorldMap::~WorldMap()
         delete bot[i];
     bot.clear();
 
-    map->waypoint.clear();
-    map->spawnpoint.clear();
-    map->collider.clear();
-    map->polygon.clear();
-    map->sector.clear();
-    map->prop.clear();
-    map->scenery.clear();
-    map->texture.clear();
     delete map;
     delete mouse;
     delete chat;
@@ -360,10 +352,10 @@ WorldMap::WorldMap(const std::string& mapp, int alpha_cnt, int bravo_cnt, int ch
     load_weapons_base();
     load_audio();
     load_map(mapp);
+    load_textures();
     load_spawnpoints();
     load_bonuses();
     load_animations();
-    load_textures();
     load_configs();
 
     load_bots_base();
@@ -385,10 +377,10 @@ WorldMap::WorldMap(const std::string& mapp, int bots_cnt)
     load_weapons_base();
     load_audio();
     load_map(mapp);
+    load_textures();
     load_spawnpoints();
     load_bonuses();
     load_animations();
-    load_textures();
     load_configs();
 
     load_bots_base();

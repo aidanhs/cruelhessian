@@ -41,8 +41,7 @@
 
 void WorldMap::draw_background()
 {
-    int REL_MOUSE_X;          // roznica od ostatniego polozenia
-    int REL_MOUSE_Y;          // roznica od ostatniego polozenia
+
     // przesun tlo ekranu w zaleznosci od polozenia Bota
     if (SHOW_GUN_MENU && ONLY_ONCE)
     {
@@ -56,6 +55,7 @@ void WorldMap::draw_background()
              mouse->getGlobalY() <= bot[MY_BOT_NR]->position.y + MAX_HEIGHT &&
              mouse->getGlobalY() >= bot[MY_BOT_NR]->position.y - MAX_HEIGHT)
     {
+        int REL_MOUSE_X, REL_MOUSE_Y;          // roznica od ostatniego polozenia
         SDL_GetRelativeMouseState(&REL_MOUSE_X, &REL_MOUSE_Y);
         glTranslatef(-static_cast<GLfloat>(REL_MOUSE_X), -static_cast<GLfloat>(REL_MOUSE_Y), 0.0f);
     }
@@ -308,66 +308,6 @@ void WorldMap::draw_interface()
 
 }
 
-/*
-Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
-{
-    Tex res_tex;
-    res_tex.tex = 0;
-    int width = 0, height = 0;
-    //std::cout << "FILE " << file << std::endl;
-    if (file[file.size()-1] == 'p')
-    {
-        int channels;
-        unsigned char *imgdata = SOIL_load_image
-                                 (
-                                     file.c_str(),
-                                     &width, &height, &channels,
-                                     SOIL_LOAD_RGBA
-                                 );
-
-        if (imgdata == NULL)
-        {
-            std::cout << "   Image was not loaded : " << file << std::endl;
-            res_tex.w = res_tex.h = 0;
-            return res_tex;
-        }
-
-        for (int i = 0; i < width*height*channels; i += 4)
-        {
-            if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
-            {
-                imgdata[i+1] = imgdata[i+3] = 0;
-            }
-        }
-        res_tex.tex = SOIL_create_OGL_texture
-                      (
-                          imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
-                          SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
-                      );
-
-        SOIL_free_image_data(imgdata);
-    }
-
-    else if (file[file.size()-1] == 'g')
-    {
-        res_tex.tex = SOIL_load_OGL_texture
-                      (
-                          file.c_str(),
-                          SOIL_LOAD_AUTO,
-                          SOIL_CREATE_NEW_ID,
-                          SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-                          //SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB
-                      );
-    }
-
-
-
-    res_tex.w = static_cast<float>(width);
-    res_tex.h = static_cast<float>(height);
-    return res_tex;
-}
-*/
-
 
 Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
 {
@@ -410,58 +350,6 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
 }
 
 
-/*
-GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
-{
-    GLuint texID = 0;
-
-    if (file[file.size()-1] == 'p')
-    {
-        int width, height, channels;
-        unsigned char *imgdata = SOIL_load_image
-                                 (
-                                     file.c_str(),
-                                     &width, &height, &channels,
-                                     SOIL_LOAD_RGBA
-                                 );
-        if (imgdata == NULL)
-        {
-            std::cout << "   Image was not loaded : " << file << std::endl;
-            return texID;
-        }
-
-        for (int i = 0; i < width*height*channels; i += 4)
-        {
-            if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
-            {
-                imgdata[i+1] = imgdata[i+3] = 0;
-            }
-        }
-        texID = SOIL_create_OGL_texture
-                (
-                    imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
-                    SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
-                );
-
-        SOIL_free_image_data(imgdata);
-
-    }
-
-    else if (file[file.size()-1] == 'g')
-    {
-        texID = SOIL_load_OGL_texture
-                (
-                    file.c_str(),
-                    SOIL_LOAD_AUTO,
-                    SOIL_CREATE_NEW_ID,
-                    SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-                    //SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB
-                );
-    }
-
-    return texID;
-}
-*/
 
 GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
 {

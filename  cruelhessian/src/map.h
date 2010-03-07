@@ -45,7 +45,7 @@ public:
      */
     Map(const std::string& mname);
 
-	~Map() {};
+	~Map();
 
     typedef enum
     {
@@ -244,7 +244,7 @@ word year :
         long connections[20];
     } PMS_WAYPOINT;
 
-// Pms structure
+
 public:
     long version;
     std::string name;

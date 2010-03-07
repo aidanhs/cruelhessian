@@ -28,11 +28,12 @@ Bonus::Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS bontype) : t
 {
 
     type = SQUARE;
+    scaleX = scaleY = 0.7;
    // typeBonus = _type;
     position = dest;
-    w = texture.w;
-    h = texture.h;
-    r = 13;
+    w = scaleX*texture.w;
+    h = scaleY*texture.h;
+    r = w/2;
     mass = 10;
     massInv = 1 / mass;
     maxSpeed = TVector2D(10000, 10000);
@@ -47,7 +48,7 @@ void Bonus::draw() const
 
     glPushMatrix();
     glTranslatef(position.x, position.y, 0.0f);
-    glScalef(0.7f, 0.7f, 0.0);
+    glScalef(scaleX, scaleY, 0.0);
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
