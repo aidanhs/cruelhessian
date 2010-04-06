@@ -14,6 +14,8 @@ CONFIGURE_FILE(
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
+SET(CMAKE_C_COMPILER llvm-gcc)
+SET(CMAKE_CXX_COMPILER llvm-g++)
 
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
@@ -49,6 +51,11 @@ SET(src_executable
 	src/grenade.cpp
     src/gui.cpp
     src/gui_fselector.cpp
+    src/gui_graphics.cpp
+    src/gui_interface.cpp
+    src/gui_maps.cpp
+    src/gui_music.cpp
+    src/gui_player.cpp
 	src/load.cpp
     src/main.cpp
     src/map.cpp
