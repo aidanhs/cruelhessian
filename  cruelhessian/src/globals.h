@@ -26,7 +26,7 @@
 #include <vector>
 #include "SDL.h"
 #include "SDL_mixer.h"
-#include "SDL_opengl.h"
+//#include "SDL_opengl.h"
 #include <ft2build.h>
 #include <freetype/freetype.h>
 #include <freetype/ftglyph.h>
@@ -57,9 +57,25 @@ extern int save_configs();
 extern int defaults();
 extern  int setSDL();
 
-extern freetype::font_data font1_16, font2_12, font2_28;
+//extern freetype::font_data font1_16, font2_12, font2_28;
+extern freetype::font_data font[2][50];
  void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y);
  void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
+
+
+
+ extern    int FontMenuSize;
+  extern   int FontConsoleSize;
+ extern    int FontBigSize;
+  extern   int FontWeaponMenuSize;
+   extern  int FontConsoleSmallSize;
+  extern   int FontHeightScale;
+  extern   int FontMenuBold;
+  extern   int FontConsoleBold;
+  extern   int FontBigBold;
+  extern   int FontWeaponMenuBold;
+  extern   int FontConsoleSmallBold;
+  extern   int KillConsoleNameSpace;
 
 extern float bgX, bgY;
 

@@ -23,7 +23,8 @@
 #include <sstream>
 #include <cmath>
 
-
+#include "boost/filesystem/fstream.hpp"
+#include "boost/algorithm/string.hpp"
 #include "worldmap.h"
 #include "globals.h"
 #include "soil/SOIL.h"
@@ -109,12 +110,12 @@ void WorldMap::draw_interface()
 
     // ----- Gun's name -----
 
-    printText(font2_12, weapon_base[bot[MY_BOT_NR]->gunModel].name, textCol[3], 0.01f*MAX_WIDTH+170, MAX_HEIGHT-34.0f);
+    printText(font[1][FontConsoleSize], weapon_base[bot[MY_BOT_NR]->gunModel].name, textCol[3], 0.01f*MAX_WIDTH+170, MAX_HEIGHT-34.0f);
 
     // ----- Ammo count -----
 
     oss << bot[MY_BOT_NR]->leftAmmos;
-    printText(font2_12, oss.str(), textCol[3], 0.46f*MAX_WIDTH+33, MAX_HEIGHT-32.0f);
+    printText(font[1][FontConsoleSize], oss.str(), textCol[3], 0.46f*MAX_WIDTH+33, MAX_HEIGHT-32.0f);
     oss.str("");
 
 
@@ -166,7 +167,7 @@ void WorldMap::draw_interface()
     oss.str("");
     oss << bot.size();
     temp += oss.str();
-    printText(font2_12, temp, textCol[4], 0.87f*MAX_WIDTH, MAX_HEIGHT-65.0f);
+    printText(font[1][FontConsoleSize], temp, textCol[4], 0.87f*MAX_WIDTH, MAX_HEIGHT-65.0f);
     oss.str("");
 
     // kills / points (points to leader)
@@ -180,12 +181,12 @@ void WorldMap::draw_interface()
     else temp += "+";
     oss << abs(DISTANCE_SCORE);
     temp += oss.str() + ")";
-    printText(font2_12, temp, textCol[1], 0.87f*MAX_WIDTH, MAX_HEIGHT-55.0f);
+    printText(font[1][FontConsoleSize], temp, textCol[1], 0.87f*MAX_WIDTH, MAX_HEIGHT-55.0f);
     oss.str("");
 
     // kill / point / capture limit
     oss << FIRST_LIMIT;
-    printText(font2_12, oss.str(), textCol[2], 0.87f*MAX_WIDTH, MAX_HEIGHT-45.0f);
+    printText(font[1][FontConsoleSize], oss.str(), textCol[2], 0.87f*MAX_WIDTH, MAX_HEIGHT-45.0f);
     oss.str("");
 
     glDisable(GL_TEXTURE_2D);
@@ -205,8 +206,8 @@ void WorldMap::draw_interface()
             else if (i == MY_BOT_NR)
             {
                 oss << static_cast<float>(bot[MY_BOT_NR]->respawnTime - new_time)/1000;
-                printText(font2_12, "Respawn in " + oss.str(), textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
-                printText(font2_12, "Killed by " + bot[bot[MY_BOT_NR]->killer]->name, textCol[1], 0.5f*MAX_WIDTH-80, MAX_HEIGHT-94.0f);
+                printText(font[1][FontConsoleSize], "Respawn in " + oss.str(), textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
+                printText(font[1][FontConsoleSize], "Killed by " + bot[bot[MY_BOT_NR]->killer]->name, textCol[1], 0.5f*MAX_WIDTH-80, MAX_HEIGHT-94.0f);
                 oss.str("");
                 if (new_time >= 500 && !CHOICE_GUN)
                 {
@@ -223,7 +224,7 @@ void WorldMap::draw_interface()
     if (YOU_KILLED)
     {
         if (getCurrentTime - bot[MY_BOT_NR]->youKilledTime <= 1000)
-            printText(font2_12, "You killed " + bot[bot[MY_BOT_NR]->killed]->name, textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
+            printText(font[1][FontConsoleSize], "You killed " + bot[bot[MY_BOT_NR]->killed]->name, textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
         else
             YOU_KILLED = false;
     }
@@ -271,7 +272,7 @@ void WorldMap::draw_interface()
     {
         oss << "FPS: ";
         oss << currentFPS;
-        printText(font2_12, oss.str(), textCol[3], 0.8f*MAX_WIDTH, 15.0f);
+        printText(font[1][FontConsoleSize], oss.str(), textCol[3], 0.8f*MAX_WIDTH, 15.0f);
         oss.str("");
     }
 
@@ -386,3 +387,59 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
     return texID;
 }
 
+
+// urwana nazwa pliku, bez rozszerzenia (najpierw png, potem bmp), odporna na wielkosc znakow
+Tex WorldMap::SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file)
+{
+
+    if (!boost::filesystem::exists(src_dir))
+    {
+        Tex res_tex;
+        res_tex.w = res_tex.h = res_tex.tex = 0;
+        std::cerr << "Cannot find source directory : " << src_dir << std::endl;
+        return res_tex;
+    }
+
+    std::string name_temp;
+    boost::filesystem::directory_iterator end;
+
+    for (int g = 0; g < 2; ++g)
+    {
+        if (g == 0)
+            name_temp = file + ".png";
+        else
+            name_temp = file + ".bmp";
+
+        for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+        {
+            if (boost::iequals(iter->leaf(), name_temp))
+            {
+                return SOIL_LoadTextureEx(iter->path().string());
+            }
+        }
+
+    }
+    /*
+        std::string path1 = file + ".png";
+        std::string path2 = file + ".bmp";
+
+        if (boost::filesystem::exists(path1))
+        {
+            //std::cout << "find texture bmp: " << path1 << std::endl;
+            return SOIL_LoadTextureEx(path1);
+        }
+        else if (boost::filesystem::exists(path2))
+        {
+            //std::cout << "find texture png: " << path2 << std::endl;
+            return SOIL_LoadTextureEx(path2);
+        }
+        else*/
+
+    Tex res_tex;
+    res_tex.w = res_tex.h = res_tex.tex = 0;
+    std::cerr << "Cannot find : " << file << std::endl;
+
+    return res_tex;
+//    }
+
+}

@@ -25,6 +25,7 @@
 #include <iostream>
 #include <cmath>
 #include "boost/filesystem/fstream.hpp"
+#include "boost/algorithm/string.hpp"
 #include "boost/regex.hpp"
 
 #include "worldmap.h"
@@ -201,9 +202,15 @@ WorldMap::~WorldMap()
     weapon_base.clear();
     bots_base.clear();
 
-    font1_16.clean();
-    font2_12.clean();
-    font2_28.clean();
+
+    for (int i = 0; i < 2; ++i)
+    {
+        font[i][FontMenuSize].clean();
+        font[i][FontConsoleSize].clean();
+        font[i][FontBigSize].clean();
+        font[i][FontWeaponMenuSize].clean();
+        font[i][FontConsoleSmallSize].clean();
+    }
 
 //    delete [] text_scen;
 
@@ -288,7 +295,7 @@ void WorldMap::run()
         for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->draw();
 
         //draw_screen();
-		map->draw();
+        map->draw();
 
         glDisable(GL_TEXTURE_2D);
 
@@ -641,48 +648,6 @@ void WorldMap::init_gl()
 }
 
 
-std::string WorldMap::findInterface(const std::string& name)
-{
-    char expr[128];
-    int i = 0;
-   // std::string out;
-    boost::filesystem::directory_iterator end;
-
-    if (!boost::filesystem::exists(INTERF_PATH))
-    {
-        std::cerr << "Cannot find interface : " << INTERF_PATH << std::endl;
-        return false;
-    }
-
-    for (unsigned int k = 0; k < name.size(); ++k)
-    {
-        expr[i++] = '[';
-        expr[i++] = static_cast<char>(toupper(name[k]));
-        expr[i++] = static_cast<char>(tolower(name[k]));
-        expr[i++] = ']';
-    }
-    expr[i] = '\0';
-
-	//expr = name;
-    //boost::regex re(INTERF_PATH + expr);
-	boost::regex re(expr);
-
-    for (boost::filesystem::directory_iterator iter(INTERF_PATH); iter != end; ++iter)
-    {
-	//	std::cout << "W " << iter->leaf() << std::endl;
-        //if (boost::regex_match(iter->path().string(), re))
-		if (boost::regex_match(iter->leaf(), re))
-        {
-	//		std::cout << "FOUNJD SDDDDDDDDDDDDDDDDDD"<<std::endl;
-            return iter->path().string();
-        }
-    }
-    std::cerr << "Error in findInterface function while loading " << name << std::endl;
-    return "";
-    //return "Error in findInterface function while loading " + name;
-}
-
-
 Mix_Chunk* WorldMap::loadSoundFile(const std::string& file)
 {
     Mix_Chunk *temp = NULL;
@@ -690,6 +655,43 @@ Mix_Chunk* WorldMap::loadSoundFile(const std::string& file)
     {
         std::cout << "  Cannot load sound file: " << file << ", " << Mix_GetError() << std::endl;
     }
+    return temp;
+}
+
+
+// urwana nazwa pliku, bez rozszerzenia (najpierw wav, potem ogg), odporna na wielkosc znakow
+Mix_Chunk* WorldMap::loadSoundFile2(const std::string& src_dir, const std::string& file)
+{
+
+    Mix_Chunk *temp = NULL;
+
+    if (!boost::filesystem::exists(src_dir))
+    {
+        std::cerr << "Cannot find source directory : " << src_dir << std::endl;
+        return temp;
+    }
+
+    std::string name_temp;
+    boost::filesystem::directory_iterator end;
+
+    for (int g = 0; g < 2; ++g)
+    {
+        if (g == 0)
+            name_temp = file + ".wav";
+        else
+            name_temp = file + ".ogg";
+
+        for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+        {
+            if (boost::iequals(iter->leaf(), name_temp))
+            {
+                // !!!!!!!!!fix
+                return loadSoundFile(iter->path().string());
+            }
+        }
+    }
+
+    std::cerr << "Cannot find : " << file << std::endl;
     return temp;
 }
 
@@ -862,4 +864,5 @@ void WorldMap::game_control()
     // aktualizacja listy bonusow
 
 }
+
 

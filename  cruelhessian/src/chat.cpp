@@ -42,9 +42,9 @@ void Chat::draw()
     for (std::list<string_pair>::iterator i = chat_list.begin(); i != chat_list.end(); ++i)
     {
         if ((*i).first != "")
-            printText(font2_12, "[" + (*i).first + "] " + (*i).second, textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
+            printText(font[1][FontConsoleSize], "[" + (*i).first + "] " + (*i).second, textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
         else
-            printText(font2_12, (*i).second, textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
+            printText(font[1][FontConsoleSize], (*i).second, textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
     }
 }
 

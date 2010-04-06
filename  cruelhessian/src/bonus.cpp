@@ -28,7 +28,7 @@ Bonus::Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS bontype) : t
 {
 
     type = SQUARE;
-    scaleX = scaleY = 0.7;
+    scaleX = scaleY = 0.7f;
    // typeBonus = _type;
     position = dest;
     w = scaleX*texture.w;

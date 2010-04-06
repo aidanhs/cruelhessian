@@ -51,7 +51,20 @@ float MAX_WIDTH, MAX_HEIGHT;
 unsigned int TIME_LIMIT;                                   // in seconds !!!!!!!!!!!!!!!
 unsigned int FIRST_LIMIT;
 
-freetype::font_data font1_16, font2_12, font2_28;
+freetype::font_data font[2][50];
+
+int FontMenuSize;
+int FontConsoleSize;
+int FontBigSize;
+int FontWeaponMenuSize;
+int FontConsoleSmallSize;
+int FontHeightScale;
+int FontMenuBold;
+int FontConsoleBold;
+int FontBigBold;
+int FontWeaponMenuBold;
+int FontConsoleSmallBold;
+int KillConsoleNameSpace;
 
 void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y)
 {
@@ -145,16 +158,66 @@ bool checkSoldat()
     {
         return false;
     }
+    if (!boost::filesystem::exists(SOL_PATH + "Anims/"))
+    {
+        std::cerr << "Cannot find Anims directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Bots/"))
+    {
+        std::cerr << "Cannot find Bots directory (not needed)" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Gostek-gfx/"))
+    {
+        std::cerr << "Cannot find Gostek-gfx directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Interface-gfx/"))
+    {
+        std::cerr << "Cannot find Interface-gfx directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Scenery-gfx/"))
+    {
+        std::cerr << "Cannot find Scenery-gfx directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Sfx/"))
+    {
+        std::cerr << "Cannot find Sfx directory (not needed)" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Sparks-gfx/"))
+    {
+        std::cerr << "Cannot find Sparks-gfx directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Textures/"))
+    {
+        std::cerr << "Cannot find Texture directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Txt/"))
+    {
+        std::cerr << "Cannot find Txt directory" << std::endl;
+        return false;
+    }
+    if (!boost::filesystem::exists(SOL_PATH + "Weapons-gfx/"))
+    {
+        std::cerr << "Cannot find Weapons-gfx directory" << std::endl;
+        return false;
+    }
 
-    for (boost::filesystem::directory_iterator itr(SOL_PATH); itr != end; ++itr)
+    /*for (boost::filesystem::directory_iterator itr(SOL_PATH); itr != end; ++itr)
     {
         if (itr->filename() == "Soldat.exe")
         {
             return true;
         }
-    }
+    }*/
 
-    return false;
+    return true;
 }
 
 

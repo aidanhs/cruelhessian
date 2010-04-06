@@ -88,7 +88,7 @@ bool Console::isEscaped() const
 void WorldMap::command_line()
 {
 
-    printText(font2_12, "Cmd : " + cons.GetInput(), textCol[3], 15.0f, 0.8f*MAX_HEIGHT);
+    printText(font[1][FontConsoleSize], "Cmd : " + cons.GetInput(), textCol[3], 15.0f, 0.8f*MAX_HEIGHT);
 
     if (cons.GetInputEntered() == "kill" || cons.GetInputEntered() == "KILL")
     {
@@ -116,7 +116,7 @@ void WorldMap::command_line()
 void WorldMap::mychat_line()
 {
 
-    printText(font2_12, "Say : " + myChat.GetInput(), textCol[3], 15.0f, 0.8f*MAX_HEIGHT);
+    printText(font[1][FontConsoleSize], "Say : " + myChat.GetInput(), textCol[3], 15.0f, 0.8f*MAX_HEIGHT);
 
     if (myChat.GetInputEntered() != "")
     {

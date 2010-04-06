@@ -69,16 +69,16 @@ void WindowExit::draw(const TVector2D& pos)
 
     if (stan1 && m_mouse_pos.y > start.y-7 && m_mouse_pos.y < start.y+7)
     {
-        printText(font1_16, "Exit", textColorGunOnTouch, start.x, start.y);
+        printText(font[0][FontMenuSize], "Exit", textColorGunOnTouch, start.x, start.y);
         m_number = 1;
     }
     else
     {
-        printText(font1_16, "Exit", textColorGunNormal, start.x, start.y);
+        printText(font[0][FontMenuSize], "Exit", textColorGunNormal, start.x, start.y);
     }
 
     start.y += 25;
-    printText(font2_12, "Esc - back to game", textColorGunNormal, start.x, start.y);
+    printText(font[1][FontConsoleSize], "Esc - back to game", textColorGunNormal, start.x, start.y);
 
 }
 

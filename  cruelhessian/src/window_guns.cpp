@@ -69,7 +69,7 @@ void WindowGuns::draw(const TVector2D& pos)
     m_mouse_pos = pos;
     bool stan1 = false;
 
-    float delta = 20;
+    float delta = 20.0f;
 
     std::ostringstream oss;
 
@@ -97,12 +97,12 @@ void WindowGuns::draw(const TVector2D& pos)
     glEnable(GL_TEXTURE_2D);
 
     // tekst
-    TVector2D start = TVector2D(x+10, y+10);
-    printText(font2_12, "Primary Weapon:", textGunColor, start.x, start.y);
+    TVector2D start = TVector2D(x + 10, y + 10);
+    printText(font[1][FontConsoleSize], "Primary Weapon:", textGunColor, start.x, start.y);
 
     m_number = -1;
 
-    start.x += 85;
+    start.x += 85.0f;
     for (int i = 1; i <= 10; ++i)
     {
         start.y += delta;
@@ -111,66 +111,66 @@ void WindowGuns::draw(const TVector2D& pos)
         oss << " " + m_weapon[i].name;
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            printText(font2_12, oss.str(), textColorGunOnTouch, start.x, start.y);
+            printText(font[1][FontConsoleSize], oss.str(), textColorGunOnTouch, start.x, start.y);
             m_number = i;
         }
         else
         {
-            printText(font2_12, oss.str(), textColorGunNormal, start.x, start.y);
+            printText(font[1][FontConsoleSize], oss.str(), textColorGunNormal, start.x, start.y);
         }
 
         oss.str("");
     }
 
-    start.y += 30;
-    printText(font2_12, "Secondary Weapon:", textGunColor, start.x-85, start.y);
+    start.y += 30.0f;
+    printText(font[1][FontConsoleSize], "Secondary Weapon:", textGunColor, start.x-85, start.y);
 
     start.y += delta;
     draw_help(m_weapon[0].textureGun, start.x-85, start.y);
     if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
     {
-        printText(font2_12, m_weapon[0].name, textColorGunOnTouch, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[0].name, textColorGunOnTouch, start.x, start.y);
         m_number = 0;
     }
     else
     {
-        printText(font2_12, m_weapon[0].name, textColorGunNormal, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[0].name, textColorGunNormal, start.x, start.y);
     }
 
     start.y += delta;
     draw_help(m_weapon[14].textureGun, start.x-85, start.y);
     if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
     {
-        printText(font2_12, m_weapon[14].name, textColorGunOnTouch, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[14].name, textColorGunOnTouch, start.x, start.y);
         m_number = 14;
     }
     else
     {
-        printText(font2_12, m_weapon[14].name, textColorGunNormal, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[14].name, textColorGunNormal, start.x, start.y);
     }
 
     start.y += delta;
     draw_help(m_weapon[15].textureGun, start.x-85, start.y);
     if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
     {
-        printText(font2_12, m_weapon[15].name, textColorGunOnTouch, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[15].name, textColorGunOnTouch, start.x, start.y);
         m_number = 15;
     }
     else
     {
-        printText(font2_12, m_weapon[15].name, textColorGunNormal, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[15].name, textColorGunNormal, start.x, start.y);
     }
 
     start.y += delta;
     draw_help(m_weapon[16].textureGun, start.x-85, start.y);
     if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
     {
-        printText(font2_12, m_weapon[16].name, textColorGunOnTouch, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[16].name, textColorGunOnTouch, start.x, start.y);
         m_number = 16;
     }
     else
     {
-        printText(font2_12, m_weapon[16].name, textColorGunNormal, start.x, start.y);
+        printText(font[1][FontConsoleSize], m_weapon[16].name, textColorGunNormal, start.x, start.y);
     }
 
     glDisable(GL_TEXTURE_2D);

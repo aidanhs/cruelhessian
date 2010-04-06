@@ -291,14 +291,14 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
 
 }
 
-
+// -1 - no collision
+// 10000 - out of world (delete ob)
 int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 {
-//std::cout << "QWE" << std::endl;
+
     std::set<unsigned int> trian_num;
     std::vector<unsigned int> sect_num;
     TVector2D v0, v1, v2, ta, tb, tc, pos;
-//    float sign1, sign2, sign3;
     int a[2];
 
     pos.x = ob.position.x + dx;
@@ -308,16 +308,23 @@ int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 
     a[0] = static_cast<int>(pos.x / map->sectorDivisions) + map->numSectors;
     a[1] = static_cast<int>(pos.y / map->sectorDivisions) + map->numSectors;
-
+/*
     if (51*a[0] + a[1] > 0)
-   // assert(51*a[0] + a[1] > 0);
         sect_num.push_back(51*a[0] + a[1]);
-
+    else
+        return -1;*/
     // wyznacz numery trojkatow w tych sektorach do zbadania
-
+/*
     for (std::vector<unsigned int>::const_iterator s = sect_num.begin(); s != sect_num.end(); ++s)
         for (unsigned int j = 0; j < map->sector[*s].polyCount; ++j)
             trian_num.insert(map->sector[*s].polys[j]-1);
+*/
+    unsigned int sec = 51*a[0] + a[1];
+    if (sec >= map->sector.size())
+        return 10000;
+
+    for (unsigned int j = 0; j < map->sector[sec].polyCount; ++j)
+        trian_num.insert(map->sector[sec].polys[j]-1);
 
 // http://www.gamedev.net/community/forums/topic.asp?topic_id=406403
 

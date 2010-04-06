@@ -106,6 +106,7 @@ private:
     void command_line();
     void mychat_line();
     Mix_Chunk* loadSoundFile(const std::string& file);
+    Mix_Chunk* loadSoundFile2(const std::string& src_dir, const std::string& file);
     int takeScreenshot();
     void hurt_bot(unsigned int shooted, unsigned int owner, float damage);
     void collisions();
@@ -115,34 +116,21 @@ private:
     std::vector<std::vector<int> > spawnpoint;
     std::vector<std::vector<int> > bonus;
 
-
     //float sUp;
     //float sBulletTime; //Zwolnienie czasu
     int currentFPS;
     bool SHOW_STATS;
     bool SHOW_SCORES;
 
-    std::string Font1;
-    std::string Font2;
-    int FontMenuSize;
-    int FontConsoleSize;
-    int FontBigSize;
-    int FontWeaponMenuSize;
-    int FontConsoleSmallSize;
-    int FontHeightScale;
-    int FontMenuBold;
-    int FontConsoleBold;
-    int FontBigBold;
-    int FontWeaponMenuBold;
-    int FontConsoleSmallBold;
-    int KillConsoleNameSpace;
+    std::string Font[2];
+
 
     int SOUNDS_VOL_INT;
 
 
     //OGLFT::Monochrome *font1_16, *font2_12, *font2_28;
     //std::string findInterface(const char* name);
-    std::string findInterface(const std::string& name);
+//    std::string findInterface(const std::string& name);
 
 
     //void printText(OGLFT::Monochrome* font, const std::string& text, Uint8* color, float x, float y);
@@ -159,6 +147,7 @@ private:
 
     GLuint SOIL_LoadTexture(const std::string& file);
     Tex SOIL_LoadTextureEx(const std::string& file);
+    Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file);
 
     Mix_Music *music;
 

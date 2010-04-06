@@ -133,7 +133,7 @@ void WindowScores::draw() const
 
     // show columns names
     for (unsigned int i = 0; i < column_names.size(); ++i)
-        printText(font1_16, column_names[i], textColorGunOnTouch, off[i], offset+10);
+        printText(font[0][FontMenuSize], column_names[i], textColorGunOnTouch, off[i], offset+10);
 
     offset += 40;
 
@@ -149,15 +149,15 @@ void WindowScores::draw() const
             else if (scores[j]->isKilled)
                 draw_help(texture_d, off[0]-10, offset+j*15+5);
 
-            printText(font2_12, scores[j]->name, textCol[scores[j]->team], off[0], offset+j*15);
+            printText(font[1][FontConsoleSize], scores[j]->name, textCol[scores[j]->team], off[0], offset+j*15);
             oss << scores[j]->points;
-            printText(font2_12, oss.str(), textCol[scores[j]->team], off[1], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), textCol[scores[j]->team], off[1], offset+j*15);
             oss.str("");
             oss << scores[j]->deaths;
-            printText(font2_12, oss.str(), textCol[scores[j]->team], off[2], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), textCol[scores[j]->team], off[2], offset+j*15);
             oss.str("");
             oss << scores[j]->ping;
-            printText(font2_12, oss.str(), textCol[scores[j]->team], off[3], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), textCol[scores[j]->team], off[3], offset+j*15);
             oss.str("");
         }
 
@@ -174,15 +174,15 @@ void WindowScores::draw() const
             else if (scores[j]->isKilled)
                 draw_help(texture_d, off[0]-10, offset+j*15+5);
 
-            printText(font2_12, scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
+            printText(font[1][FontConsoleSize], scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
             oss << scores[j]->killedNr;
-            printText(font2_12, oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);
             oss.str("");
             oss << scores[j]->deaths;
-            printText(font2_12, oss.str(), scores[j]->color[SHIRT], off[2], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[2], offset+j*15);
             oss.str("");
             oss << scores[j]->ping;
-            printText(font2_12, oss.str(), scores[j]->color[SHIRT], off[3], offset+j*15);
+            printText(font[1][FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[3], offset+j*15);
             oss.str("");
         }
     }
