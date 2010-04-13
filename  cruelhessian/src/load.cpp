@@ -115,6 +115,7 @@ void WorldMap::load_configs()
     chat = new Chat();
     window_scores = new WindowScores(text_deaddot, text_smalldot);
     window_guns = new WindowGuns(weapon_base);
+    arrow = new Arrow(text_arrow);
 
 }
 
@@ -452,6 +453,7 @@ void WorldMap::load_textures()
     map->setPoly(text_poly);
 
     std::cout << "   loading interface textures ... " << std::endl;
+    text_arrow     = SOIL_LoadTextureEx2(INTERF_PATH, "arrow");
     text_mouse     = SOIL_LoadTextureEx2(INTERF_PATH, "cursor");
     text_health    = SOIL_LoadTextureEx2(INTERF_PATH, "health");
     text_healthbar = SOIL_LoadTextureEx2(INTERF_PATH, "health-bar");

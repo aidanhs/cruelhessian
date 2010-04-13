@@ -268,14 +268,14 @@ Map::Map(const std::string& mname)
 }
 
 
-void Map::draw()
+void Map::drawBack()
 {
     // glEnable(GL_TEXTURE_2D);
 
     // draw scenery on the back
     for (size_t i = 0; i < prop.size(); ++i)
     {
-        if (prop[i].level != dbBEHIND_NONE)
+        if (prop[i].level == dbBEHIND_MAP || prop[i].level == dbBEHIND_ALL)
         {
             glPushMatrix();
             glTranslatef(prop[i].x, prop[i].y, 0.0);
@@ -283,12 +283,10 @@ void Map::draw()
             glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
             glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
 
-            glBegin(GL_QUADS);
-//std::cout << "E " << prop[i].color.alpha << std::endl;
-            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
-
             glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
 
+            glBegin(GL_QUADS);
+            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
             glTexCoord2f(0.0, 1.0);
             glVertex2f(0.0, 0.0);
             glTexCoord2f(1.0, 1.0);
@@ -298,6 +296,45 @@ void Map::draw()
             glTexCoord2f(0.0, 0.0);
             glVertex2f(0.0, static_cast<float>(prop[i].height));
 
+            glEnd();
+
+            glPopMatrix();
+        }
+    }
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+}
+
+
+void Map::drawFront()
+{
+
+
+    // draw scenery on the front
+    for (size_t i = 0; i < prop.size(); ++i)
+    {
+        if (prop[i].level != dbBEHIND_ALL)
+        {
+            glPushMatrix();
+            glTranslatef(prop[i].x, prop[i].y, 0.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+
+            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+
+            glBegin(GL_QUADS);
+
+            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
+            glTexCoord2f(0.0, 1.0);
+            glVertex2f(0.0, 0.0);
+            glTexCoord2f(1.0, 1.0);
+            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glTexCoord2f(1.0, 0.0);
+            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glTexCoord2f(0.0, 0.0);
+            glVertex2f(0.0, static_cast<float>(prop[i].height));
             glEnd();
 
             glPopMatrix();
@@ -334,36 +371,7 @@ void Map::draw()
     }
     glEnd();
 
-    // draw scenery on the front
-    for (size_t i = 0; i < prop.size(); ++i)
-    {
-        if (prop[i].level == dbBEHIND_NONE)
-        {
-            glPushMatrix();
-            glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
-
-            glBegin(GL_QUADS);
-
-            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
-            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
-
-            glTexCoord2f(0.0, 1.0);
-            glVertex2f(0.0, 0.0);
-            glTexCoord2f(1.0, 1.0);
-            glVertex2f(static_cast<float>(prop[i].width), 0.0);
-            glTexCoord2f(1.0, 0.0);
-            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
-            glTexCoord2f(0.0, 0.0);
-            glVertex2f(0.0, static_cast<float>(prop[i].height));
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-    // glDisable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
 }
 

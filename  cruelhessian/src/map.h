@@ -36,7 +36,8 @@ class Map
     GLuint text_poly;
 
 public:
-	void draw();
+	void drawBack();
+	void drawFront();
     /**
      *
      * Constructor

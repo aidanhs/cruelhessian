@@ -1,22 +1,31 @@
+0.1.0-rc9
+ - draw arrow above the player
+ - some fixes in displaying sceneries in maps
+
 0.1.0-rc8
- - 
+ - improved png files loading
+ - showing white dot in statistics' window next to player's name
+ - no case sensitive system for loading files
+ - improved fonts' loading
+ - huge classes' refactoring
+ - fixed some segmentation faults when the bullet flies outside the world
 
 0.1.0-rc7
  - colored bots in all modes
- - show death dot in stats window
- - reset playlist in GUI when change game mode
+ - showing death's dot in statistics' window
+ - reseting playlist in GUI when game mode is changed
  - next part of classes' refactoring
- - added initial support for arguments line
- - use 'Txt/weaponnames.txt' file
- - use versioning for config file - prevents a segmentation fault at startup
+ - added initial support for arguments' line
+ - using 'Txt/weaponnames.txt' file
+ - using versioning for config file - prevents segmentation fault at startup
  - other improvements
 
 0.1.0-rc6
- - better controls, time based movement
- - added player status above the jet fuel bar
+ - better controls, movement based on time
+ - added player's status above the jet fuel bar
  - colored bots in DM mode
  - added next sounds
- - expanded player tab in GUI
+ - expanded player's tab in GUI
  - some other fixes and improvements
 
 0.1.0-rc5

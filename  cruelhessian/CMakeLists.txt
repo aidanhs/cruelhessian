@@ -36,6 +36,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
 SET(src_executable
+	src/arrow.cpp
 	src/bonus.cpp
     src/bot.cpp
 	src/bullet.cpp

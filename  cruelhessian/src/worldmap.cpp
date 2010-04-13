@@ -141,6 +141,7 @@ WorldMap::~WorldMap()
 
     delete map;
     delete mouse;
+    delete arrow;
     delete chat;
     delete window_scores;
     //Ammo *am_temp;
@@ -262,40 +263,28 @@ void WorldMap::run()
         for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->update();
         for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->update();
         for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->update();
+        arrow->update(bot[MY_BOT_NR]->position);
         mouse->update();
 
-        /*
-
-                      for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->AccumulateForces();
-              for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->AccumulateForces();
-              for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->AccumulateForces();
-              for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->AccumulateForces();
-
-                      for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->Verlet();
-              for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->Verlet();
-              for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->Verlet();
-              for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->Verlet();
-        */
 
         collisions();
         game_control();   // time, flags, bonuses, kills ...
-
-        //   firstFrameSYS = getCurrentTime;
-        // }
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         draw_background();
 
+
         glEnable(GL_TEXTURE_2D);
 
+        map->drawBack();
         for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->draw();
         for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->draw();
         for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->draw();
         for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->draw();
+        map->drawFront();
 
-        //draw_screen();
-        map->draw();
+        arrow->draw();
 
         glDisable(GL_TEXTURE_2D);
 
@@ -307,27 +296,7 @@ void WorldMap::run()
 
     }
 }
-/*
-void WorldMap::startServer()
-{
-    isServer = 1;
-    //MY_BOT_NR = 0;
-    //prepare_net_server();
-    //TH_ser = SDL_CreateThread(server_thread, NULL);
-}
 
-
-void WorldMap::startClient()
-{
-    isServer = 0;
-
-    // zapytaj serwera ile juz jest Botow
-    //MY_BOT_NR = ask_server(HOW_MANY_BOTS);
-   // MY_BOT_NR = 1;
-    //prepare_net_client();
-    //TH_cli = SDL_CreateThread(client_thread, NULL);
-}
-*/
 
 void WorldMap::insertMe(TEAM team)
 {

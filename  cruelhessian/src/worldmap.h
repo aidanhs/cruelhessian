@@ -26,6 +26,7 @@
 #include <list>
 
 #include "globals.h"
+#include "arrow.h"
 #include "bonus.h"
 #include "bot.h"
 #include "bullet.h"
@@ -71,6 +72,7 @@ private:
     std::vector<WeaponBase> weapon_base;
     Map *map;
     Mouse *mouse;
+    Arrow* arrow;
     Chat *chat;
     WindowExit *window_exit;
     WindowScores *window_scores;
@@ -228,6 +230,7 @@ private:
     unsigned int MY_CURRENT_POS;
     int DISTANCE_SCORE;
 
+    Tex text_arrow;
     Tex text_mouse;
     Tex text_health;
     Tex text_healthbar;
