@@ -78,7 +78,7 @@ void WindowScores::update(const std::vector<Bot *>& bb, unsigned int nr)
 }
 
 
-void WindowScores::draw_help(const Tex& tex, float dx, float dy) const
+void WindowScores::draw_help(const Tex& texture, float dx, float dy) const
 {
 
     glPushMatrix();
@@ -86,17 +86,17 @@ void WindowScores::draw_help(const Tex& tex, float dx, float dy) const
     glLoadIdentity();
     glTranslatef(bgX + dx, bgY + dy, 0.0f);
 
-    glBindTexture(GL_TEXTURE_2D, tex.tex);
+    glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);
+    glTexCoord2i(0, 1);
     glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2f(tex.w, 0.0);
-    glTexCoord2f(1.0, 0.0);
-    glVertex2f(tex.w, tex.h);
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f(0.0, tex.h);
+    glTexCoord2i(1, 1);
+    glVertex2f(texture.w, 0.0);
+    glTexCoord2i(1, 0);
+    glVertex2f(texture.w, texture.h);
+    glTexCoord2i(0, 0);
+    glVertex2f(0.0, texture.h);
     glEnd();
 
     glPopMatrix();

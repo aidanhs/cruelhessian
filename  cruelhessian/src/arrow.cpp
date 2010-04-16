@@ -21,7 +21,7 @@
 
 #include "arrow.h"
 #include "globals.h"
-#include "SDL_opengl.h"
+//#include "SDL_opengl.h"
 
 
 Arrow::Arrow(const Tex& tex) : texture(tex)
@@ -38,13 +38,13 @@ void Arrow::draw() const
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);
+    glTexCoord2i(0, 1);
     glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 1.0);
+    glTexCoord2i(1, 1);
     glVertex2f(texture.w, 0.0);
-    glTexCoord2f(1.0, 0.0);
+    glTexCoord2i(1, 0);
     glVertex2f(texture.w, texture.h);
-    glTexCoord2f(0.0, 0.0);
+    glTexCoord2i(0, 0);
     glVertex2f(0.0, texture.h);
     glEnd();
 

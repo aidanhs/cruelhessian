@@ -147,8 +147,12 @@ private:
     unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
 //    void getGLpos();
 
-    GLuint SOIL_LoadTexture(const std::string& file);
-    Tex SOIL_LoadTextureEx(const std::string& file);
+    GLuint SOIL_LoadTextureBMP(const std::string& file);
+    GLuint SOIL_LoadTexturePNG(const std::string& file);
+    GLuint SOIL_LoadTexture2(const std::string& src_dir, const std::string& file);
+
+    Tex SOIL_LoadTextureExBMP(const std::string& file);
+    Tex SOIL_LoadTextureExPNG(const std::string& file);
     Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file);
 
     Mix_Music *music;

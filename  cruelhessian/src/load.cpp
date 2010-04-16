@@ -444,12 +444,12 @@ void WorldMap::load_textures()
     std::vector<std::string> names(map->getTextScen());
     for (unsigned int i = 0; i < names.size(); ++i)
     {
-        text_scen[i] = SOIL_LoadTexture(SOL_PATH + "Scenery-gfx/" + names[i]);
+        text_scen[i] = SOIL_LoadTexture2(SOL_PATH + "Scenery-gfx/", names[i]);
     }
     map->setScen(text_scen);
 
     std::cout << "   loading triangles texture ... " << std::endl;
-    GLuint text_poly = SOIL_LoadTexture(SOL_PATH + "Textures/" + map->getTextPoly());
+    GLuint text_poly = SOIL_LoadTexture2(SOL_PATH + "Textures/", map->getTextPoly());
     map->setPoly(text_poly);
 
     std::cout << "   loading interface textures ... " << std::endl;

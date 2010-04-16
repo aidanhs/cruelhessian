@@ -31,7 +31,7 @@ class WindowGuns
     TVector2D m_mouse_pos;
     float x, y, w, h;
     int m_number;
-    void draw_help(const Tex& tex, float dx, float dy) const;
+    void draw_help(const Tex& texture, float dx, float dy) const;
     const std::vector<WeaponBase>& m_weapon;
 
 public:

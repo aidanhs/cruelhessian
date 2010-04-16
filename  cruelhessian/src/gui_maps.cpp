@@ -88,6 +88,8 @@ bool GUI::handleClick(const CEGUI::EventArgs &)
         mInterfaces->resetList();
     }
 
+    readM3U();
+
     return true;
 
 }

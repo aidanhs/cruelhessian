@@ -265,7 +265,7 @@ void WorldMap::run()
         for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->update();
         arrow->update(bot[MY_BOT_NR]->position);
         mouse->update();
-
+        window_scores->update(bot, MY_BOT_NR);
 
         collisions();
         game_control();   // time, flags, bonuses, kills ...
@@ -326,13 +326,13 @@ WorldMap::WorldMap(const std::string& mapp, int alpha_cnt, int bravo_cnt, int ch
 
     load_fonts();
     load_weapons_base();
-    load_audio();
     load_map(mapp);
     load_textures();
+    load_configs();
+    load_audio();
     load_spawnpoints();
     load_bonuses();
     load_animations();
-    load_configs();
 
     load_bots_base();
     load_bots(alpha_cnt, TEAM_ALPHA);
@@ -351,13 +351,13 @@ WorldMap::WorldMap(const std::string& mapp, int bots_cnt)
 
     load_fonts();
     load_weapons_base();
-    load_audio();
     load_map(mapp);
     load_textures();
+    load_configs();
+    load_audio();
     load_spawnpoints();
     load_bonuses();
     load_animations();
-    load_configs();
 
     load_bots_base();
     load_bots(bots_cnt, TEAM_GENERAL);
@@ -612,6 +612,7 @@ void WorldMap::init_gl()
     glLoadIdentity();
     glDisable(GL_DEPTH_TEST);
     glOrtho(bgX, bgX + MAX_WIDTH, bgY + MAX_HEIGHT, bgY, -1.0f, 1.0f);
+    //glOrtho(0, MAX_WIDTH, MAX_HEIGHT, 0, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }

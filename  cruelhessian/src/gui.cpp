@@ -210,18 +210,6 @@ GUI::GUI()
     must_quit = false;
 
     setSDL();
-    /*
-    glEnable(GL_CULL_FACE);
-    glDisable(GL_FOG);
-    glClearColor(0.0f,0.0f,0.0f,1.0f);
-    glViewport(0,0,static_cast<int>(MAX_WIDTH), static_cast<int>(MAX_HEIGHT));
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, MAX_WIDTH/MAX_HEIGHT, 0.1,100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    */
 
     renderer = new CEGUI::OpenGLRenderer(0, static_cast<int>(MAX_WIDTH), static_cast<int>(MAX_HEIGHT));
     new CEGUI::System(renderer);

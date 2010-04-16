@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 
-#include "SDL_opengl.h"
+#include "globals.h"
 
 typedef unsigned char ubyte;
 typedef unsigned short word;

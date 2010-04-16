@@ -370,6 +370,7 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
             if (bot[owner]->chatWinning != "") chat->addMessage(bot[owner]->name, bot[owner]->chatWinning);
             if (bot[shooted]->chatDead != "") chat->addMessage(bot[shooted]->name, bot[shooted]->chatDead);
 
+            // if I'm dead
             if (shooted == MY_BOT_NR)
             {
                 if (SOUNDS_VOL > 0)

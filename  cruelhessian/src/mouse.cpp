@@ -20,7 +20,7 @@
 
 
 #include "mouse.h"
-#include "SDL_opengl.h"
+//#include "SDL_opengl.h"
 
 
 Mouse::Mouse(const Tex& tex)
@@ -45,14 +45,14 @@ void Mouse::draw() const
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
-    glTexCoord3f(0.0, 1.0, 0.0);
-    glVertex3f(0.0, 0.0, 0.0);
-    glTexCoord3f(1.0, 1.0, 0.0);
-    glVertex3f(texture.w, 0.0, 0.0);
-    glTexCoord3f(1.0, 0.0, 0.0);
-    glVertex3f(texture.w, texture.h, 0.0);
-    glTexCoord3f(0.0, 0.0, 0.0);
-    glVertex3f(0.0, texture.h, 0.0);
+    glTexCoord2i(0, 1);
+    glVertex2f(0.0, 0.0);
+    glTexCoord2i(1, 1);
+    glVertex2f(texture.w, 0.0);
+    glTexCoord2i(1, 0);
+    glVertex2f(texture.w, texture.h);
+    glTexCoord2i(0, 0);
+    glVertex2f(0.0, texture.h);
     glEnd();
 
     glPopMatrix();

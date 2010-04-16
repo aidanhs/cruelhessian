@@ -319,7 +319,9 @@ void WorldMap::bots_control()
         {
             // waypoints
             dest = bot[i]->destinationPoint;
-
+            // fix it !!!!!!!!!!!!!!
+            if (dest <= 0 || !map->waypoint[dest].active)
+                continue;
             if (map->waypoint[dest].right)
             {
                 moveBotRight(i);

@@ -42,6 +42,7 @@
 
 void WorldMap::draw_background()
 {
+    // zawsze staraj sie ustawiac ekran tak, aby bot, mysz i srodek ekranu byly w jednej linii (punkcie)
 
     // przesun tlo ekranu w zaleznosci od polozenia Bota
     if (SHOW_GUN_MENU && ONLY_ONCE)
@@ -75,7 +76,7 @@ void WorldMap::draw_background()
 }
 
 
-void WorldMap::draw_int_help(const Tex& tex, float dx, float dy)
+void WorldMap::draw_int_help(const Tex& texture, float dx, float dy)
 {
 
     glPushMatrix();
@@ -83,17 +84,17 @@ void WorldMap::draw_int_help(const Tex& tex, float dx, float dy)
     glLoadIdentity();
     glTranslatef(bgX + dx, bgY + dy, 0.0f);
 
-    glBindTexture(GL_TEXTURE_2D, tex.tex);
+    glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);
+    glTexCoord2i(0, 1);
     glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2f(tex.w, 0.0);
-    glTexCoord2f(1.0, 0.0);
-    glVertex2f(tex.w, tex.h);
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f(0.0, tex.h);
+    glTexCoord2i(1, 1);
+    glVertex2f(texture.w, 0.0);
+    glTexCoord2i(1, 0);
+    glVertex2f(texture.w, texture.h);
+    glTexCoord2i(0, 0);
+    glVertex2f(0.0, texture.h);
     glEnd();
 
     glPopMatrix();
@@ -279,7 +280,7 @@ void WorldMap::draw_interface()
     // scores
     if (SHOW_SCORES)
     {
-        window_scores->update(bot, MY_BOT_NR);
+//        window_scores->update(bot, MY_BOT_NR);
         window_scores->draw();
     }
 
@@ -310,7 +311,7 @@ void WorldMap::draw_interface()
 }
 
 
-Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
+Tex WorldMap::SOIL_LoadTextureExBMP(const std::string& file)
 {
     Tex res_tex;
     int width = 0, height = 0;
@@ -325,8 +326,8 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
 
     if (imgdata == NULL)
     {
-        std::cout << "   Image was not loaded : " << file << std::endl;
-        res_tex.w = res_tex.h = res_tex.tex = 0;
+        std::cout << "Image was not loaded : " << file << std::endl;
+        res_tex.w = res_tex.h = 0;
         return res_tex;
     }
 
@@ -352,8 +353,38 @@ Tex WorldMap::SOIL_LoadTextureEx(const std::string& file)
 
 
 
-GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
+Tex WorldMap::SOIL_LoadTextureExPNG(const std::string& file)
 {
+    Tex res_tex;
+    int width = 0, height = 0;
+    int channels;
+
+    if (SOIL_load_image(file.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA) == NULL)
+    {
+        std::cout << "Image was not loaded : " << file << std::endl;
+        res_tex.w = res_tex.h = 0;
+        return res_tex;
+    }
+
+    res_tex.tex = SOIL_load_OGL_texture
+                  (
+                      file.c_str(),
+                      SOIL_LOAD_AUTO,
+                      SOIL_CREATE_NEW_ID,
+                      SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
+                      //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+                  );
+
+    res_tex.w = static_cast<float>(width);
+    res_tex.h = static_cast<float>(height);
+    return res_tex;
+}
+
+
+GLuint WorldMap::SOIL_LoadTextureBMP(const std::string& file)
+{
+
+    GLuint texID = 0;
 
     int width, height, channels;
     unsigned char *imgdata = SOIL_load_image
@@ -365,7 +396,7 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
     if (imgdata == NULL)
     {
         std::cout << "   Image was not loaded : " << file << std::endl;
-        return 0;
+        return texID;
     }
 
     for (int i = 0; i < width*height*channels; i += 4)
@@ -375,17 +406,33 @@ GLuint WorldMap::SOIL_LoadTexture(const std::string& file)
             imgdata[i+1] = imgdata[i+3] = 0;
         }
     }
-
-    GLuint texID = SOIL_create_OGL_texture
-                   (
-                       imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
-                       SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
-                   );
+    texID = SOIL_create_OGL_texture
+            (
+                imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
+                SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
+            );
 
     SOIL_free_image_data(imgdata);
 
+
     return texID;
 }
+
+
+GLuint WorldMap::SOIL_LoadTexturePNG(const std::string& file)
+{
+
+    return SOIL_load_OGL_texture
+           (
+               file.c_str(),
+               SOIL_LOAD_AUTO,
+               SOIL_CREATE_NEW_ID,
+               SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
+               //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+           );
+
+}
+
 
 
 // urwana nazwa pliku, bez rozszerzenia (najpierw png, potem bmp), odporna na wielkosc znakow
@@ -395,7 +442,8 @@ Tex WorldMap::SOIL_LoadTextureEx2(const std::string& src_dir, const std::string&
     if (!boost::filesystem::exists(src_dir))
     {
         Tex res_tex;
-        res_tex.w = res_tex.h = res_tex.tex = 0;
+        res_tex.w = res_tex.h = 0.0f;
+		res_tex.tex = 0;
         std::cerr << "Cannot find source directory : " << src_dir << std::endl;
         return res_tex;
     }
@@ -403,43 +451,72 @@ Tex WorldMap::SOIL_LoadTextureEx2(const std::string& src_dir, const std::string&
     std::string name_temp;
     boost::filesystem::directory_iterator end;
 
-    for (int g = 0; g < 2; ++g)
+
+    name_temp = file + ".png";
+    for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
     {
-        if (g == 0)
-            name_temp = file + ".png";
-        else
-            name_temp = file + ".bmp";
-
-        for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+        if (boost::iequals(iter->leaf(), name_temp))
         {
-            if (boost::iequals(iter->leaf(), name_temp))
-            {
-                return SOIL_LoadTextureEx(iter->path().string());
-            }
+            return SOIL_LoadTextureExPNG(iter->path().string());
         }
-
     }
-    /*
-        std::string path1 = file + ".png";
-        std::string path2 = file + ".bmp";
 
-        if (boost::filesystem::exists(path1))
+    name_temp = file + ".bmp";
+    for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+    {
+        if (boost::iequals(iter->leaf(), name_temp))
         {
-            //std::cout << "find texture bmp: " << path1 << std::endl;
-            return SOIL_LoadTextureEx(path1);
+            return SOIL_LoadTextureExBMP(iter->path().string());
         }
-        else if (boost::filesystem::exists(path2))
-        {
-            //std::cout << "find texture png: " << path2 << std::endl;
-            return SOIL_LoadTextureEx(path2);
-        }
-        else*/
+    }
+
+
 
     Tex res_tex;
-    res_tex.w = res_tex.h = res_tex.tex = 0;
+    res_tex.w = res_tex.h = 0.0f;
+	res_tex.tex = 0;
     std::cerr << "Cannot find : " << file << std::endl;
 
     return res_tex;
-//    }
+
+}
+
+
+
+// urwana nazwa pliku, bez rozszerzenia (najpierw png, potem bmp), odporna na wielkosc znakow
+GLuint WorldMap::SOIL_LoadTexture2(const std::string& src_dir, const std::string& file)
+{
+
+    if (!boost::filesystem::exists(src_dir))
+    {
+        std::cerr << "Cannot find source directory : " << src_dir << std::endl;
+        return 0;
+    }
+
+    std::string name_temp;
+    boost::filesystem::directory_iterator end;
+
+
+    name_temp = file.substr(0, file.size()-3) + "png";
+    for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+    {
+        if (boost::iequals(iter->leaf(), name_temp))
+        {
+            return SOIL_LoadTexturePNG(iter->path().string());
+        }
+    }
+
+    name_temp = file.substr(0, file.size()-3) + "bmp";
+    for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
+    {
+        if (boost::iequals(iter->leaf(), name_temp))
+        {
+            return SOIL_LoadTextureBMP(iter->path().string());
+        }
+    }
+
+    std::cerr << "Cannot find : " << file << std::endl;
+
+    return 0;
 
 }

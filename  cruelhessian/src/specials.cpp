@@ -55,6 +55,7 @@ int WorldMap::takeScreenshot()
 
 int WorldMap::playMusic(int pos)
 {
+
     if (MUSIC_VOL > 0 && !gMusicList.empty())
     {
         CURRENT_SONG_NUMBER += pos;
@@ -72,7 +73,7 @@ int WorldMap::playMusic(int pos)
             Mix_HaltMusic();
             Mix_FreeMusic(music);
         }
-
+//std::cout << gMusicList[CURRENT_SONG_NUMBER]<< std::endl;
         chat->addMessage("Loading track : " + gMusicList[CURRENT_SONG_NUMBER]);
 
         if ((music = Mix_LoadMUS(gMusicList[CURRENT_SONG_NUMBER].c_str())) == NULL)
@@ -86,5 +87,6 @@ int WorldMap::playMusic(int pos)
             return -1;
         }
     }
+
     return 0;
 }

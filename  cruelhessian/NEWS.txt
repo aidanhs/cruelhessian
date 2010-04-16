@@ -1,6 +1,14 @@
+0.1.0-rc10
+ - fixed loading some types of png files
+ - fixed the compilation warnings
+ - scan the MP3 directory after select the new directory with Soldat files
+ - fixed refreshing player's status information
+
 0.1.0-rc9
  - draw arrow above the player
- - some fixes in displaying sceneries in maps
+ - some fixes in displaying maps' sceneries
+ - fixed CMakeLists.txt file
+ - fixed segmentation fault while start playing music
 
 0.1.0-rc8
  - improved png files loading

@@ -130,13 +130,13 @@ void Bot::draw_gostek_help(int partx, int party, float angle, const Tex* xtex)
     glBindTexture(GL_TEXTURE_2D, xtex->tex);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);
+    glTexCoord2i(0, 1);
     glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 1.0);
+    glTexCoord2i(1, 1);
     glVertex2f(xtex->w, 0.0);
-    glTexCoord2f(1.0, 0.0);
+    glTexCoord2i(1, 0);
     glVertex2f(xtex->w, xtex->h);
-    glTexCoord2f(0.0, 0.0);
+    glTexCoord2i(0, 0);
     glVertex2f(0.0, xtex->h);
     glEnd();
 

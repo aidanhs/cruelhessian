@@ -21,7 +21,7 @@
 
 #include "window_exit.h"
 #include "globals.h"
-#include "SDL_opengl.h"
+//#include "SDL_opengl.h"
 
 
 WindowExit::WindowExit()
