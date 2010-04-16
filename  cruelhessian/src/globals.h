@@ -77,7 +77,7 @@ extern freetype::font_data font[2][50];
   extern   int FontConsoleSmallBold;
   extern   int KillConsoleNameSpace;
 
-extern float bgX, bgY;
+//extern float bgX, bgY;
 
 extern  bool FULLSCREEN;
 extern     int MAX_BPP;

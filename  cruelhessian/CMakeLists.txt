@@ -37,6 +37,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 SET(src_executable
 	src/arrow.cpp
+	src/background.cpp
 	src/bonus.cpp
     src/bot.cpp
 	src/bullet.cpp
@@ -45,7 +46,6 @@ SET(src_executable
 	src/console.cpp
 	src/controls.cpp
 	src/disk_object.cpp
-	src/draw.cpp
 	src/fonts.cpp
 	src/game.cpp
 	src/globals.cpp
@@ -57,6 +57,7 @@ SET(src_executable
     src/gui_maps.cpp
     src/gui_music.cpp
     src/gui_player.cpp
+    src/interface.cpp
 	src/load.cpp
     src/main.cpp
     src/map.cpp
@@ -71,6 +72,7 @@ SET(src_executable
 	src/soil/image_helper.c
 	src/soil/stb_image_aug.c
 	src/specials.cpp
+	src/texture_loader.cpp
 	src/tvector2d.cpp
 	src/window_exit.cpp
 	src/window_guns.cpp

@@ -27,12 +27,7 @@
 WindowExit::WindowExit()
     : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(200), h(80), m_number(0)
 {
-    /*
-        x = MAX_WIDTH/4;
-        y = MAX_HEIGHT/7;
-        w = 200;
-        h = 80;
-    */
+
 }
 
 
@@ -47,7 +42,6 @@ void WindowExit::draw(const TVector2D& pos)
 
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef(bgX, bgY, 0.0f);
 
     // obramowanie
     glColor4ub(85, 85, 85, 200);

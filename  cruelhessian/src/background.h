@@ -1,7 +1,7 @@
-/*   bonus.h
+/*   backgroung.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,34 +18,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef BONUS_H
-#define BONUS_H
+#ifndef BACKGROUND_H
+#define BACKGROUND_H
 
-#include "globals.h"
-#include "moving_object.h"
+#include "tvector2d.h"
+#include "map.h"
 
 
-class Bonus : public MovingObject
+class Background
 {
-    const Tex& texture;
-    float scaleX, scaleY;
-    //BONUS typeBonus;
+
+    float moveX, moveY;
 
 public:
 
-    BONUS typeBonus;
+    Background(float startX, float startY);
+    ~Background() {};
 
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
-    Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS _type);
-    ~Bonus() {};
-
-    void draw() const;
-    void update();
+    void setPosition(float startX, float startY);
+    void draw(Map *map);
+    void update(const TVector2D& mouse_pos, const TVector2D& bot_pos);
 };
 
 

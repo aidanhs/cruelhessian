@@ -88,7 +88,6 @@ void printText(freetype::font_data& font, const std::string& text, unsigned int*
 }
 
 
-float bgX, bgY;
 
 std::string PLAYER_NAME;
 std::string SOL_PATH;

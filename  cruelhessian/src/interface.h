@@ -1,7 +1,7 @@
-/*   bonus.h
+/*   interface.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,35 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef BONUS_H
-#define BONUS_H
-
-#include "globals.h"
-#include "moving_object.h"
-
-
-class Bonus : public MovingObject
-{
-    const Tex& texture;
-    float scaleX, scaleY;
-    //BONUS typeBonus;
-
-public:
-
-    BONUS typeBonus;
-
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
-    Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS _type);
-    ~Bonus() {};
-
-    void draw() const;
-    void update();
-};
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
 
 #endif

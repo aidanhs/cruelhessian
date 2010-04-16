@@ -232,11 +232,6 @@ void Bot::draw()
         draw_gostek_help(15, 15, getAngle(15,19), texture[DLON][dir]);
 
     }
-    else
-    {
-        if ((getCurrentTime - timerRespawnTime) > respawnTime)
-            isKilled = false;
-    }
 
 }
 

@@ -21,7 +21,6 @@
 
 #include "arrow.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
 
 
 Arrow::Arrow(const Tex& tex) : texture(tex)

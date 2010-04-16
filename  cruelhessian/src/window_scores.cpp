@@ -84,7 +84,7 @@ void WindowScores::draw_help(const Tex& texture, float dx, float dy) const
     glPushMatrix();
 
     glLoadIdentity();
-    glTranslatef(bgX + dx, bgY + dy, 0.0f);
+    glTranslatef(dx, dy, 0.0f);
 
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
@@ -113,7 +113,6 @@ void WindowScores::draw() const
 
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef(bgX, bgY, 0.0f);
 
     // obramowanie
     glColor4ub(247, 247, 247, 20);

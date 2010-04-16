@@ -308,17 +308,17 @@ int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 
     a[0] = static_cast<int>(pos.x / map->sectorDivisions) + map->numSectors;
     a[1] = static_cast<int>(pos.y / map->sectorDivisions) + map->numSectors;
-/*
-    if (51*a[0] + a[1] > 0)
-        sect_num.push_back(51*a[0] + a[1]);
-    else
-        return -1;*/
+    /*
+        if (51*a[0] + a[1] > 0)
+            sect_num.push_back(51*a[0] + a[1]);
+        else
+            return -1;*/
     // wyznacz numery trojkatow w tych sektorach do zbadania
-/*
-    for (std::vector<unsigned int>::const_iterator s = sect_num.begin(); s != sect_num.end(); ++s)
-        for (unsigned int j = 0; j < map->sector[*s].polyCount; ++j)
-            trian_num.insert(map->sector[*s].polys[j]-1);
-*/
+    /*
+        for (std::vector<unsigned int>::const_iterator s = sect_num.begin(); s != sect_num.end(); ++s)
+            for (unsigned int j = 0; j < map->sector[*s].polyCount; ++j)
+                trian_num.insert(map->sector[*s].polys[j]-1);
+    */
     unsigned int sec = 51*a[0] + a[1];
     if (sec >= map->sector.size())
         return 10000;
@@ -378,19 +378,17 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
                     Mix_PlayChannel(-1, sound_death[rand()%3], 0);
                     Mix_PlayChannel(-1, sound_heaven, 0);
                 }
-                ONLY_ONCE = true;
+
                 OLD_POS = bot[MY_BOT_NR]->position;
             }
-			// if I killed someone
+            // if I killed someone
             if (owner == MY_BOT_NR)
             {
                 YOU_KILLED = true;
                 bot[MY_BOT_NR]->youKilledTime = getCurrentTime;
             }
+
             // set start values
-            int point = static_cast<int>(rand()%spawnpoint[bot[shooted]->team].size());
-            bot[shooted]->position.x = map->spawnpoint[spawnpoint[bot[shooted]->team][point]].x - bot[shooted]->w/2;
-            bot[shooted]->position.y = map->spawnpoint[spawnpoint[bot[shooted]->team][point]].y - bot[shooted]->h/2;
             bot[shooted]->timerRespawnTime = getCurrentTime;
             bot[shooted]->currentFrame = 0;
             bot[shooted]->timerChangeFrame = 0;
@@ -414,7 +412,7 @@ void WorldMap::collisions()
     int t1, t2;
     // bots
     for (unsigned int i = 0; i < bot.size(); ++i)
-    //for (std::list<Bot *>::iterator temp = bonus_list.begin(); temp != bonus_list.end();)
+        //for (std::list<Bot *>::iterator temp = bonus_list.begin(); temp != bonus_list.end();)
     {
 
         delta = bot[i]->velocity * fTimeStep;
@@ -445,14 +443,14 @@ void WorldMap::collisions()
     }
 
     // bonuses
-	for (std::list<Bonus *>::const_iterator temp = bonus_list.begin(); temp != bonus_list.end();)
+    for (std::list<Bonus *>::const_iterator temp = bonus_list.begin(); temp != bonus_list.end();)
     {
 
         // if bonus touched the wall
         delta = (*temp)->velocity * fTimeStep;
         if (!collisionCircle2Wall(**temp, 0.0f, (delta.y > 0) ? -1.0f: 1.0f, t1, t2))
         {
-			(*temp)->position.y -= delta.y;
+            (*temp)->position.y -= delta.y;
             if (SOUNDS_VOL > 0)
                 Mix_PlayChannel(-1, sound_kitfall[rand()%2], 0);
             ++temp;
@@ -461,7 +459,7 @@ void WorldMap::collisions()
         /*else if (collisionCircle2Circle(**temp, **temp) < 0)
         {
             //hurt_bot(which_bot, (*temp)->owner, weapon[bot[(*temp)->owner]->gunModel].damage);
-			bonus_list.erase(temp++);
+        	bonus_list.erase(temp++);
         }*/
         else
         {
@@ -473,29 +471,29 @@ void WorldMap::collisions()
 
 
     // ammos
-	for (std::list<Bullet *>::iterator temp = bullet_list.begin(); temp != bullet_list.end();)
+    for (std::list<Bullet *>::iterator temp = bullet_list.begin(); temp != bullet_list.end();)
     {
 
         // if ammo touched the wall
         if (collisionPoint2Wall(**temp, -(*temp)->velocity.x * fTimeStep, -(*temp)->velocity.y * fTimeStep) >= 0)
         {
-			bullet_list.erase(temp++);
+            bullet_list.erase(temp++);
         }
         // if ammo touched bot
         else if ((which_bot = collisionPoint2Circle(**temp, **temp)) >= 0)
         {
             hurt_bot(which_bot, (*temp)->owner, weapon_base[bot[(*temp)->owner]->gunModel].damage);
-			bullet_list.erase(temp++);
+            bullet_list.erase(temp++);
         }
         else
         {
             (*temp)->position -= fTimeStep * (*temp)->velocity;
-			++temp;
+            ++temp;
         }
     }
 
 
-	for (std::list<Grenade *>::iterator temp = gren_list.begin(); temp != gren_list.end();)
+    for (std::list<Grenade *>::iterator temp = gren_list.begin(); temp != gren_list.end();)
     {
 
         // if grenade touched the wall
@@ -510,11 +508,11 @@ void WorldMap::collisions()
             // V -=  2 * N * dot(V • N)
 
             (*temp)->velocity.x -= 1.8f*map->polygon[pol_number].perpendicular[line_number].x*
-                                     map->polygon[pol_number].perpendicular[line_number].x*
-                                     (*temp)->velocity.x;
+                                   map->polygon[pol_number].perpendicular[line_number].x*
+                                   (*temp)->velocity.x;
             (*temp)->velocity.y -= 1.8f*map->polygon[pol_number].perpendicular[line_number].y*
-                                     map->polygon[pol_number].perpendicular[line_number].y*
-                                     (*temp)->velocity.y;
+                                   map->polygon[pol_number].perpendicular[line_number].y*
+                                   (*temp)->velocity.y;
 
         }
         // if grenade touched bot, explode immediately
@@ -525,21 +523,21 @@ void WorldMap::collisions()
             (*temp)->timer_throw -= 4000;
             hurt_bot(shooted, (*temp)->owner, 50.0f);
             gren_list.erase(temp++);
-			continue;
+            continue;
         }
         else
         {
             (*temp)->position -= (*temp)->velocity * fTimeStep;
-           //temp;
+            //temp;
             //if (!collision_det(0, ammo[i].position.y-bot[i].velocity.x * aDeltaTime, &bot[i]))
         }
-		if ((*temp)->killMyself)
+        if ((*temp)->killMyself)
         {
             gren_list.erase(temp++);
             continue;
         }
-		else
-			++temp;
+        else
+            ++temp;
         //tempg->position.x -= tempg->velocity.x * aDeltaTime;
         //tempg->position.y -= tempg->velocity.y * aDeltaTime;
     }

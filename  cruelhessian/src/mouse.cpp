@@ -20,11 +20,9 @@
 
 
 #include "mouse.h"
-//#include "SDL_opengl.h"
 
 
 Mouse::Mouse(const Tex& tex)
-    //: texture(tex), mGlobalPos(TVector2D(0.0, 0.0)), mLocalPos(TVector2D(0.0, 0.0))
     : texture(tex), mGlobalPos(TVector2D(MAX_WIDTH/2, MAX_HEIGHT/2)), mLocalPos(TVector2D(MAX_WIDTH/2, MAX_HEIGHT/2))
 {
 
@@ -39,8 +37,7 @@ void Mouse::draw() const
     glPushMatrix();
     glLoadIdentity();
 
-    glTranslatef(bgX + getLocalX(), bgY + getLocalY(), 0.0f);
-    //glTranslatef(getGlobalX(), getGlobalY(), 0.0f);
+    glTranslatef(getLocalX(), getLocalY(), 0.0f);
 
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
@@ -128,4 +125,3 @@ void Mouse::update()
     mGlobalPos = TVector2D(static_cast<float>(tempx), static_cast<float>(tempy));
 
 }
-

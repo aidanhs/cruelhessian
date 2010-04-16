@@ -27,6 +27,7 @@
 
 #include "globals.h"
 #include "arrow.h"
+#include "background.h"
 #include "bonus.h"
 #include "bot.h"
 #include "bullet.h"
@@ -73,6 +74,7 @@ private:
     Map *map;
     Mouse *mouse;
     Arrow* arrow;
+    Background *backg;
     Chat *chat;
     WindowExit *window_exit;
     WindowScores *window_scores;
@@ -147,14 +149,6 @@ private:
     unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
 //    void getGLpos();
 
-    GLuint SOIL_LoadTextureBMP(const std::string& file);
-    GLuint SOIL_LoadTexturePNG(const std::string& file);
-    GLuint SOIL_LoadTexture2(const std::string& src_dir, const std::string& file);
-
-    Tex SOIL_LoadTextureExBMP(const std::string& file);
-    Tex SOIL_LoadTextureExPNG(const std::string& file);
-    Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file);
-
     Mix_Music *music;
 
     void moveBotLeft(unsigned int bot_nr);
@@ -170,7 +164,7 @@ private:
     void inputUser();
     Uint32 prev_time;
 
-    bool ONLY_ONCE;
+//    bool ONLY_ONCE;
     bool CHOICE_EXIT;
 
     int MAX_RESPAWN_TIME;

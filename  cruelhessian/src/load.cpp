@@ -24,6 +24,7 @@
 #include "boost/regex.hpp"
 
 #include "worldmap.h"
+#include "textures_loader.h"
 #include "mouse.h"
 #include "parser/SimpleIni.h"
 

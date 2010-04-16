@@ -30,7 +30,6 @@
 
 #include "worldmap.h"
 #include "globals.h"
-//#include "chat.h"
 #include "soil/SOIL.h"
 
 
@@ -266,14 +265,14 @@ void WorldMap::run()
         arrow->update(bot[MY_BOT_NR]->position);
         mouse->update();
         window_scores->update(bot, MY_BOT_NR);
+        backg->update(mouse->getGlobalPosition(), bot[MY_BOT_NR]->position);
 
         collisions();
         game_control();   // time, flags, bonuses, kills ...
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        draw_background();
-
+        backg->draw(map);
 
         glEnable(GL_TEXTURE_2D);
 
@@ -316,8 +315,9 @@ void WorldMap::insertMe(TEAM team)
     int point = static_cast<int>(rand()%spawnpoint[team].size());
     MY_BOT_NR = addBot(temp, spawnpoint[team][point], team);
 
-    bgX = static_cast<float>(map->spawnpoint[spawnpoint[team][point]].x - MAX_WIDTH/2);
-    bgY = static_cast<float>(map->spawnpoint[spawnpoint[team][point]].y - MAX_HEIGHT/2);
+    backg = new Background(static_cast<float>(MAX_WIDTH/2 - map->spawnpoint[spawnpoint[team][point]].x),
+                           static_cast<float>(MAX_HEIGHT/2 - map->spawnpoint[spawnpoint[team][point]].y));
+
 }
 
 
@@ -611,8 +611,7 @@ void WorldMap::init_gl()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glDisable(GL_DEPTH_TEST);
-    glOrtho(bgX, bgX + MAX_WIDTH, bgY + MAX_HEIGHT, bgY, -1.0f, 1.0f);
-    //glOrtho(0, MAX_WIDTH, MAX_HEIGHT, 0, -1.0f, 1.0f);
+    glOrtho(0, MAX_WIDTH, MAX_HEIGHT, 0, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
