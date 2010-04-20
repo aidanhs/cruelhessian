@@ -28,15 +28,16 @@
 class Background
 {
 
-    float moveX, moveY;
+    TVector2D move, old_pos;
+    bool flag;
 
 public:
 
-    Background(float startX, float startY);
+    Background(float startX, float startY, const TVector2D& bot_pos);
     ~Background() {};
 
     void setPosition(float startX, float startY);
-    void draw(Map *map);
+    void draw(const Map& map);
     void update(const TVector2D& mouse_pos, const TVector2D& bot_pos);
 };
 

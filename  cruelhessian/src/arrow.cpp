@@ -28,11 +28,11 @@ Arrow::Arrow(const Tex& tex) : texture(tex)
 
 }
 
-
 void Arrow::draw() const
 {
 
     glPushMatrix();
+
     glTranslatef(position.x, position.y, 0.0f);
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 

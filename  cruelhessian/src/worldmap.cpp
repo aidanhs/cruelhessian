@@ -26,7 +26,7 @@
 #include <cmath>
 #include "boost/filesystem/fstream.hpp"
 #include "boost/algorithm/string.hpp"
-#include "boost/regex.hpp"
+//#include "boost/regex.hpp"
 
 #include "worldmap.h"
 #include "globals.h"
@@ -46,7 +46,8 @@ void WorldMap::moveBotRight(unsigned int bot_nr)
     //if (!collisionCircle2Wall(*bot[bot_nr], 1, 0, t1, t2))
     {
         bot[bot_nr]->movementType = (bot[bot_nr]->movementDirection == RIGHT) ? BIEGA : BIEGA_TYL;
-        bot[bot_nr]->velocity.x -= sWalking;
+        bot[bot_nr]->velocity.x += sWalking;
+        //bot[bot_nr]->a.x += 5.0;
 //        bot[bot_nr]->a.x += 800;
     }
 
@@ -59,54 +60,62 @@ void WorldMap::moveBotLeft(unsigned int bot_nr)
     {
         //      bot[bot_nr]->a.x -= 800;
         bot[bot_nr]->movementType = (bot[bot_nr]->movementDirection == LEFT) ? BIEGA : BIEGA_TYL;
-        bot[bot_nr]->velocity.x += sWalking;
+        bot[bot_nr]->velocity.x -= sWalking;
+        //bot[bot_nr]->a.x -= sWalking;
     }
 
 }
 
 void WorldMap::moveBotUp(unsigned int bot_nr)
 {
-    int t1, t2;
-    // jump only if there is collision with the floor
-    if (collisionCircle2Wall(*bot[bot_nr], 0, 1, t1, t2))
+
+    if (bot[bot_nr]->isAbleToJump)
     {
         //    bot[bot_nr]->a.y -= 200;
         bot[bot_nr]->movementType = SKOK;
-        bot[bot_nr]->velocity.y = sJumping;
+        bot[bot_nr]->velocity.y -= 15*sJumping;
     }
 
 }
+
 
 void WorldMap::moveBotDown(unsigned int bot_nr)
 {
     bot[bot_nr]->movementType = KUCA;
 }
 
+
 void WorldMap::moveBotJet(unsigned int bot_nr)
 {
-    //std::cout << "UP " << bot_nr << " " << std::endl;
-    bot[bot_nr]->velocity.y += sFlying;
+
+    if (bot[bot_nr]->isAbleToFly)
+    {
+        bot[bot_nr]->movementType = GORA;
+        bot[bot_nr]->velocity.y -= sFlying;
+        //bot[bot_nr]->a.y = -15*sFlying;
+    }
+
 }
 
 void WorldMap::moveBotJumpLeft(unsigned int bot_nr)
 {
-    int t1, t2;
-    if (collisionCircle2Wall(*bot[bot_nr], 0, 1, t1, t2))
+
+    if (bot[bot_nr]->isAbleToJump)
     {
         bot[bot_nr]->movementType = SKOK_W_BOK;
         bot[bot_nr]->velocity.x += sJumping * 0.1f;
-        bot[bot_nr]->velocity.y = sJumping * 0.5f;
+        bot[bot_nr]->velocity.y -= sJumping * 0.5f;
     }
 }
 
 void WorldMap::moveBotJumpRight(unsigned int bot_nr)
 {
-    int t1, t2;
-    if (collisionCircle2Wall(*bot[bot_nr], 0, 1, t1, t2))
+
+    if (bot[bot_nr]->isAbleToJump)
     {
         bot[bot_nr]->movementType = SKOK_W_BOK;
         bot[bot_nr]->velocity.x -= sJumping * 0.1f;
-        bot[bot_nr]->velocity.y = sJumping * 0.5f;
+        bot[bot_nr]->velocity.y -= sJumping * 0.5f;
     }
     //cpBodyApplyForce(bot[bot_nr]->cBody, cpv(1000.0f, -10000.0f), cpvzero);
 }
@@ -139,6 +148,7 @@ WorldMap::~WorldMap()
     bot.clear();
 
     delete map;
+    delete backg;
     delete mouse;
     delete arrow;
     delete chat;
@@ -226,10 +236,10 @@ void WorldMap::run()
     if (SOUNDS_VOL > 0)
         Mix_PlayChannel(-1, sound_spawn, 0);
 
-    Uint32 firstFrameFPS;//, firstFrameSYS;
-    Uint32 lastTime = firstFrameFPS = getStartGameTime = SDL_GetTicks();
+    Uint32 firstFrameFPS, firstFrameSYS;
+    Uint32 lastTime = firstFrameFPS = getStartGameTime = firstFrameSYS = SDL_GetTicks();
     Uint32 frames = 0, dtFPS;
-//std::list<MovingObject *>::iterator it;
+    //  const Uint32 step = 5;
 
     std::cout << " -- Starting game --" << std::endl << std::endl;
 
@@ -249,30 +259,44 @@ void WorldMap::run()
         {
             currentFPS = 1000 * frames / dtFPS;
             frames = 0;
-            //std::cout << "FPS " << currentFPS << std::endl;
             firstFrameFPS = getCurrentTime;
         }
-        //dtSYS = getCurrentTime - firstFrameSYS;
-        // if (getCurrentTime - firstFrameSYS >= 10)
-        // {
-        inputUser();
-        bots_control();
 
-        for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->update();
-        for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->update();
-        for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->update();
-        for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->update();
-        arrow->update(bot[MY_BOT_NR]->position);
-        mouse->update();
-        window_scores->update(bot, MY_BOT_NR);
-        backg->update(mouse->getGlobalPosition(), bot[MY_BOT_NR]->position);
+        //if (getCurrentTime - firstFrameSYS >= step)
+        {
+            //  fTimeStep *= step;
+            inputUser();
+            bots_control();
+            collisions();
+            //for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->update();
+            for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->AccumulateForces();
+            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->update();
+            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->AccumulateForces();
+            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->update();
+            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->AccumulateForces();
+            //for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->update();
+            for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->AccumulateForces();
 
-        collisions();
-        game_control();   // time, flags, bonuses, kills ...
+
+            for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->Verlet();
+            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->Verlet();
+            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->Verlet();
+            for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->Verlet();
+
+
+            arrow->update(bot[MY_BOT_NR]->position);
+            mouse->update();
+            window_scores->update(bot);
+            backg->update(mouse->getGlobalPosition(), bot[MY_BOT_NR]->position);
+
+
+            game_control();   // time, flags, bonuses, kills ...
+            // firstFrameSYS = getCurrentTime;
+        }
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        backg->draw(map);
+        backg->draw(*map);
 
         glEnable(GL_TEXTURE_2D);
 
@@ -301,23 +325,25 @@ void WorldMap::insertMe(TEAM team)
 {
 
     BotsBase temp;
-    temp.name = PLAYER_NAME;
 
-    // fix it - nie korzystamy z gotowej bazy
-    unsigned int tt[] = {235, 235, 255};
-    temp.color[SHIRT] = temp.color[SKIN] = temp.color[HAIR] = temp.color[PANTS] = tt;
+    temp.name = PLAYER_NAME;
+    temp.color[SHIRT] = COLOR_SHIRT;
+    temp.color[SKIN]  = COLOR_SKIN;
+    temp.color[HAIR]  = COLOR_HAIR;
+    temp.color[PANTS] = COLOR_PANTS;
+
     if (CURRENT_GAME_MODE == CTF || CURRENT_GAME_MODE == TM)
     {
-        for (int j = 0; j < 3; ++j)
-            temp.color[SHIRT][j] = textCol[team][j];
+        temp.color[SHIRT] = textCol[team];
     }
 
     int point = static_cast<int>(rand()%spawnpoint[team].size());
     MY_BOT_NR = addBot(temp, spawnpoint[team][point], team);
 
     backg = new Background(static_cast<float>(MAX_WIDTH/2 - map->spawnpoint[spawnpoint[team][point]].x),
-                           static_cast<float>(MAX_HEIGHT/2 - map->spawnpoint[spawnpoint[team][point]].y));
+                           static_cast<float>(MAX_HEIGHT/2 - map->spawnpoint[spawnpoint[team][point]].y), bot[MY_BOT_NR]->position);
 
+    window_scores = new WindowScores(text_deaddot, text_smalldot, MY_BOT_NR);
 }
 
 
@@ -387,7 +413,6 @@ unsigned int WorldMap::addBot(const BotsBase& botss, int spawn_nr, TEAM team)
     }
 
     bot.push_back(newbot);
-    // m_objects.push_back(newbot);
 
     return newbot->number;
 }
@@ -427,7 +452,7 @@ void WorldMap::addGrenade(unsigned int bot_nr, const TVector2D& dest, Uint32 pus
        }*/
 
     gren_list.push_back(grenade);
-    // m_objects.push_back(grenade);
+
     bot[bot_nr]->numGrenades--;
 
 }
@@ -481,7 +506,7 @@ void WorldMap::addBullet(unsigned int bot_nr, const TVector2D& dest)
             Mix_PlayChannel(-1, weapon_base[bot[bot_nr]->gunModel].fireSound, 0);
         }
         //std::cout << "KAT " << std::endl;
-        Bullet *sbullet = new Bullet(bot[bot_nr]->shotPoint, dest, bot[bot_nr]->gunModel, bot_nr, weapon_base[bot[bot_nr]->gunModel].textureAmmo);
+        Bullet *sbullet = new Bullet(bot[bot_nr]->shotPoint, dest, bot[bot_nr]->gunModel, bot_nr, weapon_base[bot[bot_nr]->gunModel].speed, weapon_base[bot[bot_nr]->gunModel].textureAmmo);
         bot[bot_nr]->leftAmmos--;
         bullet_list.push_back(sbullet);
         // m_objects.push_back(sbullet);

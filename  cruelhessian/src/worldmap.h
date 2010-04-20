@@ -55,6 +55,7 @@ public:
 
 private:
 
+    // tymi polami boty roznia sie od siebie
     struct BotsBase
     {
         std::string name;
@@ -192,7 +193,7 @@ private:
     // definitions in draw.cpp
     void draw_background();
     void draw_interface();
-    void draw_int_help(const Tex& tex, float dx, float dy);
+//    void draw_int_help(const Tex& tex, float dx, float dy);
   //  void draw_screen();
     void draw_infos();
 
@@ -213,7 +214,7 @@ private:
     int getWeaponNumber(const std::string& gun);
     //Uint8* getRGB(const std::string& col);
     //public:
-    unsigned int* getRGB(const std::string& col);
+//    unsigned int* getRGB(const std::string& col);
     //private:
     void init_gl();
 

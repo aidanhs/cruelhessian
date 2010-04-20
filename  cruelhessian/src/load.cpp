@@ -21,8 +21,7 @@
 #include <sstream>
 #include <ctime>
 #include "boost/filesystem/fstream.hpp"
-#include "boost/regex.hpp"
-
+#include "regexp.h"
 #include "worldmap.h"
 #include "textures_loader.h"
 #include "mouse.h"
@@ -64,7 +63,7 @@ void WorldMap::load_weapons_base()
         temp.fireInterval = static_cast<Uint32>(16.67 * ini.GetLongValue(temp.name.c_str(), "FireInterval"));
         temp.ammo = ini.GetLongValue(temp.name.c_str(), "Ammo");
         temp.reloadTime = static_cast<Uint32>(16.67 * ini.GetLongValue(temp.name.c_str(), "ReloadTime"));
-        temp.speed = ini.GetLongValue(temp.name.c_str(), "Speed");
+        temp.speed = static_cast<float>(ini.GetLongValue(temp.name.c_str(), "Speed"));
         temp.bulletStyle = ini.GetLongValue(temp.name.c_str(), "BulletStyle");
         temp.startUpTime = 16.67f * ini.GetLongValue(temp.name.c_str(), "StartUpTime");
         temp.bink = 16.67f * ini.GetLongValue(temp.name.c_str(), "Bink");
@@ -89,7 +88,6 @@ void WorldMap::load_configs()
     */
 
     MAX_RESPAWN_TIME = 5;
-    // GUN_MENU_START = TVector2D(MAX_WIDTH/4, MAX_HEIGHT/7);
     CHOICE_GUN = false;
     SHOW_GUN_MENU = true;
     SHOW_SCORES = false;
@@ -104,17 +102,16 @@ void WorldMap::load_configs()
 
     JET_CHANGE = 0.0005f;
     sGravity = 9.81f;
-    sDrag = 0.3;
-    sDragWalking = 300;
-    sWalking = 100;
-    sFlying = 2000.0;
-    sJumping = 2200.0;
+    sDrag = 0.3f;
+    sDragWalking = 300.0f;
+    sWalking = 10.0f;
+    sFlying = 1000.0f;
+    sJumping = 20.0f;
 
     DISTANCE_SCORE = MY_CURRENT_POS = 0;
 
     mouse = new Mouse(text_mouse);
     chat = new Chat();
-    window_scores = new WindowScores(text_deaddot, text_smalldot);
     window_guns = new WindowGuns(weapon_base);
     arrow = new Arrow(text_arrow);
 
@@ -151,7 +148,7 @@ void WorldMap::load_bonuses()
             num = bonus[i][j];
             p.x = static_cast<float>(map->spawnpoint[num].x);
             p.y = static_cast<float>(map->spawnpoint[num].y);
-            Bonus *newbon = new Bonus(p, i, text_bonus[i], BONUS_GRENADES);
+            Bonus *newbon = new Bonus(p, text_bonus[i], BONUS_GRENADES);
             bonus_list.push_back(newbon);
 //            m_objects.push_back(newbon);
         }
@@ -190,20 +187,6 @@ int WorldMap::getWeaponNumber(const std::string& gun)
     return -1;
 }
 
-// convert TColor to RGB
-// TColor - $00bbggrr
-unsigned int* WorldMap::getRGB(const std::string& col)
-{
-
-    unsigned int *res = new unsigned int[3];
-
-    sscanf(col.substr(3, 2).c_str(), "%x", &res[2]);
-    sscanf(col.substr(5, 2).c_str(), "%x", &res[1]);
-    sscanf(col.substr(7, 2).c_str(), "%x", &res[0]);
-
-    return res;
-}
-
 
 
 int WorldMap::load_bots_base()
@@ -216,7 +199,8 @@ int WorldMap::load_bots_base()
     srand(static_cast<unsigned int>(time(0)));
 
     //boost::regex re(fold + ".+.bot");
-    boost::regex re(".+.bot");
+    //boost::regex re(".+.bot");
+    std::string re = ".+.bot";
     boost::filesystem::directory_iterator end;
 
     // reading Bots directory
@@ -231,8 +215,8 @@ int WorldMap::load_bots_base()
 
     for (boost::filesystem::directory_iterator iter(fold); iter != end; ++iter)
     {
-        //if (boost::regex_match(iter->path().string(), re))
-        if (boost::regex_match(iter->leaf(), re))
+        //if (boost::regex_match(iter->leaf(), re))
+        if (regexec(regcomp((char *)re.c_str()), (char *)iter->leaf().c_str()))
         {
 
             if (ini.LoadFile((iter->path().string()).c_str()) < 0)
@@ -246,10 +230,10 @@ int WorldMap::load_bots_base()
             std::cout << "   loading bot " << ++nr << " : " << temp.name << std::endl;
 
             temp.favouriteWeapon = getWeaponNumber(ini.GetValue("BOT", "Favourite_Weapon"));
-            temp.color[SHIRT] = getRGB(ini.GetValue("BOT", "Color1"));
-            temp.color[PANTS] = getRGB(ini.GetValue("BOT", "Color2"));
-            temp.color[SKIN] = getRGB(ini.GetValue("BOT", "Skin_Color"));
-            temp.color[HAIR] = getRGB(ini.GetValue("BOT", "Hair_Color"));
+            temp.color[SHIRT] = tcolor2rgb(ini.GetValue("BOT", "Color1"));
+            temp.color[PANTS] = tcolor2rgb(ini.GetValue("BOT", "Color2"));
+            temp.color[SKIN] = tcolor2rgb(ini.GetValue("BOT", "Skin_Color"));
+            temp.color[HAIR] = tcolor2rgb(ini.GetValue("BOT", "Hair_Color"));
             temp.chatKill = ini.GetValue("BOT", "Chat_Kill");
             temp.chatDead = ini.GetValue("BOT", "Chat_Dead");
             temp.chatLowhealth = ini.GetValue("BOT", "Chat_Lowhealth");

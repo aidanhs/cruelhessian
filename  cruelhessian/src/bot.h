@@ -24,7 +24,6 @@
 #include <iostream>
 #include "moving_object.h"
 #include "globals.h"
-//#include "SDL.h"
 
 
 class Bot : public MovingObject
@@ -67,8 +66,9 @@ public:
 
     bool isShooting;
     bool isKilled;
-    bool isFlying;
+    bool isAbleToFly;
     bool isReloading;
+    bool isAbleToJump;
 
     TVector2D shotPoint;
     float procJet;
@@ -85,6 +85,7 @@ public:
     void draw();
     void update();
     bool is_inside(int x, int y);
+   //void AccumulateForces();
 
 };
 

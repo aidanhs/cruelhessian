@@ -45,37 +45,36 @@ namespace global
 
 
 extern int CONFIG_VERSION;
-extern     Uint8 textColorGunOnTouch[4];
-extern    Uint8 textColorGunNormal[4];
-extern Uint8 textCol[5][4];
-extern     Uint8 textGunColor[4];
+extern unsigned int *COLOR_SHIRT, *COLOR_SKIN, *COLOR_HAIR, *COLOR_PANTS, *COLOR_JET;
+extern unsigned int textColorGunOnTouch[4];
+extern unsigned int textColorGunNormal[4];
+extern unsigned int textCol[5][4];
+extern unsigned int textGunColor[4];
+extern unsigned int* tcolor2rgb(const std::string& col);
+extern std::string rgb2tcolor(unsigned int* col);
 
 extern     SDL_Surface *screen;
 
-extern    int read_configs();
-extern int save_configs();
-extern int defaults();
+
 extern  int setSDL();
 
-//extern freetype::font_data font1_16, font2_12, font2_28;
 extern freetype::font_data font[2][50];
- void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y);
- void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
+void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
+void printTextMiddle(freetype::font_data& font, const std::string& text, unsigned int* color, float y);
 
 
-
- extern    int FontMenuSize;
-  extern   int FontConsoleSize;
- extern    int FontBigSize;
-  extern   int FontWeaponMenuSize;
-   extern  int FontConsoleSmallSize;
-  extern   int FontHeightScale;
-  extern   int FontMenuBold;
-  extern   int FontConsoleBold;
-  extern   int FontBigBold;
-  extern   int FontWeaponMenuBold;
-  extern   int FontConsoleSmallBold;
-  extern   int KillConsoleNameSpace;
+extern    int FontMenuSize;
+extern   int FontConsoleSize;
+extern    int FontBigSize;
+extern   int FontWeaponMenuSize;
+extern  int FontConsoleSmallSize;
+extern   int FontHeightScale;
+extern   int FontMenuBold;
+extern   int FontConsoleBold;
+extern   int FontBigBold;
+extern   int FontWeaponMenuBold;
+extern   int FontConsoleSmallBold;
+extern   int KillConsoleNameSpace;
 
 //extern float bgX, bgY;
 
@@ -277,7 +276,7 @@ public:
     Uint32 fireInterval;
     unsigned int ammo;
     Uint32 reloadTime;
-    int speed;
+    float speed;
     int bulletStyle;
     float startUpTime;
     float bink;

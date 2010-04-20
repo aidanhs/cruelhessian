@@ -19,12 +19,11 @@
  */
 
 #include <iostream>
-//#include <locale.h>
-//#include <libintl.h>
 #include "CEGUIDefaultResourceProvider.h"
 
 #include "gui.h"
 #include "globals.h"
+#include "parser.h"
 
 //#define _(string) gettext(string)
 
@@ -196,8 +195,6 @@ bool GUI::onSearchSoldat(const CEGUI::EventArgs& )
 GUI::~GUI()
 {
     delete renderer;
-//    CEGUI::System::destroy();
-//    CEGUI::OpenGLRenderer::destroy(*renderer);
 }
 
 
@@ -412,14 +409,6 @@ GUI::GUI()
 
         // Options
         mTab->getTabContentsAtIndex(2)->setText((CEGUI::utf8*)_("Options"));
-
-        /*mLanguage = static_cast<CEGUI::Combobox*>(winMgr.getWindow("root/options/Language"));
-        mLanguage->addItem(new MyListItem("English"));
-        mLanguage->addItem(new MyListItem("Polish"));
-        mLanguage->setSortingEnabled(true);
-        mLanguage->setReadOnly(true);
-        mLanguage->setItemSelectState(size_t(0), true);*/
-        //mPlaceSoldat = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/options/placeSoldat"));
 
         mPlaceSoldatDesc = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/options/placeSoldatDesc"));
         mPlaceSoldatDesc->setText((CEGUI::utf8*)_("Directory with Soldat files :"));

@@ -21,7 +21,7 @@ namespace freetype
 
 ///Create a display list coresponding to the give character.
     //void make_dlist ( FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base )
-    void make_dlist ( FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base )
+    static void make_dlist ( FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base )
     {
 
         //The first thing we do is get FreeType to render our character
@@ -141,12 +141,12 @@ namespace freetype
 
 
 
-    void font_data::init(const char * fname, unsigned int h)
+    void font_data::init(const char * fname, unsigned int hh)
     {
         //Allocate some memory to store the texture ids.
         textures = new GLuint[128];
 
-        this->h=static_cast<float>(h);
+        this->h=static_cast<float>(hh);
 
         //Create and initilize a freetype font library.
         FT_Library library;
@@ -167,7 +167,7 @@ namespace freetype
         //in terms of 1/64ths of pixels.  Thus, to make a font
         //h pixels high, we need to request a size of h*64.
         //(h << 6 is just a prettier way of writting h*64)
-        FT_Set_Char_Size( face, h << 6, h << 6, 96, 96);
+        FT_Set_Char_Size( face, hh << 6, hh << 6, 96, 96);
 
         //Here we ask opengl to allocate resources for
         //all the textures and displays lists which we

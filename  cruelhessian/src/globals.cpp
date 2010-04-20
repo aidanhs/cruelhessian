@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "globals.h"
 #include "parser/SimpleIni.h"
@@ -32,17 +33,18 @@ namespace global
 
 SDL_Surface *screen;
 
-int CONFIG_VERSION = 1;
+int CONFIG_VERSION = 2;
+
+unsigned int *COLOR_SHIRT, *COLOR_SKIN, *COLOR_HAIR, *COLOR_PANTS, *COLOR_JET;
 
 GAME_MODE CURRENT_GAME_MODE;
 
-Uint8 textColorGunOnTouch[4];
-Uint8 textColorGunNormal[4];
-Uint8 textCol[5][4];
-Uint8 textGunColor[4];
+unsigned int textColorGunOnTouch[4];
+unsigned int textColorGunNormal[4];
+unsigned int textCol[5][4];
+unsigned int textGunColor[4];
 
 float SOUNDS_VOL, MUSIC_VOL;
-//std::string SONG_NAME;
 int AUDIO_QUAL;
 bool FULLSCREEN;
 int MAX_BPP;
@@ -66,23 +68,19 @@ int FontWeaponMenuBold;
 int FontConsoleSmallBold;
 int KillConsoleNameSpace;
 
-void printText(freetype::font_data& font, const std::string& text, Uint8* color, float x, float y)
+
+void printTextMiddle(freetype::font_data& fontx, const std::string& text, unsigned int* color, float y)
 {
-    glPushMatrix();
-    glColor3ub(color[0], color[1], color[2]);
-    glLoadIdentity();
-    freetype::print(font, x, MAX_HEIGHT-y-12.0f, text.c_str());
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glPopMatrix();
+    printText(fontx, text, color, MAX_WIDTH/2 - text.length() / 2 - 50, y);
 }
 
 
-void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y)
+void printText(freetype::font_data& fontx, const std::string& text, unsigned int* color, float x, float y)
 {
     glPushMatrix();
     glColor3ub(color[0], color[1], color[2]);
     glLoadIdentity();
-    freetype::print(font, x, MAX_HEIGHT-y-12.0f, text.c_str());
+    freetype::print(fontx, x, MAX_HEIGHT-y-12.0f, text.c_str());
     glColor3f(1.0f, 1.0f, 1.0f);
     glPopMatrix();
 }
@@ -151,7 +149,7 @@ float fTimeStep; // Krok czasowy fizyki
 bool checkSoldat()
 {
 
-    boost::filesystem::directory_iterator end;
+    //boost::filesystem::directory_iterator end;
 
     if (!boost::filesystem::exists(SOL_PATH))
     {
@@ -208,206 +206,18 @@ bool checkSoldat()
         return false;
     }
 
-    /*for (boost::filesystem::directory_iterator itr(SOL_PATH); itr != end; ++itr)
-    {
-        if (itr->filename() == "Soldat.exe")
-        {
-            return true;
-        }
-    }*/
-
     return true;
 }
 
 
 
 
-int defaults()
-{
-    std::cout << "Restoring defaults ..." << std::endl;
 
-    SOL_PATH = "";
-    CH_INTERFACE = "Default";
-    INTERF_PATH = "";
-    FULLSCREEN = 0;
-    MAX_WIDTH = 640.0f;
-    MAX_HEIGHT = 480.0f;
-    MAX_BPP = 16;
-    SOUNDS_VOL = 20.0f;
-    MUSIC_VOL = 0.0f;
-    AUDIO_QUAL = 44100;
-
-    PLAYER_NAME = "Player";
-
-    KEY_LEFT = 97;
-    KEY_RIGHT = 100;
-    KEY_DOWN = 115;
-    KEY_UP = 119;
-    KEY_RELOAD = 114;
-    KEY_GRENADE = 32;
-    KEY_CHAT = 116;
-    KEY_TEAMCHAT = 121;
-
-    return 0;
-}
-
-
-int read_configs()
-{
-
-    CSimpleIni ini(false, false, false);
-
-    if (ini.LoadFile(CH_CONFIG_FILE.c_str()) < 0)
-    {
-        defaults();
-        return 1;
-    }
-
-    std::cout << "Loading configs from 'options.ini' ..." << std::endl;
-
-    if (ini.GetLongValue("info", "Version") != CONFIG_VERSION)
-    {
-        std::cout << "New config file version" << std::endl;
-        defaults();
-        return 1;
-    }
-
-    SOL_PATH = ini.GetValue("global", "SoldatPath");
-    CH_INTERFACE = ini.GetValue("global", "Interface");
-    FULLSCREEN = ini.GetBoolValue("global", "Fullscreen");
-    MAX_WIDTH = static_cast<float>(ini.GetLongValue("global", "MaxWidth"));
-    MAX_HEIGHT = static_cast<float>(ini.GetLongValue("global", "MaxHeight"));
-    MAX_BPP = ini.GetLongValue("global", "MaxDeep");
-    SOUNDS_VOL = static_cast<float>(ini.GetLongValue("global", "SoundVolume"));
-    MUSIC_VOL = static_cast<float>(ini.GetLongValue("global", "MusicVolume"));
-    AUDIO_QUAL = ini.GetLongValue("global", "AudioQuality");
-
-    PLAYER_NAME = ini.GetValue("player", "Name");
-
-    KEY_LEFT = ini.GetLongValue("controls", "Left");
-    KEY_RIGHT = ini.GetLongValue("controls", "Right");
-    KEY_DOWN = ini.GetLongValue("controls", "Crouch");
-    KEY_UP = ini.GetLongValue("controls", "Jump");
-    KEY_RELOAD = ini.GetLongValue("controls", "Reload");
-    KEY_GRENADE = ini.GetLongValue("controls", "Grenade");
-    KEY_CHAT = ini.GetLongValue("controls", "Chat");
-    KEY_TEAMCHAT = ini.GetLongValue("controls", "TeamChat");
-
-    /*if (SOL_PATH[SOL_PATH.length()-1] == '\\')
-    {
-    	std::cout << "JEA" << std::endl;
-        SOL_PATH[SOL_PATH.length()-1] = '/';
-    }*/
-    if (!SOL_PATH.empty())
-    {
-        if (SOL_PATH[SOL_PATH.length()-1] == '\\')
-        {
-            //std::cout << "JEA" << std::endl;
-            //SOL_PATH[SOL_PATH.length()-1] = '/';
-        }
-        else if (SOL_PATH[SOL_PATH.length()-1] != '/')
-        {
-            SOL_PATH += '/';
-        }
-        INTERF_PATH = SOL_PATH + "Interface-gfx/";
-    }
-//	std::cout << "JEA" << INTERF_PATH << std::endl;
-    /*
-    //std::locale loc("");
-        std::cout << "Loading maps list from 'mapslist.txt' ..." << std::endl;
-        //std::wifstream file((SOL_PATH + "mapslist.txt").c_str(), std::ios_base::binary);
-        std::ifstream file((SOL_PATH + "mapslist.txt").c_str());
-        //std::locale loc(file.getloc(), new boost::archive::codecvt_null<wchar_t>);
-
-    //    file.imbue(loc);
-
-        if (file.is_open())
-        {
-            std::string newbuffer;
-            std::string buffer;
-    int k = 0;
-            file.seekg(2, std::ios::beg);
-            while (getline(file, buffer))
-            //while (file >> buffer)
-            {
-                //std::cout << buffer[0]<<std::endl;
-                //if (buffer[0] != '\n' && buffer[0] != '\r' && buffer != "")
-                //if (buffer[0] >= 'a' && buffer[0] <= 'Z')
-                {
-                              //  newbuffer = buffer;
-                //std::cout << "ONE" << std::endl;
-                //newbuffer.assign(buffer.begin(), buffer.end());
-              //  newbuffer += ".PMS";
-                //if (boost::filesystem::exists(newbuffer))
-                    mapsList.push_back(buffer);
-                //std::cout << buffer << std::endl;
-                }
-
-            }
-            for (unsigned int i = 0; i < mapsList.size(); ++i)
-            {
-                std::cout << mapsList[i] << std::endl;
-                //if (mapsList[i][0] == ' ') std::cout << "KURE\n";
-            }
-
-            file.close();
-        }
-        else
-        {
-            std::cout << "ERROR opening file 'mapslist.txt'" << std::endl;
-            return -1;
-        }
-    */
-    return 0;
-}
-
-
-
-int save_configs()
-{
-    std::cout << "Saving configs to 'options.ini' ..." << std::endl;
-
-    CSimpleIni ini(false, false, false);
-
-    if (!std::ifstream(CH_CONFIG_FILE.c_str()))
-    {
-        std::ifstream o_file(CH_CONFIG_FILE.c_str());
-        o_file.close();
-    }
-
-    ini.LoadFile(CH_CONFIG_FILE.c_str());
-
-    ini.SetLongValue("info", "Version", CONFIG_VERSION, NULL);
-
-    ini.SetValue("global", "SoldatPath", SOL_PATH.c_str(), NULL);
-    ini.SetValue("global", "Interface", CH_INTERFACE.c_str(), NULL);
-    ini.SetBoolValue("global", "Fullscreen", FULLSCREEN, NULL);
-    ini.SetLongValue("global", "MaxWidth", static_cast<int>(MAX_WIDTH), NULL);
-    ini.SetLongValue("global", "MaxHeight", static_cast<int>(MAX_HEIGHT), NULL);
-    ini.SetLongValue("global", "MaxDeep", MAX_BPP, NULL);
-    ini.SetLongValue("global", "SoundVolume", static_cast<int>(SOUNDS_VOL), NULL);
-    ini.SetLongValue("global", "MusicVolume", static_cast<int>(MUSIC_VOL), NULL);
-    ini.SetLongValue("global", "AudioQuality", AUDIO_QUAL, NULL);
-
-    ini.SetValue("player", "Name", PLAYER_NAME.c_str(), NULL);
-
-    ini.SetLongValue("controls", "Left", KEY_LEFT, NULL);
-    ini.SetLongValue("controls", "Right", KEY_RIGHT, NULL);
-    ini.SetLongValue("controls", "Jump", KEY_UP, NULL);
-    ini.SetLongValue("controls", "Crouch", KEY_DOWN, NULL);
-    ini.SetLongValue("controls", "Reload", KEY_RELOAD, NULL);
-    ini.SetLongValue("controls", "Grenade", KEY_GRENADE, NULL);
-    ini.SetLongValue("controls", "Chat", KEY_CHAT, NULL);
-    ini.SetLongValue("controls", "TeamChat", KEY_TEAMCHAT, NULL);
-
-    ini.SaveFile(CH_CONFIG_FILE.c_str());
-
-    return 0;
-}
 
 
 int setSDL()
 {
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
@@ -439,6 +249,41 @@ int setSDL()
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     return 0;
+
+}
+
+// convert TColor to RGB
+// TColor - $00bbggrr
+unsigned int* tcolor2rgb(const std::string& col)
+{
+
+    unsigned int *res = new unsigned int[3];
+
+    sscanf(col.substr(3, 2).c_str(), "%x", &res[2]);
+    sscanf(col.substr(5, 2).c_str(), "%x", &res[1]);
+    sscanf(col.substr(7, 2).c_str(), "%x", &res[0]);
+
+    return res;
+}
+
+// convert RGB to TColor
+// TColor - $00bbggrr
+std::string rgb2tcolor(unsigned int* col)
+{
+    std::string temp("$00"), res;
+    std::ostringstream oss;
+
+    for (int i = 2; i >= 0; --i)
+    {
+        oss.str("");
+        oss << std::hex << col[i];
+        res = oss.str();
+        if (res.length() == 1)
+            res.insert(0, "0");
+        temp += res;
+    }
+
+    return temp;
 }
 
 }

@@ -36,7 +36,7 @@ Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owne
     maxSpeed = TVector2D(100, 100);
 
     float tang = (dest.y - src.y) / (dest.x - src.x);
-    float sq = push_time / sqrt(1+tang*tang);
+    float sq = 3*push_time / -sqrt(1+tang*tang);
     velocity = (dest.x - src.x > 0) ? TVector2D(-sq, -sq * tang) : TVector2D(sq, sq * tang);
 
     for (int i = 0; i < 17; ++i)
@@ -45,19 +45,23 @@ Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owne
     }
     //w = texture[0]->w;
     //h = texture[0]->h;
-    w = h = 0;
+    w = h = 4;
     r = texture[0]->w / 2;
     killMyself = false;
 
-    // old_position = position;
-
     timer_throw = getCurrentTime;
+
+    //   velocity = TVector2D(0.0f, 0.0f);
+    //a = TVector2D(0, -20);
+//old_position = position;
+    old_a = TVector2D(0.0f, sGravity);
 }
 
 
 void Grenade::draw() const
 {
     glPushMatrix();
+
     glTranslatef(position.x - texture[currentFrame]->w/2,
                  position.y - texture[currentFrame]->h/2, 0.0);
 
@@ -103,6 +107,6 @@ void Grenade::update()
 
     }
 
-    gravity();
-
 }
+
+

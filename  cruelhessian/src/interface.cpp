@@ -25,14 +25,13 @@
 
 
 
-void WorldMap::draw_int_help(const Tex& texture, float dx, float dy)
+static void draw_int_help(const Tex& texture, float dx, float dy)
 {
 
     glPushMatrix();
 
     glLoadIdentity();
     glTranslatef(dx, dy, 0.0f);
-
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
@@ -53,7 +52,7 @@ void WorldMap::draw_int_help(const Tex& texture, float dx, float dy)
 
 void WorldMap::draw_interface()
 {
-    int x, y;
+
     std::ostringstream oss;
     std::string temp;
 
@@ -127,8 +126,10 @@ void WorldMap::draw_interface()
         oss << bot[MY_BOT_NR]->points;
     temp = oss.str() + " (";
     oss.str("");
-    if (DISTANCE_SCORE < 0) temp += "-";
-    else temp += "+";
+    if (DISTANCE_SCORE < 0)
+        temp += "-";
+    else
+        temp += "+";
     oss << abs(DISTANCE_SCORE);
     temp += oss.str() + ")";
     printText(font[1][FontConsoleSize], temp, textCol[1], 0.87f*MAX_WIDTH, MAX_HEIGHT-55.0f);
@@ -167,8 +168,8 @@ void WorldMap::draw_interface()
             else if (i == MY_BOT_NR)
             {
                 oss << static_cast<float>(bot[MY_BOT_NR]->respawnTime - new_time)/1000;
-                printText(font[1][FontConsoleSize], "Respawn in " + oss.str(), textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
-                printText(font[1][FontConsoleSize], "Killed by " + bot[bot[MY_BOT_NR]->killer]->name, textCol[1], 0.5f*MAX_WIDTH-80, MAX_HEIGHT-94.0f);
+                printTextMiddle(font[1][FontMenuSize], "Respawn in " + oss.str(), textCol[1], 50.0f);
+                printTextMiddle(font[1][FontMenuSize], "Killed by " + bot[bot[MY_BOT_NR]->killer]->name, textCol[1], MAX_HEIGHT-94.0f);
                 oss.str("");
 
                 // wait half a second after death and then show gun menu
@@ -187,7 +188,7 @@ void WorldMap::draw_interface()
     if (YOU_KILLED)
     {
         if (getCurrentTime - bot[MY_BOT_NR]->youKilledTime <= 1000)
-            printText(font[1][FontConsoleSize], "You killed " + bot[bot[MY_BOT_NR]->killed]->name, textCol[1], 0.5f*MAX_WIDTH-20, 50.0f);
+            printTextMiddle(font[1][FontMenuSize], "You killed " + bot[bot[MY_BOT_NR]->killed]->name, textCol[1], 50.0f);
         else
             YOU_KILLED = false;
     }
@@ -195,6 +196,7 @@ void WorldMap::draw_interface()
 
     if (SHOW_GUN_MENU && !CHOICE_GUN)
     {
+        int x, y;
         //SDL_ShowCursor(SDL_ENABLE);
         window_guns->draw(mouse->getLocalPosition());
 
@@ -258,6 +260,7 @@ void WorldMap::draw_interface()
 
     if (SHOW_ESC)
     {
+        int x, y;
         //glutSetCursor(GLUT_CURSOR_INHERIT);
         window_exit->draw(mouse->getLocalPosition());
         if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))

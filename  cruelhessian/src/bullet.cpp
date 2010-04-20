@@ -21,11 +21,10 @@
 
 #include "bullet.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
 #include <cmath>
 
 
-Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, const Tex& tex) : texture(tex)
+Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, float speed, const Tex& tex) : texture(tex)
 {
     type = XPOINT;
     position = src;
@@ -38,12 +37,12 @@ Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmode
     maxSpeed = TVector2D(10000, 10000);
 
     float tang = (dest.y - src.y) / (dest.x - src.x);
-    // popr
-    //float sq = 5*weapon[gunmodel].speed / sqrt(1+tang*tang);
-    float sq = 5*100 / sqrt(1+tang*tang);
+    float sq = 8 * speed / sqrt(1+tang*tang);
 
-    velocity = (dest.x - src.x > 0) ? TVector2D(-sq, -sq * tang) : TVector2D(sq, sq * tang);
-
+    velocity = (dest.x - src.x > 0) ? TVector2D(sq, sq * tang) : TVector2D(-sq, -sq * tang);
+    //  velocity = TVector2D(0.0f, 0.0f);
+//old_position = position;
+    old_a = TVector2D(0,0);
 }
 
 
@@ -54,7 +53,6 @@ void Bullet::draw() const
 
     glTranslatef(position.x, position.y, 0.0f);
     glRotatef(_180overpi * atan(velocity.y / velocity.x), 0.0f, 0.0f, 1.0f);
-
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
@@ -69,9 +67,4 @@ void Bullet::draw() const
     glEnd();
     glPopMatrix();
 
-}
-
-void Bullet::update()
-{
-    gravity();
 }

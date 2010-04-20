@@ -35,10 +35,9 @@ void Mouse::draw() const
     glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
+
     glLoadIdentity();
-
     glTranslatef(getLocalX(), getLocalY(), 0.0f);
-
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);
@@ -57,12 +56,6 @@ void Mouse::draw() const
 
 }
 
-/*
-void Mouse::setPosition(const TVector2D& pos)
-{
-    mGlobalPos = pos;
-}
-*/
 
 TVector2D Mouse::getGlobalPosition() const
 {

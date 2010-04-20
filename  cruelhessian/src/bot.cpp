@@ -26,10 +26,9 @@
 
 Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest, Tex text[9][2]) : name(_name), team(_team)
 {
+
     type = CIRCLE;
     number = bot_nr;
-    //team = _team;
-    //name = _name;
     movementDirection = LEFT;
     movementType = STOI;
     position = TVector2D(spawn_x, spawn_y);
@@ -46,7 +45,7 @@ Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, T
     mass = 100;
     massInv = 1 / mass;
     maxSpeed = TVector2D(140, 150);
-    isFlying = isReloading = isKilled = false;
+    isAbleToFly = isReloading = isKilled = isAbleToJump = false;
     procJet = 1.0;
     actLife = fullLife;
 
@@ -72,7 +71,7 @@ Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, T
         {
             texture[i][j] = &text[i][j];
         }
-
+    old_a = TVector2D(0,sGravity);
 }
 
 
@@ -169,22 +168,18 @@ void Bot::draw()
         // biodro
         glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
         draw_gostek_help(7, 4, getAngle(7,6), texture[BIODRO][dir]);
-        //glColor3f(1,1,1);
 
         // lewa noga
         glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
         draw_gostek_help(3, 3, getAngle(3,0), texture[NOGA][dir]);
-        //glColor3f(1,1,1);
 
         // prawa noga
         glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
         draw_gostek_help(2, 2, getAngle(2,1), texture[NOGA][dir]);
-        //glColor3f(1,1,1);
 
         // lewe udo
         glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
         draw_gostek_help(5, 5, getAngle(5,2), texture[UDO][dir]);
-        //glColor3f(1,1,1);
 
         // prawe udo
         glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
@@ -200,36 +195,35 @@ void Bot::draw()
         // prawe ramie
         glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
         draw_gostek_help(10, 10, getAngle(13,10) - 270, texture[RAMIE][dir]);
-        //glColor3f(1,1,1);
 
         // prawa reka
         glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
         draw_gostek_help(13, 13, getAngle(13,14), texture[REKA][dir]);
-        glColor3f(1,1,1);
 
         // prawa dlon
+        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
         draw_gostek_help(14, 14, getAngle(14,18), texture[DLON][dir]);
 
         // klata
         glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
         draw_gostek_help(7, 9, getAngle(9,10), texture[KLATA][dir]);
-        glColor3f(1,1,1);
 
         // morda
+        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
         draw_gostek_help(8, 8, getAngle(8,11), texture[MORDA][dir]);
 
         // lewe ramie
         glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
         draw_gostek_help(9, 9, getAngle(12,9) - 270, texture[RAMIE][dir]);
-        //glColor3f(1,1,1);
 
         // lewa reka
         glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
         draw_gostek_help(12, 12, getAngle(12,15), texture[REKA][dir]);
-        glColor3f(1,1,1);
 
         // lewa dlon
+        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
         draw_gostek_help(15, 15, getAngle(15,19), texture[DLON][dir]);
+        glColor3f(1,1,1);
 
     }
 
@@ -251,33 +245,10 @@ void Bot::update()
             currentFrame++;
     }
 
-    // Zero's the forces
-    forces.x = 0;
-
-    if (!isFlying)
-    {
-        // gravity
-        forces = TVector2D(0.0f, mass * sGravity);
-
-        // resistance
-        forces -= TVector2D(velocity.x * sDragWalking, velocity.y * sDrag);
-    }
-    // Jesli chce latac, to go w gore
-    else
-    {
-        // Obliczanie sily lotnej
-        forces.y = mass * sFlying;
-
-        // Obliczanie sily oporu
-        forces -= TVector2D(velocity.x * sDragFly, velocity.y * sDragFly);
-    }
-
-    velocity.x += forces.x * massInv * fTimeStep;
-    velocity.y += forces.y * massInv * fTimeStep-0.8f;
-
     // speed limit
     if (velocity.x > maxSpeed.x) velocity.x = maxSpeed.x;
     else if (velocity.x < -maxSpeed.x) velocity.x = -maxSpeed.x;
     if (velocity.y > maxSpeed.y) velocity.y = maxSpeed.y;
     else if (velocity.y < -maxSpeed.y) velocity.y = -maxSpeed.y;
+
 }

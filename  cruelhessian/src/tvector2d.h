@@ -28,8 +28,6 @@ public:
     float x;
     float y;
 
-    //TVector2D(const TVector2D &);
-//    TVector2D& operator+=(TVector2D &a, const TVector2D &b);
     TVector2D();
     TVector2D(float, float);
     TVector2D& operator=(const TVector2D&);

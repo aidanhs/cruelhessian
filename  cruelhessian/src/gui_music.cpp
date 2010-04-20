@@ -19,11 +19,9 @@
  */
 
 #include <iostream>
-//#include <locale.h>
-//#include <libintl.h>
 #include "boost/filesystem/fstream.hpp"
-#include "boost/regex.hpp"
-
+//#include "boost/regex.hpp"
+#include "regexp.h"
 #include "gui.h"
 #include "globals.h"
 
@@ -34,7 +32,8 @@ int GUI::readM3U()
 {
     std::string fold_mp3 = SOL_PATH + "Mp3/", buffer;
     std::vector<std::string> gM3UFiles;
-    boost::regex re(SOL_PATH + "Mp3/.+.(m3u|M3U)");
+    //boost::regex re(SOL_PATH + "Mp3/.+.(m3u|M3U)");
+    std::string re = SOL_PATH + "Mp3/.+.(m3u|M3U)";
     boost::filesystem::directory_iterator end;
 
     gMusicList.clear();
@@ -47,7 +46,8 @@ int GUI::readM3U()
 
     for (boost::filesystem::directory_iterator iter(fold_mp3); iter != end; ++iter)
     {
-        if (boost::regex_match(iter->path().string(), re))
+        //if (boost::regex_match(iter->path().string(), re))
+        if (regexec(regcomp((char *)re.c_str()), (char *)iter->path().string().c_str()))
         {
             // m3u file was found
             gM3UFiles.push_back(iter->path().string());

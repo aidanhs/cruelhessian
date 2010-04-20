@@ -21,11 +21,10 @@
 
 #include "window_exit.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
 
 
 WindowExit::WindowExit()
-    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(200), h(80), m_number(0)
+    : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(200), h(80), m_number(false)
 {
 
 }
@@ -59,12 +58,12 @@ void WindowExit::draw(const TVector2D& pos)
 
     // tekst
     TVector2D start = TVector2D(x + 10, y + 20);
-    m_number = 0;
+    m_number = false;
 
     if (stan1 && m_mouse_pos.y > start.y-7 && m_mouse_pos.y < start.y+7)
     {
         printText(font[0][FontMenuSize], "Exit", textColorGunOnTouch, start.x, start.y);
-        m_number = 1;
+        m_number = true;
     }
     else
     {
@@ -78,7 +77,7 @@ void WindowExit::draw(const TVector2D& pos)
 
 
 // return 1 if CHOICE_EXIT should be true
-int WindowExit::select() const
+bool WindowExit::select() const
 {
     return m_number;
 }

@@ -21,25 +21,28 @@
 
 #include "bonus.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
 
 
-Bonus::Bonus(const TVector2D& dest, int type, const Tex& tex, BONUS bontype) : texture(tex), typeBonus(bontype)
+
+Bonus::Bonus(const TVector2D& pos, const Tex& tex, BONUS bontype) : texture(tex), typeBonus(bontype)
 {
 
-    type = SQUARE;
+    //type = SQUARE;
     scaleX = scaleY = 0.7f;
-   // typeBonus = _type;
-    position = dest;
+    //scaleX = scaleY = 1.0f;
+
     w = scaleX*texture.w;
     h = scaleY*texture.h;
     r = w/2;
+    position.x = pos.x+r;
+    position.y = pos.y-r;
     mass = 10;
     massInv = 1 / mass;
-    maxSpeed = TVector2D(10000, 10000);
+    //maxSpeed = TVector2D(10000, 10000);
     velocity = TVector2D(0.0f, 0.0f);
-   // texture = text;
-
+    //a = TVector2D(0, -20);
+//old_position = position;
+old_a = TVector2D(0,0);
 }
 
 
@@ -47,6 +50,7 @@ void Bonus::draw() const
 {
 
     glPushMatrix();
+
     glTranslatef(position.x, position.y, 0.0f);
     glScalef(scaleX, scaleY, 0.0);
     glBindTexture(GL_TEXTURE_2D, texture.tex);
@@ -66,9 +70,4 @@ void Bonus::draw() const
 
 }
 
-
-void Bonus::update()
-{
-    gravity();
-}
 

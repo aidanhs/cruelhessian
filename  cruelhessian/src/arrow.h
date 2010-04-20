@@ -22,21 +22,22 @@
 #define ARROW_H
 
 #include "globals.h"
+#include "moving_object.h"
 #include "tvector2d.h"
 
 
-class Arrow
+class Arrow : public MovingObject
 {
+
     const Tex& texture;
-    TVector2D position;      // polozenie obiektu
 
 public:
 
     Arrow(const Tex& tex);
     ~Arrow() {};
 
-    void draw() const;
     void update(const TVector2D& bot_pos);
+    void draw() const;
 };
 
 

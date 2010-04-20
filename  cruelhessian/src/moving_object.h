@@ -1,7 +1,7 @@
 /*   moving_objects.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe³ Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +29,9 @@ class MovingObject
 {
 
 private:
-    TVector2D temp;
+  //  TVector2D temp;
+    //TVector2D temp_a;
+
 
 protected:
     //int type;               // 0 - circle, 1 - segment
@@ -37,11 +39,10 @@ protected:
     float massInv;           // odwrotnosc masy
     TVector2D maxSpeed;      // predkosc max
     TVector2D forces;        // sila wypadkowa obiektu
-
-    //  TVector2D old_position;
-    // TVector2D a;
+    // Tex texture;
 
 public:
+
     OBJECT_SHAPE type;
     unsigned int owner;
     TVector2D position;      // polozenie obiektu
@@ -49,8 +50,16 @@ public:
     float r;                 // radius      -          nie zawsze trzeba !!!!!!!
     float w;                 // szerokosc               niekoniecznie
     float h;                 // wysokosc                niekoniecznie
-    virtual void draw() {};        // niekoniecznie
-    void gravity();
+
+    //TVector2D old_position;
+    TVector2D old_a;
+    TVector2D a;
+
+    //virtual void draw() {};        // niekoniecznie
+    //void gravity();
+    //void update_s();
+    void AccumulateForces();
+    void Verlet();
 };
 
 

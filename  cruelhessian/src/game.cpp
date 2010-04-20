@@ -22,6 +22,7 @@
 #include "boost/filesystem/operations.hpp"
 #include "game.h"
 #include "globals.h"
+#include "parser.h"
 
 
 
@@ -70,6 +71,8 @@ void Game::run(int argc, char *argv[])
     if (argc == 1)
     {
         START_MODE = 2;
+        //std::cout << rgb2tcolor(tcolor2rgb("$00EBEB00")) << std::endl;
+        //exit(0);
         ch = new GUI;
         ch->run();
     }

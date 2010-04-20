@@ -25,7 +25,7 @@
 #include "globals.h"
 
 
-WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s) : texture_d(tex_d), texture_s(tex_s)
+WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int nr) : texture_d(tex_d), texture_s(tex_s), my_bot_nr(nr)
 {
 
     column_names.push_back("Player:");
@@ -66,12 +66,12 @@ inline bool cmp(const Bot* bot1, const Bot* bot2)
 
 
 
-void WindowScores::update(const std::vector<Bot *>& bb, unsigned int nr)
+void WindowScores::update(const std::vector<Bot *>& bb)
 {
-    my_bot_nr = nr;
+
     list_long = static_cast<float>(bb.size()*15+80);
 
-    // aktualizacja statystyk
+    // refresh the statistics
     scores.assign(bb.begin(), bb.end());
     std::sort(scores.begin(), scores.end(), cmp);
 
@@ -85,7 +85,6 @@ void WindowScores::draw_help(const Tex& texture, float dx, float dy) const
 
     glLoadIdentity();
     glTranslatef(dx, dy, 0.0f);
-
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);

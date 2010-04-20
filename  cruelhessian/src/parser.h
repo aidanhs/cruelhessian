@@ -1,7 +1,7 @@
-/*   window_exit.h
+/*   parser.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe³ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,33 +18,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef WINDOW_EXIT_H
-#define WINDOW_EXIT_H
-
-#include "tvector2d.h"
+#ifndef PARSER_H
+#define PARSER_H
 
 
-class WindowExit
-{
+extern int defaults();
+extern int read_configs();
+extern int save_configs();
 
-  TVector2D m_mouse_pos;
-  float x, y, w, h;
-  bool m_number;
-
-public:
-
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
-    WindowExit();
-    ~WindowExit() {};
-
-    void draw(const TVector2D& pos);
-    bool select() const;
-};
 
 
 #endif

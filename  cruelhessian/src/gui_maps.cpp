@@ -22,11 +22,13 @@
 //#include <locale.h>
 //#include <libintl.h>
 #include "boost/filesystem/fstream.hpp"
-#include "boost/regex.hpp"
+//#include "boost/regex.hpp"
+#include "regexp.h"
 
 #include "gui.h"
 #include "globals.h"
 #include "worldmap.h"
+#include "parser.h"
 
 //#define _(string) gettext(string)
 
@@ -34,7 +36,9 @@
 void GUI::showMaps(const char* mask)
 {
     std::string str, temp;
-    boost::regex re(SOL_PATH + "Maps/" + mask);
+    //boost::regex re(SOL_PATH + "Maps/" + mask);
+    std::string re = SOL_PATH + "Maps/" + mask;
+
     boost::filesystem::directory_iterator end;
 
     if (!boost::filesystem::exists(SOL_PATH + "Maps/"))
@@ -48,7 +52,8 @@ void GUI::showMaps(const char* mask)
 
     for (boost::filesystem::directory_iterator iter(SOL_PATH + "Maps/"); iter != end; ++iter)
     {
-        if (boost::regex_match(iter->path().string(), re))
+        //if (boost::regex_match(iter->path().string(), re))
+        if (regexec(regcomp((char *)re.c_str()), (char *)iter->path().string().c_str()))
         {
             str.assign(iter->path().string().begin() + SOL_PATH.length() + 5, iter->path().string().end() - 4);
             mMapList->addItem(new MyListItem(str));

@@ -50,6 +50,7 @@ public:
 
     void draw() const;
     void update();
+    //void AccumulateForces();
 
 };
 

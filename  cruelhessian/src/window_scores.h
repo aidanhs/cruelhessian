@@ -39,11 +39,11 @@ class WindowScores
 public:
 
     std::vector<Bot *> scores;
-    WindowScores(const Tex& tex_d, const Tex& tex_s);
+    WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int);
     ~WindowScores();
 
     void draw() const;
-    void update(const std::vector<Bot *>& bb, unsigned int nr);
+    void update(const std::vector<Bot *>& bb);
 };
 
 

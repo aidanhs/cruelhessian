@@ -153,8 +153,9 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
     for (int j = a[0]-1; j <= a[2]+1; ++j)
         for (int k = a[1]-1; k <= a[3]+1; ++k)
         {
+            unsigned int sec = 51*j + k;
             //assert(51*j + k > 0);
-            if (51*j + k > 0)
+            if (sec > 0 &&  sec < map->sector.size())
                 sect_num.push_back(51*j + k);
         }
 
@@ -359,7 +360,7 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
         bot[shooted]->actLife -= damage;
         if (bot[shooted]->actLife <= 0)
         {
-            bot[owner]->points += 10;
+            if (shooted != owner) bot[owner]->points += 10;
             bot[owner]->killedNr++;
             bot[owner]->killed = shooted;
             bot[shooted]->deaths++;
@@ -381,8 +382,8 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
 
                 OLD_POS = bot[MY_BOT_NR]->position;
             }
-            // if I killed someone
-            if (owner == MY_BOT_NR)
+            // if I killed someone (not me)
+            if (owner == MY_BOT_NR && owner != shooted)
             {
                 YOU_KILLED = true;
                 bot[MY_BOT_NR]->youKilledTime = getCurrentTime;
@@ -410,50 +411,59 @@ void WorldMap::collisions()
 
     TVector2D delta;
     int t1, t2;
+
+
     // bots
-    for (unsigned int i = 0; i < bot.size(); ++i)
-        //for (std::list<Bot *>::iterator temp = bonus_list.begin(); temp != bonus_list.end();)
+    for (std::vector<Bot *>::iterator temp = bot.begin(); temp != bot.end();)
     {
 
-        delta = bot[i]->velocity * fTimeStep;
-        if (!collisionCircle2Wall(*bot[i], (delta.x > 0) ? -1.0f: 1.0f, 0.0f, t1, t2))
+        delta = (*temp)->velocity * fTimeStep;
+
+        if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
         {
-            bot[i]->position.x -= delta.x;
-            if (i == MY_BOT_NR) glTranslatef(delta.x, 0.0f, 0.0f);
+            (*temp)->velocity = TVector2D(0.0f, 0.0f);
+            (*temp)->a = 0;
+            //(*temp)->old_a = 0;
+        }
+
+        // gdy dotknie podloza
+        if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
+        {
+            (*temp)->velocity.y = -5.0f;
+            (*temp)->isAbleToJump = true;
+            (*temp)->a = 0;
+            //(*temp)->old_a = 0;
         }
         else
         {
-            if (!collisionCircle2Wall(*bot[i], (delta.x > 0) ? -7.0f: 7.0f, -10.0f, t1, t2))
-            {
-                bot[i]->velocity.y = 40.0f;
-            }
+            (*temp)->isAbleToJump = false;
+            // gdy dotknie sufitu
+            /*
+                    // gdy dotknie sufitu
+                    if (collisionCircle2Wall(**temp, 0.0f, -delta.y, t1, t2))
+                    {
+                        (*temp)->velocity.y = 5.0f;
+                        //(*temp)->isAbleToJump = true;
+                        (*temp)->a = 0;
+                        //(*temp)->old_a = 0;
+                    }*/
         }
-
-        //deltay = bot[i]->velocity.y * fTimeStep;
-        if (!collisionCircle2Wall(*bot[i], 0.0f, (delta.y > 0) ? -1.0f: 1.0f, t1, t2))
-        {
-            bot[i]->position.y -= delta.y;
-            if (i == MY_BOT_NR) glTranslatef(0.0f, delta.y, 0.0f);
-        }
-        else
-        {
-            bot[i]->velocity.y = 0.0f;
-        }
-
+        ++temp;
     }
 
     // bonuses
-    for (std::list<Bonus *>::const_iterator temp = bonus_list.begin(); temp != bonus_list.end();)
+    for (std::list<Bonus *>::iterator temp = bonus_list.begin(); temp != bonus_list.end();)
     {
 
-        // if bonus touched the wall
+        // if bonus will touch the wall
         delta = (*temp)->velocity * fTimeStep;
-        if (!collisionCircle2Wall(**temp, 0.0f, (delta.y > 0) ? -1.0f: 1.0f, t1, t2))
+        if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
         {
-            (*temp)->position.y -= delta.y;
             if (SOUNDS_VOL > 0)
                 Mix_PlayChannel(-1, sound_kitfall[rand()%2], 0);
-            ++temp;
+            (*temp)->a = 0;
+            (*temp)->velocity.y = 0.0f;
+
         }
         // if bonus touched bot
         /*else if (collisionCircle2Circle(**temp, **temp) < 0)
@@ -461,12 +471,7 @@ void WorldMap::collisions()
             //hurt_bot(which_bot, (*temp)->owner, weapon[bot[(*temp)->owner]->gunModel].damage);
         	bonus_list.erase(temp++);
         }*/
-        else
-        {
-            (*temp)->velocity.y = 0.0f;
-            ++temp;
-        }
-
+        ++temp;
     }
 
 
@@ -475,7 +480,8 @@ void WorldMap::collisions()
     {
 
         // if ammo touched the wall
-        if (collisionPoint2Wall(**temp, -(*temp)->velocity.x * fTimeStep, -(*temp)->velocity.y * fTimeStep) >= 0)
+        delta = (*temp)->velocity * fTimeStep;
+        if (collisionPoint2Wall(**temp, delta.x, delta.y) >= 0)
         {
             bullet_list.erase(temp++);
         }
@@ -487,7 +493,7 @@ void WorldMap::collisions()
         }
         else
         {
-            (*temp)->position -= fTimeStep * (*temp)->velocity;
+            //(*temp)->position -= fTimeStep * (*temp)->velocity;
             ++temp;
         }
     }
@@ -496,12 +502,11 @@ void WorldMap::collisions()
     for (std::list<Grenade *>::iterator temp = gren_list.begin(); temp != gren_list.end();)
     {
 
-        // if grenade touched the wall
-        delta = (*temp)->velocity * (-fTimeStep);
-
+        // if grenade will touch the wall
+        delta = (*temp)->velocity * -fTimeStep;
         if (collisionCircle2Wall(**temp, delta.x, delta.y, pol_number, line_number))
         {
-            //std::cout << "KOLLIZJKA " << pol_number << " " << line_number << std::endl;
+
             if (SOUNDS_VOL > 0)
                 Mix_PlayChannel(-1, grenade_bounce, 0);
 
@@ -525,9 +530,9 @@ void WorldMap::collisions()
             gren_list.erase(temp++);
             continue;
         }
-        else
+        //else
         {
-            (*temp)->position -= (*temp)->velocity * fTimeStep;
+            //  (*temp)->position -= (*temp)->velocity * fTimeStep;
             //temp;
             //if (!collision_det(0, ammo[i].position.y-bot[i].velocity.x * aDeltaTime, &bot[i]))
         }
@@ -542,3 +547,4 @@ void WorldMap::collisions()
         //tempg->position.y -= tempg->velocity.y * aDeltaTime;
     }
 }
+

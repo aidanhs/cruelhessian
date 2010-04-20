@@ -21,7 +21,6 @@
 #define _USE_MATH_DEFINES
 
 
-//#include <cmath>
 #include "textures_loader.h"
 #include "boost/filesystem/fstream.hpp"
 #include "boost/algorithm/string.hpp"
@@ -133,6 +132,7 @@ GLuint SOIL_LoadTextureBMP(const std::string& file)
             imgdata[i+1] = imgdata[i+3] = 0;
         }
     }
+
     texID = SOIL_create_OGL_texture
             (
                 imgdata, width, height, channels, SOIL_CREATE_NEW_ID,

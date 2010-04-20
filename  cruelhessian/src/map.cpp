@@ -78,7 +78,6 @@ void Map::setScen(GLuint *text)
 
     for (int i = 0; i < sceneryCount; ++i)
         text_scen[i] = text[i];
-    //	std::cout << "SC " << sceneryCount << std::endl;
 }
 
 
@@ -86,7 +85,6 @@ Map::Map(const std::string& mname)
 {
 
     std::ifstream is(mname.c_str(), std::ios::binary);
-//cout << "test " << sizeof(int) << " " << sizeof(int) << endl;
     version = read_bin<int>(is);
     name = read_string(is, 38);
     texture = read_string(is, 24);
@@ -100,23 +98,6 @@ Map::Map(const std::string& mname)
     randID = read_bin<int>(is);
     polygonCount = read_bin<int>(is);
 
-
-    /*
-        p.version = read_bin<4>(is);
-        p.name = read_string(is, 38);
-        p.texture = read_string(is, 24);
-        p.bgColorTop = read_bin<PMS_COLOR>(is);
-        p.bgColorBottom = read_bin<PMS_COLOR>(is);
-        p.jetAmount = read_bin<8>(is);
-        p.grenades = read_bin<1>(is);
-        p.medikits = read_bin<1>(is);
-        p.weather = PMS_WEATHERTYPE(read_bin<1>(is));
-        p.steps = PMS_STEPSTYPE(read_bin<1>(is));
-        p.randID = read_bin<8>(is);
-        p.polygonCount = read_bin<8>(is);
-    */
-//std::cout << " P " << p.polygonCount << "\n";
-
     for (int i = 0; i < polygonCount; ++i)
     {
         PMS_POLYGON temp;
@@ -129,21 +110,6 @@ Map::Map(const std::string& mname)
         temp.polyType = PMS_POLYTYPE(read_bin<ubyte>(is));
         polygon.push_back(temp);
 
-        // aa[i][0] = p.polygon[i].perpendicular[0].y / p.polygon[i].perpendicular[0].x;
-        // aa[i][1] = p.polygon[i].perpendicular[1].y / p.polygon[i].perpendicular[1].x;
-        // aa[i][2] = p.polygon[i].perpendicular[2].y / p.polygon[i].perpendicular[2].x;
-
-        /*        if (temp.polyType != ptNO_COLLIDE && temp.polyType != ptONLY_BULLETS_COLLIDE)
-                {
-                    cpVect tr_temp[] =
-                    {
-                        // clockwise direction
-                        cpv(temp.vertex[2].x, temp.vertex[2].y),
-                        cpv(temp.vertex[1].x, temp.vertex[1].y),
-                        cpv(temp.vertex[0].x, temp.vertex[0].y),
-                    };
-                    cpSpaceAddStaticShape(spaceMap, cpPolyShapeNew(staticBodyMap, 3, tr_temp, cpvzero));
-                }*/
     }
     sectorDivisions = read_bin<int>(is);
     numSectors = read_bin<int>(is);

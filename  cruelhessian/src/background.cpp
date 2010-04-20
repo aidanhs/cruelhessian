@@ -24,52 +24,67 @@
 
 
 
-Background::Background(float startX, float startY)
+Background::Background(float startX, float startY, const TVector2D& bot_pos) //: move.x(startX), move.y(startY), old_pos(old)
 {
-    moveX = startX;
-    moveY = startY;
+    move.x = startX;
+    move.y = startY;
+    old_pos = bot_pos;
+    flag = false;
 }
+
 
 void Background::setPosition(float startX, float startY)
 {
-    moveX = startX;
-    moveY = startY;
+    move.x = startX;
+    move.y = startY;
+    flag = true;
 }
 
 
 void Background::update(const TVector2D& mouse_pos, const TVector2D& bot_pos)
 {
 
-    if (mouse_pos.x < bot_pos.x + MAX_WIDTH &&
-             mouse_pos.x > bot_pos.x - MAX_WIDTH &&
-             mouse_pos.y < bot_pos.y + MAX_HEIGHT &&
-             mouse_pos.y > bot_pos.y - MAX_HEIGHT)
+    if (!flag)
     {
-        int rel_mouse_x, rel_mouse_y;          // roznica od ostatniego polozenia
-        SDL_GetRelativeMouseState(&rel_mouse_x, &rel_mouse_y);
-        moveX = -static_cast<GLfloat>(rel_mouse_x);
-        moveY = -static_cast<GLfloat>(rel_mouse_y);
+        move += old_pos - bot_pos;
+        old_pos = bot_pos;
+
+        if (mouse_pos.x < bot_pos.x + MAX_WIDTH &&
+                mouse_pos.x > bot_pos.x - MAX_WIDTH &&
+                mouse_pos.y < bot_pos.y + MAX_HEIGHT &&
+                mouse_pos.y > bot_pos.y - MAX_HEIGHT)
+        {
+            int rel_mouse_x, rel_mouse_y;
+            SDL_GetRelativeMouseState(&rel_mouse_x, &rel_mouse_y);
+            move.x += -static_cast<GLfloat>(rel_mouse_x);
+            move.y += -static_cast<GLfloat>(rel_mouse_y);
+        }
+    }
+    else
+    {
+        old_pos = bot_pos;
+        flag = false;
     }
 
 }
 
 
-void Background::draw(Map *map)
+void Background::draw(const Map& map)
 {
 
-    glTranslatef(moveX, moveY, 0.0f);
+    glTranslatef(move.x, move.y, 0.0f);
 
     glBegin(GL_POLYGON);
-    glColor4ub(static_cast<GLubyte>(map->bgColorTop.red), static_cast<GLubyte>(map->bgColorTop.green), static_cast<GLubyte>(map->bgColorTop.blue), static_cast<GLubyte>(map->bgColorTop.alpha));
-    glVertex2f(map->leftoffs - MAX_WIDTH, -map->topoffs);
-    glVertex2f(map->rightoffs + MAX_WIDTH, -map->topoffs);
-    glColor4ub(static_cast<GLubyte>(map->bgColorBottom.red), static_cast<GLubyte>(map->bgColorBottom.green), static_cast<GLubyte>(map->bgColorBottom.blue), static_cast<GLubyte>(map->bgColorBottom.alpha));
-    glVertex2f(map->rightoffs + MAX_WIDTH, -map->bottomoffs);
-    glVertex2f(map->leftoffs - MAX_WIDTH, -map->bottomoffs);
+    glColor4ub(static_cast<GLubyte>(map.bgColorTop.red), static_cast<GLubyte>(map.bgColorTop.green), static_cast<GLubyte>(map.bgColorTop.blue), static_cast<GLubyte>(map.bgColorTop.alpha));
+    glVertex2f(map.leftoffs - MAX_WIDTH, -map.topoffs);
+    glVertex2f(map.rightoffs + MAX_WIDTH, -map.topoffs);
+    glColor4ub(static_cast<GLubyte>(map.bgColorBottom.red), static_cast<GLubyte>(map.bgColorBottom.green), static_cast<GLubyte>(map.bgColorBottom.blue), static_cast<GLubyte>(map.bgColorBottom.alpha));
+    glVertex2f(map.rightoffs + MAX_WIDTH, -map.bottomoffs);
+    glVertex2f(map.leftoffs - MAX_WIDTH, -map.bottomoffs);
     glEnd();
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    moveX = moveY = 0;
+    move.x = move.y = 0;
 
 }

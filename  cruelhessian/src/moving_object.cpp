@@ -23,15 +23,17 @@
 #include "globals.h"
 
 
-void MovingObject::gravity()
+void MovingObject::Verlet()
 {
 
-    // Czyszczenie sil i obliczanie sily grawitacji
-    forces = TVector2D(0.0, -sGravity * mass);
+    position += velocity*fTimeStep + a*fTimeStep*fTimeStep/2;
+    velocity += (a + old_a)*fTimeStep/2;
+    old_a = a;
 
-    // Obliczanie sily oporu
-    forces -= sDrag * velocity;
+}
 
-    velocity += massInv * fTimeStep * forces;
+void MovingObject::AccumulateForces()
+{
 
+    a += TVector2D(0.0, sGravity);
 }

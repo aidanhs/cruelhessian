@@ -22,18 +22,13 @@
 #include <sstream>
 #include "window_guns.h"
 #include "globals.h"
-//#include "SDL_opengl.h"
+
 
 
 WindowGuns::WindowGuns(const std::vector<WeaponBase>& wb)
     : x(MAX_WIDTH/4), y(MAX_HEIGHT/7), w(300), h(350), m_number(-1), m_weapon(wb)
 {
-    /*
-         x = MAX_WIDTH/4;
-         y = MAX_HEIGHT/7;
-        w = 300;
-        h = 350;
-    */
+
 }
 
 
@@ -44,7 +39,6 @@ void WindowGuns::draw_help(const Tex& texture, float dx, float dy) const
 
     glLoadIdentity();
     glTranslatef(dx, dy, 0.0f);
-
     glBindTexture(GL_TEXTURE_2D, texture.tex);
 
     glBegin(GL_QUADS);

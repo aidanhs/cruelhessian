@@ -148,10 +148,11 @@ void WorldMap::inputUser()
     }
 
     // right mouse button
-    if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_RMASK) && (bot[MY_BOT_NR]->procJet >= 0.004))
+    if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_RMASK) && (bot[MY_BOT_NR]->procJet >= 0.01))
     {
-        bot[MY_BOT_NR]->isFlying = true;
-        bot[MY_BOT_NR]->movementType = GORA;
+        bot[MY_BOT_NR]->isAbleToFly = true;
+
+        moveBotJet(MY_BOT_NR);
 
         //if (SOUNDS_VOL > 0) Mix_PlayChannel(-1, Mix_LoadWAV("Sfx/jump.wav"), 0);
         if (bot[MY_BOT_NR]->procJet >= 2*JET_CHANGE)
@@ -163,7 +164,7 @@ void WorldMap::inputUser()
         {
             bot[MY_BOT_NR]->procJet += JET_CHANGE;
         }
-        bot[MY_BOT_NR]->isFlying = false;
+        bot[MY_BOT_NR]->isAbleToFly = false;
 
     }
 

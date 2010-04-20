@@ -24,14 +24,12 @@
 
 
 
-//TVector2D TVector2D::normalize()
 void TVector2D::normalize()
 {
     float len = sqrt(this->x*this->x + this->y*this->y);
 
     this->x = (len == 0) ? 0 : this->x / len;
     this->y = (len == 0) ? 0 : this->y / len;
-    //return (len == 0) ? TVector2D(0, 0) : TVector2D(this->x / len, this->y / len);
 }
 
 TVector2D::TVector2D()
