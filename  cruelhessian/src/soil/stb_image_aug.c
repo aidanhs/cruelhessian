@@ -3253,7 +3253,7 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
     int RLE_repeating = 0;
     int read_next_pixel = 1;
 
-    trans_data[2] = trans_data[3] = 0;
+    trans_data[0] = trans_data[1] = trans_data[2] = trans_data[3] = 0;
 // do a tiny bit of precessing
     if( tga_image_type >= 8 )
     {

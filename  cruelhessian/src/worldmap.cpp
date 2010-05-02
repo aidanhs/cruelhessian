@@ -792,7 +792,7 @@ void WorldMap::game_control()
     }
 
     // time limit
-    Uint32 time_to_end = TIME_LIMIT - (getCurrentTime - getStartGameTime) / 1000;    // liczone w sekundach
+    Uint32 time_to_end = LIMIT_TIME - (getCurrentTime - getStartGameTime) / 1000;    // liczone w sekundach
     if (time_to_end > 0)
     {
         if (time_to_end != prev_time)

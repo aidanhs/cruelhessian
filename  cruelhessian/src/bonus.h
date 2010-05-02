@@ -32,9 +32,9 @@ class Bonus : public MovingObject
 
 public:
 
-    BONUS typeBonus;
+    int typeBonus;
 
-    Bonus(const TVector2D& pos, const Tex& tex, BONUS _type);
+    Bonus(const TVector2D& pos, const Tex& tex, int _type);
     ~Bonus() {};
 
     void draw() const;

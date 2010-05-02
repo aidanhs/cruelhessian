@@ -69,7 +69,6 @@ private:
     };
 
 
-
     std::vector<BotsBase> bots_base;
     std::vector<WeaponBase> weapon_base;
     Map *map;
@@ -84,21 +83,19 @@ private:
     std::vector<Bot *> bot;
     std::list<Bullet *> bullet_list;
     std::list<Bonus *> bonus_list;
-    //std::list<MovingObject *> m_objects;
     std::list<Grenade *> gren_list;
     int nearestWaypoint(int spawn_nr);
     bool collisionCircle2Wall(const MovingObject& ob, float dx, float dy, int& triangle, int& line);
     int collisionPoint2Wall(const MovingObject& ob, float dx, float dy);
     int collisionPoint2Circle(const MovingObject& ob1, const MovingObject& ob2);
     int collisionCircle2Circle(const MovingObject& ob1, const MovingObject& ob2);
-    float distance(const TVector2D &point, int triangle, int ver1, int ver2);
-    int nearestLine(const TVector2D &point, int triangle);
+//    float distance(const TVector2D &point, int triangle, int ver1, int ver2);
+//    int nearestLine(const TVector2D &point, int triangle);
     Uint8 textColor[4];
 
     TVector2D OLD_POS;
     bool FRIENDLY_FIRE;
 
-    //float getAngle(unsigned int bot_nr, int x, int y);
     void addMessageToChat(const std::string& part1, const std::string& part2);
     void addMessageToChat(const std::string& part);
     void displayChat();
@@ -107,7 +104,6 @@ private:
     SDLKey KEY_PRESSED; // = int
     bool YOU_KILLED;
     Uint32 getStartGameTime;//, getTimePassed;
-    //void scores_menu();
     void command_line();
     void mychat_line();
     Mix_Chunk* loadSoundFile(const std::string& file);

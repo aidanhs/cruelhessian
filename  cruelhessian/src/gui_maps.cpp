@@ -118,18 +118,18 @@ bool GUI::onLeftClickStart(const CEGUI::EventArgs& )
         }
 
         FIRST_LIMIT = static_cast<int>(mSpinn1->getCurrentValue());
-        TIME_LIMIT = 60*static_cast<int>(mSpinn2->getCurrentValue());
+        LIMIT_TIME = 60*static_cast<int>(mSpinn2->getCurrentValue());
 
         if (CURRENT_GAME_MODE == CTF || CURRENT_GAME_MODE == HTF || CURRENT_GAME_MODE == INF || CURRENT_GAME_MODE == TM)
         {
-            newworld = new WorldMap(xmap, mAlphaSpinner->isDisabled() ? 0 : static_cast<int>(mAlphaSpinner->getCurrentValue()),
-                                    mBravoSpinner->isDisabled() ? 0 : static_cast<int>(mBravoSpinner->getCurrentValue()),
-                                    mCharlieSpinner->isDisabled() ? 0 : static_cast<int>(mCharlieSpinner->getCurrentValue()),
-                                    mDeltaSpinner->isDisabled() ? 0 : static_cast<int>(mDeltaSpinner->getCurrentValue()));
+            newworld = new WorldMap(xmap, mAlphaSpinner->isDisabled() ? 0 : RANDOM_BOTS_1,
+                                    mBravoSpinner->isDisabled() ? 0 : RANDOM_BOTS_2,
+                                    mCharlieSpinner->isDisabled() ? 0 : RANDOM_BOTS_3,
+                                    mDeltaSpinner->isDisabled() ? 0 : RANDOM_BOTS_4);
         }
         else
         {
-            newworld = new WorldMap(xmap, static_cast<int>(mRandomBotsSpinner->getCurrentValue()));
+            newworld = new WorldMap(xmap, RANDOM_BOTS);
         }
 
         newworld->run();
@@ -184,7 +184,7 @@ bool GUI::onDeathClick(const CEGUI::EventArgs& )
     showMaps("[A-Z].+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Kill everything that moves.")));
     mDesc1->setText((CEGUI::utf8*)(_("Kill limit")));
-    mSpinn1->setCurrentValue(30);
+    mSpinn1->setCurrentValue(LIMIT_DEATHMATCH);
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     CURRENT_GAME_MODE = DM;
@@ -196,7 +196,7 @@ bool GUI::onPointClick(const CEGUI::EventArgs& )
     showMaps("[A-Z].+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Get 1 point for kill. If you carry the Yellow Flag you get 2 points for kill. Also you get multipoints for multikills.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(30);
+    mSpinn1->setCurrentValue(LIMIT_POINTMATCH);
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     CURRENT_GAME_MODE = PM;
@@ -208,7 +208,7 @@ bool GUI::onTeamClick(const CEGUI::EventArgs& )
     showMaps("[A-Z].+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Up to 4 teams fight against each other.")));
     mDesc1->setText((CEGUI::utf8*)(_("Capture limit")));
-    mSpinn1->setCurrentValue(60);
+    mSpinn1->setCurrentValue(LIMIT_TEAMMATCH);
     mCharlieDesc->setEnabled(true);
     mCharlieSpinner->setEnabled(true);
     mDeltaDesc->setEnabled(true);
@@ -225,7 +225,7 @@ bool GUI::onRamboClick(const CEGUI::EventArgs& )
     showMaps("[A-Z].+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("'First Blood' style. Whoever owns the Rambo Bow gains super Rambo powers. Only Rambo gets points for kill.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(30);
+    mSpinn1->setCurrentValue(LIMIT_RAMBOMATCH);
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     CURRENT_GAME_MODE = RM;
@@ -237,7 +237,7 @@ bool GUI::onCTFClick(const CEGUI::EventArgs& )
     showMaps("ctf_.+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Capture the enemy flag and bring it to your base to score. 20 points for capture.")));
     mDesc1->setText((CEGUI::utf8*)(_("Capture limit")));
-    mSpinn1->setCurrentValue(5);
+    mSpinn1->setCurrentValue(LIMIT_CAPTURE);
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     CURRENT_GAME_MODE = CTF;
@@ -249,7 +249,7 @@ bool GUI::onHTFClick(const CEGUI::EventArgs& )
     showMaps("htf_.+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Get the yellow flag and hold it with your team for as long as possible. The team earns 1 point every 5 seconds of holding.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(80);
+    mSpinn1->setCurrentValue(LIMIT_HOLD);
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     CURRENT_GAME_MODE = HTF;
@@ -261,9 +261,88 @@ bool GUI::onINFClick(const CEGUI::EventArgs& )
     showMaps("inf_.+.(PMS|pms)$");
     mDescription->setText((CEGUI::utf8*)(_("Red team gets 30 points for retreiving the black flag. Blue team gets 1 point every 5 seconds if the flag is in base.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(90);
+    mSpinn1->setCurrentValue(LIMIT_INFILTRATION);
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     CURRENT_GAME_MODE = INF;
+    return true;
+}
+
+
+bool GUI::onSpinner1Changed(const CEGUI::EventArgs& )
+{
+    int sel = static_cast<int>(mSpinn1->getCurrentValue());
+
+    switch (CURRENT_GAME_MODE)
+    {
+    case CTF :
+        LIMIT_CAPTURE = sel;
+        break;
+
+    case HTF :
+        LIMIT_HOLD = sel;
+        break;
+
+    case INF :
+        LIMIT_INFILTRATION = sel;
+        break;
+
+    case PM :
+        LIMIT_POINTMATCH = sel;
+        break;
+
+    case RM :
+        LIMIT_RAMBOMATCH = sel;
+        break;
+
+    case DM :
+        LIMIT_DEATHMATCH = sel;
+        break;
+
+    case TM :
+        LIMIT_TEAMMATCH = sel;
+        break;
+
+    default :
+        break;
+    }
+
+    return true;
+}
+
+
+bool GUI::onSpinner2Changed(const CEGUI::EventArgs& )
+{
+    LIMIT_TIME = 60*static_cast<int>(mSpinn2->getCurrentValue());
+    return true;
+}
+
+bool GUI::onSpinnerRandomBotsChanged(const CEGUI::EventArgs& )
+{
+    RANDOM_BOTS = static_cast<int>(mRandomBotsSpinner->getCurrentValue());
+    return true;
+}
+
+bool GUI::onSpinnerAlphaBotsChanged(const CEGUI::EventArgs& )
+{
+    RANDOM_BOTS_1 = static_cast<int>(mAlphaSpinner->getCurrentValue());
+    return true;
+}
+
+bool GUI::onSpinnerBravoBotsChanged(const CEGUI::EventArgs& )
+{
+    RANDOM_BOTS_2 = static_cast<int>(mBravoSpinner->getCurrentValue());
+    return true;
+}
+
+bool GUI::onSpinnerCharlieBotsChanged(const CEGUI::EventArgs& )
+{
+    RANDOM_BOTS_3 = static_cast<int>(mCharlieSpinner->getCurrentValue());
+    return true;
+}
+
+bool GUI::onSpinnerDeltaBotsChanged(const CEGUI::EventArgs& )
+{
+    RANDOM_BOTS_4 = static_cast<int>(mDeltaSpinner->getCurrentValue());
     return true;
 }

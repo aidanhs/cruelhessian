@@ -71,10 +71,8 @@ void WorldMap::inputUser()
             if (KEY_PRESSED == SDLK_F5 && MUSIC_VOL > 0 && !gMusicList.empty())
             {
                 if (Mix_PausedMusic() == 0)
-                    //Mix_Pause(-1);
                     Mix_PauseMusic();
                 else
-                    //Mix_Resume(-1);
                     Mix_ResumeMusic();
             }
             if (KEY_PRESSED == SDLK_F6)

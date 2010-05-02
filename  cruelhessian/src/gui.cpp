@@ -22,7 +22,6 @@
 #include "CEGUIDefaultResourceProvider.h"
 
 #include "gui.h"
-#include "globals.h"
 #include "parser.h"
 
 //#define _(string) gettext(string)
@@ -259,7 +258,9 @@ GUI::GUI()
         mMapPlayList->subscribeEvent(CEGUI::Listbox::EventSelectionChanged, CEGUI::Event::Subscriber(&GUI::onMapPlayListClicked, this));
 
         mSpinn1 = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/Spinn1"));
+        mSpinn1->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinner1Changed, this));
         mSpinn2 = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/Spinn2"));
+        mSpinn2->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinner2Changed, this));
 
         mDescription = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("root/maps/Description"));
 
@@ -299,6 +300,7 @@ GUI::GUI()
         mRandomBotsDesc = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/maps/RandomBotsDesc"));
         mRandomBotsDesc->setText((CEGUI::utf8*)_("Random bots"));
         mRandomBotsSpinner = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/RandomBotsSpinner"));
+        mRandomBotsSpinner->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinnerRandomBotsChanged, this));
         mBotsGroup = static_cast<CEGUI::GroupBox*>(winMgr.getWindow("root/maps/BotsGroup"));
         mBotsGroup->setText((CEGUI::utf8*)_("Bots team"));
         mAlphaDesc = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/maps/AlphaDesc"));
@@ -309,21 +311,16 @@ GUI::GUI()
         mDeltaDesc->setEnabled(false);
 
         mAlphaSpinner = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/AlphaSpinner"));
+        mAlphaSpinner->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinnerAlphaBotsChanged, this));
         mBravoSpinner = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/BravoSpinner"));
+        mBravoSpinner->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinnerBravoBotsChanged, this));
         mCharlieSpinner = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/CharlieSpinner"));
+        mCharlieSpinner->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinnerCharlieBotsChanged, this));
         mCharlieSpinner->setEnabled(false);
         mDeltaSpinner = static_cast<CEGUI::Spinner*>(winMgr.getWindow("root/maps/DeltaSpinner"));
+        mDeltaSpinner->subscribeEvent(CEGUI::Spinner::EventValueChanged, CEGUI::Event::Subscriber(&GUI::onSpinnerDeltaBotsChanged, this));
         mDeltaSpinner->setEnabled(false);
 
-        // Connections
-        /*   mServersList = static_cast<CEGUI::MultiColumnList*>(winMgr.getWindow("root/connections/ServersList"));
-           mDolaczGameButton = static_cast<CEGUI::PushButton*>(winMgr.getWindow("root/connections/DolaczGameButton"));
-           mDolaczGameButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&onLeftClickDolacz));
-
-           mIPNumberBox = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/connections/IPNumberBox"));
-           mPortNumberBox = static_cast<CEGUI::Editbox*>(winMgr.getWindow("root/connections/PortNumberBox"));
-           //mIPNumberButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&onLeftClickDolacz));
-        */
 
         // Player
         mTab->getTabContentsAtIndex(1)->setText((CEGUI::utf8*)_("Player"));

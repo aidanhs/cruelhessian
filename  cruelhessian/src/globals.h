@@ -33,11 +33,11 @@
 #include <freetype/ftoutln.h>
 #include <freetype/fttrigon.h>
 #include "fonts.h"
-/*
+
 #ifdef WIN32
 #include <windows.h>
 #endif
-*/
+
 #define _(string) (string)
 
 namespace global
@@ -53,8 +53,26 @@ extern unsigned int textGunColor[4];
 extern unsigned int* tcolor2rgb(const std::string& col);
 extern std::string rgb2tcolor(unsigned int* col);
 
-extern     SDL_Surface *screen;
+extern SDL_Surface *screen;
 
+extern int LIMIT_TEAMMATCH;
+extern int LIMIT_DEATHMATCH;
+extern int LIMIT_POINTMATCH;
+extern int LIMIT_RAMBOMATCH;
+extern int LIMIT_INFILTRATION;
+extern int LIMIT_HOLD;
+extern int LIMIT_CAPTURE;
+extern int LIMIT_TIME;
+
+extern int RANDOM_BOTS;
+extern bool CONSOLE_SHOW;
+extern int RANDOM_BOTS_1;
+extern int RANDOM_BOTS_2;
+extern int RANDOM_BOTS_3;
+extern int RANDOM_BOTS_4;
+
+extern bool WEAPON[14];
+extern bool BONUSES[7];
 
 extern  int setSDL();
 
@@ -63,37 +81,37 @@ void printText(freetype::font_data& font, const std::string& text, unsigned int*
 void printTextMiddle(freetype::font_data& font, const std::string& text, unsigned int* color, float y);
 
 
-extern    int FontMenuSize;
-extern   int FontConsoleSize;
-extern    int FontBigSize;
-extern   int FontWeaponMenuSize;
-extern  int FontConsoleSmallSize;
-extern   int FontHeightScale;
-extern   int FontMenuBold;
-extern   int FontConsoleBold;
-extern   int FontBigBold;
-extern   int FontWeaponMenuBold;
-extern   int FontConsoleSmallBold;
-extern   int KillConsoleNameSpace;
+extern int FontMenuSize;
+extern int FontConsoleSize;
+extern int FontBigSize;
+extern int FontWeaponMenuSize;
+extern int FontConsoleSmallSize;
+extern int FontHeightScale;
+extern int FontMenuBold;
+extern int FontConsoleBold;
+extern int FontBigBold;
+extern int FontWeaponMenuBold;
+extern int FontConsoleSmallBold;
+extern int KillConsoleNameSpace;
 
 //extern float bgX, bgY;
 
-extern  bool FULLSCREEN;
-extern     int MAX_BPP;
+extern bool FULLSCREEN;
+extern int MAX_BPP;
 
-extern   float sGravity; // Przyspieszenie ziemskie
-extern   float sDrag; // Wspólczynnik oporu
-extern   float sDragWalking; // Wspólczynnik oporu podczas chodzenia
-extern   float sDragFly; // Wspólczynnik oporu podczas latania (im mniejszy tym wyzej dolatuje)
+extern float sGravity; // Przyspieszenie ziemskie
+extern float sDrag; // Wspólczynnik oporu
+extern float sDragWalking; // Wspólczynnik oporu podczas chodzenia
+extern float sDragFly; // Wspólczynnik oporu podczas latania (im mniejszy tym wyzej dolatuje)
 //static float sElasticity = 0.05; // Elastycznosc odbicia
 //float sFriction = 1.5; // Tarcie
 //float sFriction = 1; // Tarcie
 
-extern     float sWalking; // Szybkosc chodzenia
+extern float sWalking; // Szybkosc chodzenia
 //float getsWalking(){return sWalking;};
-extern    float sFlying; // Szybkosc latania
-extern   float sJumping; // Sila skoku
-extern   bool checkSoldat();
+extern float sFlying; // Szybkosc latania
+extern float sJumping; // Sila skoku
+extern bool checkSoldat();
 extern float fTimeStep; // Krok czasowy fizyki
 
 extern unsigned int FRAMES_MAX[50], BODYPARTS_MAX[50];
@@ -132,7 +150,6 @@ extern std::string INTERF_PATH;
 //extern std::string INTERFACESX_PATH;
 extern std::string CH_INTERFACE;
 
-extern unsigned int TIME_LIMIT;
 extern unsigned int FIRST_LIMIT;
 
 extern float SOL_WIDTH[50], SOL_HEIGHT[50];

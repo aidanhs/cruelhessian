@@ -47,6 +47,7 @@ Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owne
     //h = texture[0]->h;
     w = h = 4;
     r = texture[0]->w / 2;
+    //std::cout << "WER " << r << std::endl;
     killMyself = false;
 
     timer_throw = getCurrentTime;

@@ -1,8 +1,25 @@
+0.1.2
+ - updated SimpleIni to 4.13 version
+
+0.1.1
+ - initial implementation of Verlet integration to simulate physics
+ - possibility of changing and saving the following settings 
+    in the configuration file: main bot's colors, game modes' limits, 
+    weapons and bonuses availability, the number of bots 
+ - removed the dependency on boost_regex
+ - some other fixes and improvements
+
+0.1.0
+ - fixed displaying some maps at start-up
+ - fixed positioning the arrow above the player after death
+ - prevented from adding points to player when he killed himself
+ - some improvements in the code
+
 0.1.0-rc10
  - fixed loading some types of png files
- - fixed the compilation warnings
- - scan the MP3 directory after select the new directory with Soldat files
- - fixed refreshing player's status information
+ - fixed warnings which appeared during the compilation process
+ - scan MP3 directory after select new Soldat files' directory
+ - fixed refreshing information about player's status 
 
 0.1.0-rc9
  - draw arrow above the player
@@ -54,7 +71,7 @@
 0.1.0-rc3
  - use folder selector in GUI system
  - use Boost library
- - update SimpleIni to 4.12 version
+ - updated SimpleIni to 4.12 version
  - many minor fixes and improvements
 
 0.1.0-rc2

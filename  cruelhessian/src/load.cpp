@@ -128,13 +128,20 @@ void WorldMap::load_bonuses()
     {
         if (map->spawnpoint[i].active)
         {
-            if (map->spawnpoint[i].team == map->stBERSERKER) bonus[BONUS_BERSERKER].push_back(i);
-            else if (map->spawnpoint[i].team == map->stCLUSTERS) bonus[BONUS_CLUSTERS].push_back(i);
-            else if (map->spawnpoint[i].team == map->stFLAMER) bonus[BONUS_FLAMER].push_back(i);
-            else if (map->spawnpoint[i].team == map->stGRENADES) bonus[BONUS_GRENADES].push_back(i);
-            else if (map->spawnpoint[i].team == map->stMEDKITS) bonus[BONUS_MEDIKITS].push_back(i);
-            else if (map->spawnpoint[i].team == map->stPREDATOR) bonus[BONUS_PREDATOR].push_back(i);
-            else if (map->spawnpoint[i].team == map->stVEST) bonus[BONUS_VESTKIT].push_back(i);
+            if (map->spawnpoint[i].team == map->stBERSERKER && BONUSES[BONUS_BERSERKER])
+                bonus[BONUS_BERSERKER].push_back(i);
+            else if (map->spawnpoint[i].team == map->stCLUSTERS && BONUSES[BONUS_CLUSTERS])
+                bonus[BONUS_CLUSTERS].push_back(i);
+            else if (map->spawnpoint[i].team == map->stFLAMER && BONUSES[BONUS_FLAMER])
+                bonus[BONUS_FLAMER].push_back(i);
+            else if (map->spawnpoint[i].team == map->stGRENADES)
+                bonus[BONUS_GRENADES].push_back(i);
+            else if (map->spawnpoint[i].team == map->stMEDKITS)
+                bonus[BONUS_MEDIKITS].push_back(i);
+            else if (map->spawnpoint[i].team == map->stPREDATOR && BONUSES[BONUS_PREDATOR])
+                bonus[BONUS_PREDATOR].push_back(i);
+            else if (map->spawnpoint[i].team == map->stVEST && BONUSES[BONUS_VESTKIT])
+                bonus[BONUS_VESTKIT].push_back(i);
         }
     }
 
@@ -143,15 +150,19 @@ void WorldMap::load_bonuses()
     TVector2D p;
     int num;
     for (unsigned int i = 0; i < 7; ++i)
+    {
+        if (BONUSES[i])
         for (unsigned int j = 0; j < bonus[i].size(); ++j)
         {
             num = bonus[i][j];
             p.x = static_cast<float>(map->spawnpoint[num].x);
             p.y = static_cast<float>(map->spawnpoint[num].y);
-            Bonus *newbon = new Bonus(p, text_bonus[i], BONUS_GRENADES);
+            Bonus *newbon = new Bonus(p, text_bonus[i], i);
             bonus_list.push_back(newbon);
 //            m_objects.push_back(newbon);
         }
+    }
+
 
 }
 

@@ -22,9 +22,9 @@
 #define PARSER_H
 
 
-extern int defaults();
-extern int read_configs();
-extern int save_configs();
+int defaults();
+int read_configs();
+int save_configs();
 
 
 

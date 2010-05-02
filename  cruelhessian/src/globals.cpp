@@ -50,7 +50,6 @@ bool FULLSCREEN;
 int MAX_BPP;
 float MAX_WIDTH, MAX_HEIGHT;
 
-unsigned int TIME_LIMIT;                                   // in seconds !!!!!!!!!!!!!!!
 unsigned int FIRST_LIMIT;
 
 freetype::font_data font[2][50];
@@ -68,6 +67,24 @@ int FontWeaponMenuBold;
 int FontConsoleSmallBold;
 int KillConsoleNameSpace;
 
+
+int LIMIT_TEAMMATCH;
+int LIMIT_DEATHMATCH;
+int LIMIT_POINTMATCH;
+int LIMIT_RAMBOMATCH;
+int LIMIT_INFILTRATION;
+int LIMIT_HOLD;
+int LIMIT_CAPTURE;
+int LIMIT_TIME;
+bool CONSOLE_SHOW;
+int RANDOM_BOTS;
+int RANDOM_BOTS_1;
+int RANDOM_BOTS_2;
+int RANDOM_BOTS_3;
+int RANDOM_BOTS_4;
+
+bool WEAPON[14];
+bool BONUSES[7];
 
 void printTextMiddle(freetype::font_data& fontx, const std::string& text, unsigned int* color, float y)
 {

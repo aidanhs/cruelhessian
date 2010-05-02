@@ -74,7 +74,7 @@ int WorldMap::playMusic(int pos)
             Mix_FreeMusic(music);
         }
 //std::cout << gMusicList[CURRENT_SONG_NUMBER]<< std::endl;
-        chat->addMessage("Loading track : " + gMusicList[CURRENT_SONG_NUMBER]);
+        chat->addMessage("Playing : " + gMusicList[CURRENT_SONG_NUMBER]);
 
         if ((music = Mix_LoadMUS(gMusicList[CURRENT_SONG_NUMBER].c_str())) == NULL)
         {

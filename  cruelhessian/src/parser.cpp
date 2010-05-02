@@ -20,6 +20,7 @@
 
 
 #include "gui.h"
+#include "parser.h"
 #include "globals.h"
 #include "parser/SimpleIni.h"
 
@@ -29,16 +30,16 @@ int defaults()
 {
     std::cout << "Restoring defaults ..." << std::endl;
 
-    SOL_PATH = "";
+    SOL_PATH     = "";
     CH_INTERFACE = "Default";
-    INTERF_PATH = "";
-    FULLSCREEN = 0;
-    MAX_WIDTH = 640.0f;
-    MAX_HEIGHT = 480.0f;
-    MAX_BPP = 16;
-    SOUNDS_VOL = 20.0f;
-    MUSIC_VOL = 0.0f;
-    AUDIO_QUAL = 44100;
+    INTERF_PATH  = "";
+    FULLSCREEN   = 0;
+    MAX_WIDTH    = 640.0f;
+    MAX_HEIGHT   = 480.0f;
+    MAX_BPP      = 16;
+    SOUNDS_VOL   = 20.0f;
+    MUSIC_VOL    = 0.0f;
+    AUDIO_QUAL   = 44100;
 
     PLAYER_NAME = "Player";
     COLOR_SHIRT = tcolor2rgb("$00EBEBFF");
@@ -47,14 +48,37 @@ int defaults()
     COLOR_PANTS = tcolor2rgb("$00EBEBFF");
     COLOR_JET   = tcolor2rgb("$00EBEBFF");
 
-    KEY_LEFT = 97;
-    KEY_RIGHT = 100;
-    KEY_DOWN = 115;
-    KEY_UP = 119;
-    KEY_RELOAD = 114;
-    KEY_GRENADE = 32;
-    KEY_CHAT = 116;
+    KEY_LEFT     = 97;
+    KEY_RIGHT    = 100;
+    KEY_DOWN     = 115;
+    KEY_UP       = 119;
+    KEY_RELOAD   = 114;
+    KEY_GRENADE  = 32;
+    KEY_CHAT     = 116;
     KEY_TEAMCHAT = 121;
+
+    LIMIT_TEAMMATCH    = 60;
+    LIMIT_DEATHMATCH   = 30;
+    LIMIT_POINTMATCH   = 30;
+    LIMIT_RAMBOMATCH   = 30;
+    LIMIT_INFILTRATION = 90;
+    LIMIT_HOLD         = 80;
+    LIMIT_CAPTURE      = 5;
+    LIMIT_TIME         = 15*60;
+
+    CONSOLE_SHOW = true;
+
+    RANDOM_BOTS   = 5;
+    RANDOM_BOTS_1 = 1;
+    RANDOM_BOTS_2 = 1;
+    RANDOM_BOTS_3 = 1;
+    RANDOM_BOTS_4 = 1;
+
+    for (int i = 0; i < 14; ++i)
+        WEAPON[i]  = true;
+
+    for (int i = 0; i < 7; ++i)
+        BONUSES[i]  = true;
 
     return 0;
 }
@@ -91,6 +115,23 @@ int read_configs()
     MUSIC_VOL    = static_cast<float>(ini.GetLongValue("global", "MusicVolume"));
     AUDIO_QUAL   = ini.GetLongValue("global", "AudioQuality");
 
+    LIMIT_TEAMMATCH    = ini.GetLongValue("game", "TeammatchLimit");
+    LIMIT_DEATHMATCH   = ini.GetLongValue("game", "DeathmatchLimit");
+    LIMIT_POINTMATCH   = ini.GetLongValue("game", "PointmatchLimit");
+    LIMIT_RAMBOMATCH   = ini.GetLongValue("game", "RambomatchLimit");
+    LIMIT_INFILTRATION = ini.GetLongValue("game", "InfiltrationLimit");
+    LIMIT_HOLD         = ini.GetLongValue("game", "HoldLimit");
+    LIMIT_CAPTURE      = ini.GetLongValue("game", "CaptureLimit");
+    LIMIT_TIME         = 60*ini.GetLongValue("game", "TimeLimit");
+
+    CONSOLE_SHOW = ini.GetBoolValue("game", "ConsoleShow");
+
+    RANDOM_BOTS   = ini.GetLongValue("game", "RandomBots");
+    RANDOM_BOTS_1 = ini.GetLongValue("game", "RandomBots1");
+    RANDOM_BOTS_2 = ini.GetLongValue("game", "RandomBots2");
+    RANDOM_BOTS_3 = ini.GetLongValue("game", "RandomBots3");
+    RANDOM_BOTS_4 = ini.GetLongValue("game", "RandomBots4");
+
     PLAYER_NAME = ini.GetValue("player", "Name");
     COLOR_SHIRT = tcolor2rgb(ini.GetValue("player", "ShirtColor"));
     COLOR_SKIN  = tcolor2rgb(ini.GetValue("player", "SkinColor"));
@@ -107,11 +148,27 @@ int read_configs()
     KEY_CHAT     = ini.GetLongValue("controls", "Chat");
     KEY_TEAMCHAT = ini.GetLongValue("controls", "TeamChat");
 
-    /*if (SOL_PATH[SOL_PATH.length()-1] == '\\')
-    {
-    	std::cout << "JEA" << std::endl;
-        SOL_PATH[SOL_PATH.length()-1] = '/';
-    }*/
+    WEAPON[0]  = ini.GetBoolValue("game", "Weapon1");
+    WEAPON[1]  = ini.GetBoolValue("game", "Weapon2");
+    WEAPON[2]  = ini.GetBoolValue("game", "Weapon3");
+    WEAPON[3]  = ini.GetBoolValue("game", "Weapon4");
+    WEAPON[4]  = ini.GetBoolValue("game", "Weapon5");
+    WEAPON[5]  = ini.GetBoolValue("game", "Weapon6");
+    WEAPON[6]  = ini.GetBoolValue("game", "Weapon7");
+    WEAPON[7]  = ini.GetBoolValue("game", "Weapon8");
+    WEAPON[8]  = ini.GetBoolValue("game", "Weapon9");
+    WEAPON[9]  = ini.GetBoolValue("game", "Weapon10");
+    WEAPON[10] = ini.GetBoolValue("game", "Weapon11");
+    WEAPON[11] = ini.GetBoolValue("game", "Weapon12");
+    WEAPON[12] = ini.GetBoolValue("game", "Weapon13");
+    WEAPON[13] = ini.GetBoolValue("game", "Weapon14");
+
+    BONUSES[0] = ini.GetBoolValue("game", "BonusBerserker");
+    BONUSES[1] = ini.GetBoolValue("game", "BonusCluster");
+    BONUSES[3] = ini.GetBoolValue("game", "BonusFlameGod");
+    BONUSES[5] = ini.GetBoolValue("game", "BonusPredator");
+    BONUSES[6] = ini.GetBoolValue("game", "BonusVest");
+
     if (!SOL_PATH.empty())
     {
         if (SOL_PATH[SOL_PATH.length()-1] == '\\')
@@ -197,6 +254,13 @@ int GUI::apply_configs()
         mTab->setSelectedTabAtIndex(2);
         FOLDER_SELECTOR = true;
     }
+
+    mSpinn2->setCurrentValue(static_cast<int>(LIMIT_TIME/60));
+    mRandomBotsSpinner->setCurrentValue(RANDOM_BOTS);
+    mAlphaSpinner->setCurrentValue(RANDOM_BOTS_1);
+    mBravoSpinner->setCurrentValue(RANDOM_BOTS_2);
+    mCharlieSpinner->setCurrentValue(RANDOM_BOTS_3);
+    mDeltaSpinner->setCurrentValue(RANDOM_BOTS_4);
 
     mPlayerName->setText(PLAYER_NAME);
 
@@ -301,6 +365,43 @@ int save_configs()
     ini.SetValue("player", "HairColor",  rgb2tcolor(COLOR_HAIR).c_str(),  NULL);
     ini.SetValue("player", "PantsColor", rgb2tcolor(COLOR_PANTS).c_str(), NULL);
     ini.SetValue("player", "JetColor",   rgb2tcolor(COLOR_JET).c_str(),   NULL);
+
+    ini.SetLongValue("game", "TeammatchLimit",    LIMIT_TEAMMATCH,                 NULL);
+    ini.SetLongValue("game", "DeathmatchLimit",   LIMIT_DEATHMATCH,                NULL);
+    ini.SetLongValue("game", "PointmatchLimit",   LIMIT_POINTMATCH,                NULL);
+    ini.SetLongValue("game", "RambomatchLimit",   LIMIT_RAMBOMATCH,                NULL);
+    ini.SetLongValue("game", "InfiltrationLimit", LIMIT_INFILTRATION,              NULL);
+    ini.SetLongValue("game", "HoldLimit",         LIMIT_HOLD,                      NULL);
+    ini.SetLongValue("game", "CaptureLimit",      LIMIT_CAPTURE,                   NULL);
+    ini.SetLongValue("game", "TimeLimit",         static_cast<int>(LIMIT_TIME/60), NULL);
+
+    ini.SetLongValue("game", "RandomBots",  RANDOM_BOTS,   NULL);
+    ini.SetLongValue("game", "RandomBots1", RANDOM_BOTS_1, NULL);
+    ini.SetLongValue("game", "RandomBots2", RANDOM_BOTS_2, NULL);
+    ini.SetLongValue("game", "RandomBots3", RANDOM_BOTS_3, NULL);
+    ini.SetLongValue("game", "RandomBots4", RANDOM_BOTS_4, NULL);
+
+    ini.SetBoolValue("game", "ConsoleShow", CONSOLE_SHOW, NULL);
+    ini.SetBoolValue("game", "Weapon1",  WEAPON[0], NULL);
+    ini.SetBoolValue("game", "Weapon2",  WEAPON[1], NULL);
+    ini.SetBoolValue("game", "Weapon3",  WEAPON[2], NULL);
+    ini.SetBoolValue("game", "Weapon4",  WEAPON[3], NULL);
+    ini.SetBoolValue("game", "Weapon5",  WEAPON[4], NULL);
+    ini.SetBoolValue("game", "Weapon6",  WEAPON[5], NULL);
+    ini.SetBoolValue("game", "Weapon7",  WEAPON[6], NULL);
+    ini.SetBoolValue("game", "Weapon8",  WEAPON[7], NULL);
+    ini.SetBoolValue("game", "Weapon9",  WEAPON[8], NULL);
+    ini.SetBoolValue("game", "Weapon10", WEAPON[9], NULL);
+    ini.SetBoolValue("game", "Weapon11", WEAPON[10], NULL);
+    ini.SetBoolValue("game", "Weapon12", WEAPON[11], NULL);
+    ini.SetBoolValue("game", "Weapon13", WEAPON[12], NULL);
+    ini.SetBoolValue("game", "Weapon14", WEAPON[13], NULL);
+
+    ini.SetBoolValue("game", "BonusBerserker", BONUSES[0], NULL);
+    ini.SetBoolValue("game", "BonusCluster",   BONUSES[1], NULL);
+    ini.SetBoolValue("game", "BonusFlameGod",  BONUSES[3], NULL);
+    ini.SetBoolValue("game", "BonusPredator",  BONUSES[5], NULL);
+    ini.SetBoolValue("game", "BonusVest",      BONUSES[6], NULL);
 
     ini.SetLongValue("controls", "Left",     KEY_LEFT,     NULL);
     ini.SetLongValue("controls", "Right",    KEY_RIGHT,    NULL);

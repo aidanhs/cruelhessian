@@ -71,7 +71,7 @@ void Game::run(int argc, char *argv[])
     if (argc == 1)
     {
         START_MODE = 2;
-        //std::cout << rgb2tcolor(tcolor2rgb("$00EBEB00")) << std::endl;
+        //std::cout << rgb2tcolor(tcolor2rgb("$00796938")) << std::endl;
         //exit(0);
         ch = new GUI;
         ch->run();
@@ -95,11 +95,10 @@ void Game::run(int argc, char *argv[])
 			}
             START_MODE = 1;
             FIRST_LIMIT = 5;
-            TIME_LIMIT = 15*60;
             CURRENT_GAME_MODE = CTF;
             setSDL();
-            //world = new WorldMap(SOL_PATH + "Maps/RatCave.PMS", 6);
-            world = new WorldMap(SOL_PATH + "Maps/ctf_Ash.PMS", 2, 2, 2, 2);
+            //world = new WorldMap(SOL_PATH + "Maps/RatCave.PMS", RANDOM_BOTS);
+            world = new WorldMap(SOL_PATH + "Maps/ctf_Ash.PMS", RANDOM_BOTS_1, RANDOM_BOTS_2, 0, 0);
             world->run();
         }
         else

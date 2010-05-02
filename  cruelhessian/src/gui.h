@@ -24,6 +24,13 @@
 #include "CEGUI.h"
 #include "RendererModules/OpenGLGUIRenderer/openglrenderer.h"
 #include "gui_fselector.h"
+#include "globals.h"
+
+
+
+void handle_mouse_down(Uint8 button);
+void handle_mouse_up(Uint8 button);
+void inject_time_pulse(float& last_time_pulse);
 
 
 class GUI
@@ -56,10 +63,7 @@ private:
 
     bool FOLDER_SELECTOR;
 
-//    void defaults();
-//    int read_configs();
     int apply_configs();
-  //  int save_configs();
     void showMaps(const char* mask);
     void showInterfaces();
     void inject_input(bool & must_quit);
@@ -69,6 +73,13 @@ private:
     int readM3U();
     bool onMapListClicked(const CEGUI::EventArgs& );
     bool onMapPlayListClicked(const CEGUI::EventArgs& );
+    bool onSpinner1Changed(const CEGUI::EventArgs& );
+    bool onSpinner2Changed(const CEGUI::EventArgs& );
+    bool onSpinnerRandomBotsChanged(const CEGUI::EventArgs& );
+    bool onSpinnerAlphaBotsChanged(const CEGUI::EventArgs& );
+    bool onSpinnerBravoBotsChanged(const CEGUI::EventArgs& );
+    bool onSpinnerCharlieBotsChanged(const CEGUI::EventArgs& );
+    bool onSpinnerDeltaBotsChanged(const CEGUI::EventArgs& );
     bool onMusicBoxChanged(const CEGUI::EventArgs& );
     bool onMusicSpinnerChanged(const CEGUI::EventArgs& );
     bool onSoundBoxChanged(const CEGUI::EventArgs& );
@@ -162,7 +173,6 @@ private:
     CEGUI::RadioButton *mResol640;
     CEGUI::RadioButton *mResol800;
     CEGUI::RadioButton *mResol1024;
-    //CEGUI::Editbox* mInfoRestart;
 
 // music
     CEGUI::GroupBox* mGroupQuality;
@@ -173,19 +183,16 @@ private:
     CEGUI::Checkbox* mIsMusic;
     CEGUI::Spinner* mSoundsSpinner;
     CEGUI::Spinner* mMusicSpinner;
- //   CEGUI::Listbox* mMusicList;
     CEGUI::RadioButton* mLowQuality;
     CEGUI::RadioButton* mMediumQuality;
     CEGUI::RadioButton* mHighQuality;
 
 
 // options
-//CEGUI::Combobox* mLanguage;
     CEGUI::Combobox* mInterfaces;
     CEGUI::Editbox* mInterfacesDesc;
     CEGUI::PushButton *mPlaceSoldat;
     CEGUI::Editbox *mPlaceSoldatDesc;
-//CEGUI::Combobox *mPlaceSoldat;
     CEGUI::Editbox *mStatusField;
 
 };

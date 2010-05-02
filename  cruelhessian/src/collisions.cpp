@@ -25,54 +25,8 @@
 #include "worldmap.h"
 #include "globals.h"
 #include "bot.h"
-//#include "chat.h"
 
 
-/*
-static inline int minn(int a, int b)
-{
-    return (a < b) ? a : b;
-}
-
-static inline int maxx(int a, int b)
-{
-    return (a > b) ? a : b;
-}
-*/
-
-
-float WorldMap::distance(const TVector2D &point, int triangle, int ver1, int ver2)
-{
-    float a = map->polygon[triangle].perpendicular[ver1].x;
-    float b = map->polygon[triangle].perpendicular[ver1].y;
-    float c = (map->polygon[triangle].vertex[ver2].y * map->polygon[triangle].vertex[ver1].x -
-               map->polygon[triangle].vertex[ver1].y * map->polygon[triangle].vertex[ver2].x) /
-              (map->polygon[triangle].vertex[ver1].x - map->polygon[triangle].vertex[ver2].x);
-
-    return a*point.x + b*point.y + c;
-}
-
-
-int WorldMap::nearestLine(const TVector2D &point, int triangle)
-{
-    // http://softsurfer.com/Archive/algorithm_0102/algorithm_0102.htm
-
-    float a = distance(point, triangle, 0, 1);
-    float b = distance(point, triangle, 1, 2);
-    float c = distance(point, triangle, 2, 0);
-
-    if (b <= a && b <= c) return 1;
-    else if (c <= a && c <= b) return 2;
-    else return 0;
-
-}
-/*
-// iloczyn wektorowy
-static float cross(TVector2D a, TVector2D b, TVector2D c, TVector2D d)
-{
-    return (b.x-a.x)*(d.y-c.y) - (d.x-c.x)*(b.y-a.y);
-}
-*/
 // iloczyn wektorowy
 static inline float cross2(TVector2D a, TVector2D b)
 {
@@ -136,27 +90,29 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
     std::vector<unsigned int> sect_num;
     TVector2D norm, col_norm, pos, ta, tb, tc;
     float d0, d1, col_dist, min, max;
-    int a[4];
+    int a[4], sec;
 
     pos.x = ob.position.x + dx;
     pos.y = ob.position.y + dy;
 
-    // punkt ciezkosci obiektu znajduje sie w sektorze:
+    line = triangle = -1;
 
+    // obiekt znajduje sie w sektorze:
+    // lewy gorny wierzcholek
     a[0] = static_cast<int>((pos.x - ob.r) / map->sectorDivisions) + map->numSectors;
     a[1] = static_cast<int>((pos.y - ob.r) / map->sectorDivisions) + map->numSectors;
+    // prawy dolny wierzcholek
     a[2] = static_cast<int>((pos.x + ob.r) / map->sectorDivisions) + map->numSectors;
     a[3] = static_cast<int>((pos.y + ob.r) / map->sectorDivisions) + map->numSectors;
 
-    // fix iterations
 
     for (int j = a[0]-1; j <= a[2]+1; ++j)
         for (int k = a[1]-1; k <= a[3]+1; ++k)
         {
-            unsigned int sec = 51*j + k;
-            //assert(51*j + k > 0);
-            if (sec > 0 &&  sec < map->sector.size())
-                sect_num.push_back(51*j + k);
+            sec = 51*j + k;
+            if (sec > 0 && sec < static_cast<int>(map->sector.size()))
+                sect_num.push_back(sec);
+            else return false;
         }
 
     // wyznacz numery trojkatow w tych sektorach do zbadania
@@ -171,7 +127,8 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
 
         if (map->polygon[*i].polyType != map->ptONLY_BULLETS_COLLIDE && map->polygon[*i].polyType != map->ptNO_COLLIDE)
         {
-            // use 'flounder' code from gamedev.net
+            // uses flounder's code from gamedev.net ...
+            // ... http://www.gamedev.net/community/forums/topic.asp?topic_id=476981
 
             ta = TVector2D(map->polygon[*i].vertex[0].x, map->polygon[*i].vertex[0].y);
             tb = TVector2D(map->polygon[*i].vertex[1].x, map->polygon[*i].vertex[1].y);
@@ -185,6 +142,7 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             d0 = (ta - pos) * norm;
             d1 = (pos - tc) * norm;
             col_dist = d0 > d1 ? d0 : d1;
+            line = 0;
             if (col_dist > ob.r) continue;
 
             // second
@@ -195,6 +153,7 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             if (d0 > ob.r) continue;
             if (d0 > col_dist)
             {
+                line = 1;
                 col_norm = norm;
                 col_dist = d0;
             }
@@ -207,6 +166,7 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             if (d0 > ob.r) continue;
             if (d0 > col_dist)
             {
+                line = 2;
                 col_norm = norm;
                 col_dist = d0;
             }
@@ -221,15 +181,16 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             max = d0 > d1 ? d0 : d1;
             min = d0 + d1 - max;
             d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
+            if (d0 > max) max = d0;
+            if (d0 < min) min = d0;
             d0 = pos * norm;
             max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
+            min -= d0;
+            if (max <= min) max = min;
             if (max > ob.r) continue;
             if (max > col_dist)
             {
+                line = 0;
                 col_norm = norm;
                 col_dist = max;
             }
@@ -242,15 +203,16 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             max = d0 > d1 ? d0 : d1;
             min = d0 + d1 - max;
             d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
+            if (d0 > max) max = d0;
+            if (d0 < min) min = d0;
             d0 = pos * norm;
             max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
+            min -= d0;
+            if (max <= min) max = min;
             if (max > ob.r) continue;
             if (max > col_dist)
             {
+                line = 1;
                 col_norm = norm;
                 col_dist = max;
             }
@@ -263,24 +225,22 @@ bool WorldMap::collisionCircle2Wall(const MovingObject& ob, float dx, float dy, 
             max = d0 > d1 ? d0 : d1;
             min = d0 + d1 - max;
             d0 = ta * norm;
-            max = d0 > max ? d0 : max;
-            min = d0 < min ? d0 : min;
+            if (d0 > max) max = d0;
+            if (d0 < min) min = d0;
             d0 = pos * norm;
             max = d0 - max;
-            min = min - d0;
-            max = max > min ? max : min;
+            min -= d0;
+            if (max <= min) max = min;
             if (max > ob.r) continue;
             if (max > col_dist)
             {
+                line = 2;
                 col_norm = norm;
                 col_dist = max;
             }
             col_dist -= ob.r;
             pos += col_norm*col_dist;
-            //std::cout << "KOLIZJA " << col_dist << " " << pos.x << " " << pos.y << std::endl;
 
-            // select nearest line, point - triangle
-            line = nearestLine(pos, *i);
             triangle = *i;
 
             return true;
@@ -299,7 +259,7 @@ int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 
     std::set<unsigned int> trian_num;
     std::vector<unsigned int> sect_num;
-    TVector2D v0, v1, v2, ta, tb, tc, pos;
+    TVector2D ta, tb, tc, pos;
     int a[2];
 
     pos.x = ob.position.x + dx;
@@ -309,17 +269,7 @@ int WorldMap::collisionPoint2Wall(const MovingObject& ob, float dx, float dy)
 
     a[0] = static_cast<int>(pos.x / map->sectorDivisions) + map->numSectors;
     a[1] = static_cast<int>(pos.y / map->sectorDivisions) + map->numSectors;
-    /*
-        if (51*a[0] + a[1] > 0)
-            sect_num.push_back(51*a[0] + a[1]);
-        else
-            return -1;*/
-    // wyznacz numery trojkatow w tych sektorach do zbadania
-    /*
-        for (std::vector<unsigned int>::const_iterator s = sect_num.begin(); s != sect_num.end(); ++s)
-            for (unsigned int j = 0; j < map->sector[*s].polyCount; ++j)
-                trian_num.insert(map->sector[*s].polys[j]-1);
-    */
+
     unsigned int sec = 51*a[0] + a[1];
     if (sec >= map->sector.size())
         return 10000;
@@ -368,8 +318,8 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
             bot[shooted]->killer = owner;
             bot[shooted]->actLife = fullLife;
             bot[shooted]->respawnTime = 1000*(rand()%MAX_RESPAWN_TIME + 1);
-            if (bot[owner]->chatWinning != "") chat->addMessage(bot[owner]->name, bot[owner]->chatWinning);
-            if (bot[shooted]->chatDead != "") chat->addMessage(bot[shooted]->name, bot[shooted]->chatDead);
+            if (CONSOLE_SHOW && bot[owner]->chatWinning != "") chat->addMessage(bot[owner]->name, bot[owner]->chatWinning);
+            if (CONSOLE_SHOW && bot[shooted]->chatDead != "") chat->addMessage(bot[shooted]->name, bot[shooted]->chatDead);
 
             // if I'm dead
             if (shooted == MY_BOT_NR)
@@ -418,36 +368,38 @@ void WorldMap::collisions()
     {
 
         delta = (*temp)->velocity * fTimeStep;
-
-        if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
+        if (delta.y > 0.0)
         {
-            (*temp)->velocity = TVector2D(0.0f, 0.0f);
-            (*temp)->a = 0;
-            //(*temp)->old_a = 0;
-        }
 
-        // gdy dotknie podloza
-        if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
-        {
-            (*temp)->velocity.y = -5.0f;
-            (*temp)->isAbleToJump = true;
-            (*temp)->a = 0;
-            //(*temp)->old_a = 0;
+            (*temp)->isAbleToFly = true;
+
+            // when will touch the ground
+            if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
+            {
+                (*temp)->velocity.y = -5.0f;
+                (*temp)->isAbleToJump = true;
+                (*temp)->a = 0;
+            }
         }
         else
         {
             (*temp)->isAbleToJump = false;
-            // gdy dotknie sufitu
-            /*
-                    // gdy dotknie sufitu
-                    if (collisionCircle2Wall(**temp, 0.0f, -delta.y, t1, t2))
-                    {
-                        (*temp)->velocity.y = 5.0f;
-                        //(*temp)->isAbleToJump = true;
-                        (*temp)->a = 0;
-                        //(*temp)->old_a = 0;
-                    }*/
+
+            // when will touch the ceiling
+            if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
+            {
+                (*temp)->velocity.y = 5.0f;
+                (*temp)->isAbleToFly = false;
+                (*temp)->a = 0;
+            }
         }
+
+        if (collisionCircle2Wall(**temp, delta.x, 0.0f, t1, t2))
+        {
+            (*temp)->velocity.x = (delta.x > 0) ? -5.0f : 5.0f;
+            (*temp)->a = 0;
+        }
+
         ++temp;
     }
 
@@ -457,12 +409,13 @@ void WorldMap::collisions()
 
         // if bonus will touch the wall
         delta = (*temp)->velocity * fTimeStep;
-        if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
+        //if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
+        if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
         {
             if (SOUNDS_VOL > 0)
                 Mix_PlayChannel(-1, sound_kitfall[rand()%2], 0);
             (*temp)->a = 0;
-            (*temp)->velocity.y = 0.0f;
+            (*temp)->velocity.y = -5.0f;
 
         }
         // if bonus touched bot
@@ -479,7 +432,7 @@ void WorldMap::collisions()
     for (std::list<Bullet *>::iterator temp = bullet_list.begin(); temp != bullet_list.end();)
     {
 
-        // if ammo touched the wall
+        // if ammo will touch the wall
         delta = (*temp)->velocity * fTimeStep;
         if (collisionPoint2Wall(**temp, delta.x, delta.y) >= 0)
         {
@@ -503,7 +456,7 @@ void WorldMap::collisions()
     {
 
         // if grenade will touch the wall
-        delta = (*temp)->velocity * -fTimeStep;
+        delta = (*temp)->velocity * fTimeStep;
         if (collisionCircle2Wall(**temp, delta.x, delta.y, pol_number, line_number))
         {
 
@@ -518,6 +471,10 @@ void WorldMap::collisions()
             (*temp)->velocity.y -= 1.8f*map->polygon[pol_number].perpendicular[line_number].y*
                                    map->polygon[pol_number].perpendicular[line_number].y*
                                    (*temp)->velocity.y;
+
+
+            //     (*temp)->velocity.x = -(*temp)->velocity.x;
+            //     (*temp)->velocity.y = -(*temp)->velocity.y;
 
         }
         // if grenade touched bot, explode immediately

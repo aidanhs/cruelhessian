@@ -14,9 +14,6 @@ CONFIGURE_FILE(
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
-SET(CMAKE_C_COMPILER gcc)
-SET(CMAKE_CXX_COMPILER g++)
-
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2 -pipe -fomit-frame-pointer")
@@ -26,7 +23,7 @@ FIND_PACKAGE( SDL_mixer REQUIRED)
 FIND_PACKAGE( SDL REQUIRED)
 FIND_PACKAGE( CEGUI 0.6 REQUIRED)
 FIND_PACKAGE( Freetype REQUIRED)
-FIND_PACKAGE( Boost 1.38 REQUIRED COMPONENTS filesystem regex)
+FIND_PACKAGE( Boost 1.38 REQUIRED COMPONENTS filesystem)
 
 INCLUDE_DIRECTORIES( ${SDLMIXER_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${SDL_INCLUDE_DIR} )
@@ -67,12 +64,13 @@ SET(src_executable
 	src/parser/ConvertUTF.c
 	src/parser/ConvertUTF.h
 	src/parser/SimpleIni.h
+	src/regexp.cpp
 	src/soil/SOIL.c
 	src/soil/image_DXT.c
 	src/soil/image_helper.c
 	src/soil/stb_image_aug.c
 	src/specials.cpp
-	src/texture_loader.cpp
+	src/textures_loader.cpp
 	src/tvector2d.cpp
 	src/window_exit.cpp
 	src/window_guns.cpp
@@ -87,7 +85,6 @@ LINK_LIBRARIES(GL)
 LINK_LIBRARIES(SDL_mixer)
 LINK_LIBRARIES(freetype)
 LINK_LIBRARIES(boost_filesystem-mt)
-LINK_LIBRARIES(boost_regex-mt)
 
 ADD_EXECUTABLE(cruelhessian ${src_executable})
 

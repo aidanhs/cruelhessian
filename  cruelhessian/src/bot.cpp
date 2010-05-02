@@ -71,7 +71,8 @@ Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, T
         {
             texture[i][j] = &text[i][j];
         }
-    old_a = TVector2D(0,sGravity);
+
+    old_a = TVector2D(0, sGravity);
 }
 
 
@@ -116,13 +117,7 @@ void Bot::draw_gostek_help(int partx, int party, float angle, const Tex* xtex)
 
     glPushMatrix();
 
-    glTranslatef(position.x - r + sx, position.y - r + sy, 0.0);
-
-    //glScalef(2*2.6f, 2*3.2f, 1.0f);
-    //glScalef(3.5f, 3.5f, 1.0f);
-    //glScalef(xtex.scale_x, xtex.scale_y, 1.0f);
-    //std::cout << "ANGLE " << angle << std::endl;
-    //if (movementDirection == RIGHT &&
+    glTranslatef(position.x - r + sx, position.y - r + sy, 0.0f);
 
     glRotatef(angle, 0.0f, 0.0f, 1.0f);
 

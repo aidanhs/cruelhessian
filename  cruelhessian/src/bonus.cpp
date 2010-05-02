@@ -24,7 +24,7 @@
 
 
 
-Bonus::Bonus(const TVector2D& pos, const Tex& tex, BONUS bontype) : texture(tex), typeBonus(bontype)
+Bonus::Bonus(const TVector2D& pos, const Tex& tex, int bontype) : texture(tex), typeBonus(bontype)
 {
 
     //type = SQUARE;

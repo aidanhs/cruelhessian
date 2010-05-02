@@ -20,6 +20,7 @@
 
 
 #include "worldmap.h"
+#include "globals.h"
 #include "tvector2d.h"
 #include <sstream>
 
@@ -252,7 +253,7 @@ void WorldMap::draw_interface()
         command_line();
     }
 
-    if (SHOW_MYCHAT_LINE)
+    if (CONSOLE_SHOW && SHOW_MYCHAT_LINE)
     {
         mychat_line();
     }

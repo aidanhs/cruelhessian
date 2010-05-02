@@ -18,10 +18,11 @@
 					<Add option="-Wcast-align" />
 					<Add option="-Wundef" />
 					<Add option="-Winline" />
-					<Add option="-Wmissing-declarations" />
 					<Add option="-Wmissing-include-dirs" />
-					<Add option="-pedantic" />
-					<Add option="-Wextra" />
+					<Add option="-Wswitch-enum" />
+					<Add option="-Wswitch-default" />
+					<Add option="-Wmain" />
+					<Add option="-std=c++98" />
 					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
@@ -42,9 +43,9 @@
 		</Build>
 		<Compiler>
 			<Add option="-pedantic" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-W" />
-			<Add option="-DFREEIMAGE_LIB" />
 			<Add directory="/usr/include/SDL" />
 			<Add directory="/usr/include/CEGUI" />
 			<Add directory="/usr/include/freetype2" />
@@ -55,27 +56,42 @@
 			<Add library="SDL_mixer" />
 			<Add library="CEGUIBase" />
 			<Add library="CEGUIOpenGLRenderer" />
+			<Add library="boost_filesystem-mt" />
+			<Add library="boost_regex-mt" />
 		</Linker>
-		<Unit filename="../src/arms.h" />
+		<Unit filename="../src/arrow.cpp" />
+		<Unit filename="../src/background.cpp" />
+		<Unit filename="../src/bonus.cpp" />
 		<Unit filename="../src/bot.cpp" />
 		<Unit filename="../src/bullet.cpp" />
+		<Unit filename="../src/chat.cpp" />
+		<Unit filename="../src/collisions.cpp" />
+		<Unit filename="../src/console.cpp" />
 		<Unit filename="../src/controls.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/draw.cpp" />
-		<Unit filename="../src/draw_extra.h" />
-		<Unit filename="../src/draw_menus.cpp" />
+		<Unit filename="../src/disk_object.cpp" />
 		<Unit filename="../src/fonts.cpp" />
+		<Unit filename="../src/game.cpp" />
 		<Unit filename="../src/globals.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/grenade.cpp" />
 		<Unit filename="../src/gui.cpp" />
 		<Unit filename="../src/gui.h" />
+		<Unit filename="../src/gui_fselector.cpp" />
+		<Unit filename="../src/gui_graphics.cpp" />
+		<Unit filename="../src/gui_interface.cpp" />
+		<Unit filename="../src/gui_maps.cpp" />
+		<Unit filename="../src/gui_music.cpp" />
+		<Unit filename="../src/gui_player.cpp" />
+		<Unit filename="../src/interface.cpp" />
 		<Unit filename="../src/load.cpp" />
 		<Unit filename="../src/main.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../src/map.cpp" />
+		<Unit filename="../src/mouse.cpp" />
 		<Unit filename="../src/moving_object.cpp" />
 		<Unit filename="../src/parser.cpp" />
 		<Unit filename="../src/parser/ConvertUTF.c">
@@ -83,10 +99,6 @@
 		</Unit>
 		<Unit filename="../src/parser/ConvertUTF.h" />
 		<Unit filename="../src/parser/SimpleIni.h" />
-		<Unit filename="../src/physics.cpp">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/read_pms.cpp" />
 		<Unit filename="../src/soil/SOIL.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -106,18 +118,11 @@
 		<Unit filename="../src/soil/stbi_DDS_aug.h" />
 		<Unit filename="../src/soil/stbi_DDS_aug_c.h" />
 		<Unit filename="../src/specials.cpp" />
-		<Unit filename="../src/src/AbstractRenderer.h" />
-		<Unit filename="../src/src/BitmapRenderer.h" />
-		<Unit filename="../src/src/FTFont.h" />
-		<Unit filename="../src/src/FTGlyph.h" />
-		<Unit filename="../src/src/GLGlyph.h" />
-		<Unit filename="../src/src/GLPixelGlyph.h" />
-		<Unit filename="../src/src/GLTextureGlyph.h" />
-		<Unit filename="../src/src/GlyphCache.h" />
-		<Unit filename="../src/src/OpenGL.h" />
-		<Unit filename="../src/src/PixmapRenderer.h" />
-		<Unit filename="../src/src/TextureRenderer.h" />
-		<Unit filename="../src/src/gltext.h" />
+		<Unit filename="../src/textures_loader.cpp" />
+		<Unit filename="../src/tvector2d.cpp" />
+		<Unit filename="../src/window_exit.cpp" />
+		<Unit filename="../src/window_guns.cpp" />
+		<Unit filename="../src/window_scores.cpp" />
 		<Unit filename="../src/worldmap.cpp" />
 		<Extensions>
 			<code_completion />
