@@ -1,9 +1,4 @@
 
-
-Notice, that if you don't remove previous version (especially config file),
-game may crash at start.
-
-
 0. Prologue
 
 This game has not been playable yet. That means, that you can go 
@@ -24,7 +19,6 @@ You'll need to have these libraries to build Cruel Hessian:
  libsdl >= 1.2.13            (www.libsdl.org)
  libsdl_mixer >= 1.2.8       (www.libsdl.org/projects/SDL_mixer)
  boost_filesystem >= 1.38.0
- boost_regex >= 1.38.0
  boost_system >= 1.38.0
 
  and of course Soldat ( >= 1.4.2) from www.soldat.pl to run Cruel Hessian.

@@ -18,6 +18,7 @@
 					<Add option="-Wcast-align" />
 					<Add option="-Wundef" />
 					<Add option="-Winline" />
+					<Add option="-Wmissing-declarations" />
 					<Add option="-Wmissing-include-dirs" />
 					<Add option="-Wswitch-enum" />
 					<Add option="-Wswitch-default" />
@@ -57,7 +58,6 @@
 			<Add library="CEGUIBase" />
 			<Add library="CEGUIOpenGLRenderer" />
 			<Add library="boost_filesystem-mt" />
-			<Add library="boost_regex-mt" />
 		</Linker>
 		<Unit filename="../src/arrow.cpp" />
 		<Unit filename="../src/background.cpp" />
@@ -94,11 +94,13 @@
 		<Unit filename="../src/mouse.cpp" />
 		<Unit filename="../src/moving_object.cpp" />
 		<Unit filename="../src/parser.cpp" />
+		<Unit filename="../src/parser.h" />
 		<Unit filename="../src/parser/ConvertUTF.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/parser/ConvertUTF.h" />
 		<Unit filename="../src/parser/SimpleIni.h" />
+		<Unit filename="../src/regexp.cpp" />
 		<Unit filename="../src/soil/SOIL.c">
 			<Option compilerVar="CC" />
 		</Unit>

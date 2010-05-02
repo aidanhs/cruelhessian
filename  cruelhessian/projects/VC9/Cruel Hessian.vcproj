@@ -412,6 +412,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\arrow.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\background.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\bonus.cpp"
 				>
 			</File>
@@ -448,14 +456,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\draw.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\draw_menus.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\fonts.cpp"
 				>
 			</File>
@@ -480,11 +480,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui_graphics.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui_interface.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui_maps.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui_music.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui_player.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\soil\image_DXT.c"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\soil\image_helper.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\interface.cpp"
 				>
 			</File>
 			<File
@@ -512,7 +536,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\scores_window.cpp"
+				RelativePath="..\..\src\regexp.cpp"
 				>
 			</File>
 			<File
@@ -528,7 +552,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\textures_loader.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tvector2d.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\window_exit.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\window_guns.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\window_scores.cpp"
 				>
 			</File>
 			<File
