@@ -14,16 +14,20 @@ CONFIGURE_FILE(
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
+#SET(CMAKE_C_COMPILER "clang++")
+#SET(CMAKE_CXX_COMPILER "clang++")
+
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2 -pipe -fomit-frame-pointer")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -ansi -pedantic -O2 -pipe -fomit-frame-pointer")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -pipe -fomit-frame-pointer")
 
-FIND_PACKAGE( SDL_mixer REQUIRED)
-FIND_PACKAGE( SDL REQUIRED)
-FIND_PACKAGE( CEGUI 0.6 REQUIRED)
-FIND_PACKAGE( Freetype REQUIRED)
-FIND_PACKAGE( Boost 1.38 REQUIRED COMPONENTS filesystem)
+FIND_PACKAGE(SDL_mixer REQUIRED)
+FIND_PACKAGE(SDL REQUIRED)
+FIND_PACKAGE(CEGUI 0.6 REQUIRED)
+FIND_PACKAGE(Freetype REQUIRED)
+FIND_PACKAGE(Boost 1.38 REQUIRED COMPONENTS filesystem)
+FIND_LIBRARY(CURL_LIBRARY NAMES curl)
 
 INCLUDE_DIRECTORIES( ${SDLMIXER_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${SDL_INCLUDE_DIR} )
@@ -33,34 +37,44 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 
 SET(src_executable
-	src/arrow.cpp
-	src/background.cpp
-	src/bonus.cpp
-    src/bot.cpp
-	src/bullet.cpp
-	src/chat.cpp
-	src/collisions.cpp
-	src/console.cpp
-	src/controls.cpp
-	src/disk_object.cpp
-	src/fonts.cpp
-	src/game.cpp
-	src/globals.cpp
-	src/grenade.cpp
-    src/gui.cpp
-    src/gui_fselector.cpp
-    src/gui_graphics.cpp
-    src/gui_interface.cpp
-    src/gui_maps.cpp
-    src/gui_music.cpp
-    src/gui_player.cpp
-    src/interface.cpp
-	src/load.cpp
-    src/main.cpp
-    src/map.cpp
-    src/mouse.cpp
-    src/moving_object.cpp
-	src/parser.cpp
+	src/Arrow.cpp
+	src/Background.cpp
+	src/Bonus.cpp
+    src/Bot.cpp
+    src/BotManager.cpp
+	src/Bullet.cpp
+	src/Chat.cpp
+	src/Collisions.cpp
+	src/Console.cpp
+	src/Controls.cpp
+	src/decompress/UnLZMA.cpp
+	src/decompress/UnTar.cpp
+	src/decompress/lzmadec/7zFile.cpp
+	src/decompress/lzmadec/7zStream.cpp
+	src/decompress/lzmadec/Alloc.cpp
+	src/decompress/lzmadec/LzFind.cpp
+	src/decompress/lzmadec/LzmaDec.cpp
+	src/Fonts.cpp
+	src/Game.cpp
+	src/Grenade.cpp
+    src/GUI.cpp
+    src/GUI/DiskObject.cpp
+    src/GUI/GUIGraphics.cpp
+	src/GUI/GUIInterface.cpp
+	src/GUI/GUIMaps.cpp
+	src/GUI/GUIMusic.cpp
+	src/GUI/GUIOptions.cpp
+	src/GUI/GUIPlayer.cpp
+	src/GUI/GUIWindowFolderSelector.cpp
+	src/GUI/GUIWindowNoSoldat.cpp
+	src/GUI/GUIWindowUpdater.cpp
+    src/Interface.cpp
+	src/Load.cpp
+    src/Main.cpp
+    src/Map.cpp
+    src/Mouse.cpp
+    src/MovingObject.cpp
+	src/Parser.cpp
 	src/parser/ConvertUTF.c
 	src/parser/ConvertUTF.h
 	src/parser/SimpleIni.h
@@ -69,13 +83,14 @@ SET(src_executable
 	src/soil/image_DXT.c
 	src/soil/image_helper.c
 	src/soil/stb_image_aug.c
-	src/specials.cpp
-	src/textures_loader.cpp
-	src/tvector2d.cpp
-	src/window_exit.cpp
-	src/window_guns.cpp
-	src/window_scores.cpp
-	src/worldmap.cpp
+	src/Specials.cpp
+	src/TexturesLoader.cpp
+	src/TVector2D.cpp
+	src/WeaponManager.cpp
+	src/WindowExit.cpp
+	src/WindowGuns.cpp
+	src/WindowScores.cpp
+	src/WorldMap.cpp
 )
 
 LINK_LIBRARIES(CEGUIBase)
@@ -85,6 +100,7 @@ LINK_LIBRARIES(GL)
 LINK_LIBRARIES(SDL_mixer)
 LINK_LIBRARIES(freetype)
 LINK_LIBRARIES(boost_filesystem-mt)
+LINK_LIBRARIES(curl)
 
 ADD_EXECUTABLE(cruelhessian ${src_executable})
 

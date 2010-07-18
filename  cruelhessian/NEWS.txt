@@ -1,5 +1,20 @@
+0.1.3
+ - 
+
 0.1.2
+ - start to make standalone version of Cruel Hessian (initially based 
+    on mods created by Soldat's users; check README.txt for more
+    information) 
+ - initially implemented updating module
+ - use decompressor of tar.lzma files based on lzma465 package 
+    and untar.c file
+ - Game, GUI and WorldMap classes are derived now from Singleton class; 
+    removed global functions and variables and speed up loading maps
+ - new code for drawing the gostek; it's based partially on Anna Zajaczkowski's
+    Gostek Viewer written in Visual Basic 6; currently there is a small
+    regression in this part
  - updated SimpleIni to 4.13 version
+ - many minor improvements and fixed memory leaks
 
 0.1.1
  - initial implementation of Verlet integration to simulate physics
@@ -61,7 +76,8 @@
  - next part of minor improvements
 
 0.1.0-rc4
- - update stb_image_aug.c file from SOIL library to 1.18 version and fix some warnings
+ - update stb_image_aug.c file from SOIL library to 1.18 version 
+    and fix some warnings
  - improvements in grenades collisions
  - added next few sounds
  - start to implement command line, improved chat window
@@ -130,8 +146,8 @@
 0.1c
  - better controls
  - huge improvement in collision detection system, use SECTORS structure from pms file
- - no Boost library dependency; instead of boost_regex, Cruel Hessian is now using 
- 	his own regular expressions library based on re_lib
+ - no Boost library dependency; instead of boost_regex, Cruel Hessian 
+    is now using his own regular expressions library based on re_lib
 
 0.1b
  - improve cmake building system

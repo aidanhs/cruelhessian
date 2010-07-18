@@ -3,11 +3,27 @@
 
 This game has not been playable yet. That means, that you can go 
 wherever you want on the map, shot at everything you see and hope 
-that someone will shot you, but don't expect some thrilling contest ;).
+that someone will shot you, but don't expect some thrilling contest.
 
 You have been warned ;)
 
 Project's site : http://code.google.com/p/cruelhessian/
+
+From 0.1.2 version, Cruel Hessian has started not to use the current
+installation of Soldat. So now you can choose one of two modes: 
+Soldat compatibility mode (still using Soldat files) or 
+Cruel Hessian mode (using files based on mods created by Soldat users - 
+these ones can be automatically downloaded from temporary server by 
+clicking 'Check for update' button in Options tab in CH - remember, that
+in this case you need to select EMPTY directory for the files). 
+At this moment almost all originally Soldat files have been replaced,
+except Anims directory.
+    
+I'm not sure about license of these mods, so I don't provide them 
+with this sources.
+
+Information about creators of mods can be found on :
+http://temporary09.eu5.org/files/OWNERS.txt
 
 
 1. Prerequisites
@@ -20,8 +36,16 @@ You'll need to have these libraries to build Cruel Hessian:
  libsdl_mixer >= 1.2.8       (www.libsdl.org/projects/SDL_mixer)
  boost_filesystem >= 1.38.0
  boost_system >= 1.38.0
+ pthreads
+ libcurl
 
- and of course Soldat ( >= 1.4.2) from www.soldat.pl to run Cruel Hessian.
+    and Soldat ( >= 1.4.2) from http://www.soldat.pl if you want to run 
+    Soldat compatibility mode in Cruel Hessian. 
+
+If you are using Ubuntu, you can type:
+
+sudo apt-get install libcegui-mk2-dev libsdl1.2-dev libsdl-mixer1.2-dev
+  cmake libboost-filesystem-dev libboost-system-dev libcurl4-gnutls-dev g++
 
 
 2. Installation
@@ -54,13 +78,13 @@ F7 - next music track
 You can simply run 'cruelhessian' from the console after install, then 
 you'll be able to see some info when something goes wrong.
 
-The most important files (maps files, animation descriptions, 
-in-game sounds, etc.) are loaded from existing installation of Soldat. 
-So, on the first running, you'll have to select the Soldat directory 
-on the 'Options' tab.
+The most important files (maps files, animation descriptions, in-game 
+sounds, etc.) are loading from existing installation of Soldat or from 
+downloaded files. So, on the first running, you'll have to select the 
+Soldat directory (and/or CH directory) on the 'Options' tab.
 
 If you want to hear a music during the game, just put the m3u file(s) 
-into Mp3 folder in Soldat directory. 
+into Mp3 folder in Soldat/CH directory. 
 
 
 5. Uninstall
