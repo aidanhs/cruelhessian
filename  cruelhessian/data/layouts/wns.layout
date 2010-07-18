@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="WindowNoSoldat" >
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="WindowNoSoldat/Frame" >
+            <Property Name="Text" Value="Warning" />
+            <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.26875,0},{0.278024,0},{0.698437,0},{0.467392,0}}" />
+            <Window Type="TaharezLook/Button" Name="WindowNoSoldat/Frame/Ok" >
+                <Property Name="Text" Value="OK" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.355603,0},{0.730271,0},{0.630383,0},{0.892234,0}}" />
+            </Window>
+            <Window Type="TaharezLook/StaticText" Name="WindowNoSoldat/Frame/Message" >
+                <Property Name="Text" Value="Cannot find Soldat files" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.220455,0},{0.34873,0},{0.759091,0},{0.674366,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

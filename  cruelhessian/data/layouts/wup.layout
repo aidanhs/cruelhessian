@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="WindowUpdater" >
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="WindowUpdater/Frame" >
+            <Property Name="Text" Value="Updating ..." />
+            <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.218945,0},{0.317086,0},{0.73164,0},{0.601507,0}}" />
+            <Window Type="TaharezLook/Button" Name="WindowUpdater/Frame/Start" >
+                <Property Name="Text" Value="Start" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.180365,0},{0.744005,0},{0.455144,0},{0.905968,0}}" />
+            </Window>
+            <Window Type="TaharezLook/StaticText" Name="WindowUpdater/Frame/Message" >
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0718836,0},{0.183922,0},{0.926711,0},{0.335593,0}}" />
+            </Window>
+            <Window Type="TaharezLook/ProgressBar" Name="WindowUpdater/Frame/ProgressBar" >
+                <Property Name="StepSize" Value="0.01" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="CurrentProgress" Value="0" />
+                <Property Name="UnifiedAreaRect" Value="{{0.119048,0},{0.396138,0},{0.940476,0},{0.646138,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="WindowUpdater/Frame/Cancel" >
+                <Property Name="Text" Value="Cancel" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.537143,0},{0.738773,0},{0.817619,0},{0.901791,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
