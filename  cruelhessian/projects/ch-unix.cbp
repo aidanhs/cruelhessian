@@ -23,7 +23,9 @@
 					<Add option="-Wswitch-enum" />
 					<Add option="-Wswitch-default" />
 					<Add option="-Wmain" />
-					<Add option="-std=c++98" />
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
 					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
@@ -43,58 +45,101 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-pedantic" />
-			<Add option="-Wextra" />
-			<Add option="-Wall" />
 			<Add option="-W" />
+			<Add option="-fopenmp" />
 			<Add directory="/usr/include/SDL" />
 			<Add directory="/usr/include/CEGUI" />
 			<Add directory="/usr/include/freetype2" />
 		</Compiler>
 		<Linker>
+			<Add option="-lgomp" />
 			<Add library="GL" />
 			<Add library="GLU" />
 			<Add library="SDL_mixer" />
 			<Add library="CEGUIBase" />
 			<Add library="CEGUIOpenGLRenderer" />
 			<Add library="boost_filesystem-mt" />
+			<Add library="curl" />
 		</Linker>
-		<Unit filename="../src/arrow.cpp" />
-		<Unit filename="../src/background.cpp" />
-		<Unit filename="../src/bonus.cpp" />
-		<Unit filename="../src/bot.cpp" />
-		<Unit filename="../src/bullet.cpp" />
-		<Unit filename="../src/chat.cpp" />
-		<Unit filename="../src/collisions.cpp" />
-		<Unit filename="../src/console.cpp" />
-		<Unit filename="../src/controls.cpp">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/disk_object.cpp" />
-		<Unit filename="../src/fonts.cpp" />
-		<Unit filename="../src/game.cpp" />
-		<Unit filename="../src/globals.cpp">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/grenade.cpp" />
-		<Unit filename="../src/gui.cpp" />
-		<Unit filename="../src/gui.h" />
-		<Unit filename="../src/gui_fselector.cpp" />
-		<Unit filename="../src/gui_graphics.cpp" />
-		<Unit filename="../src/gui_interface.cpp" />
-		<Unit filename="../src/gui_maps.cpp" />
-		<Unit filename="../src/gui_music.cpp" />
-		<Unit filename="../src/gui_player.cpp" />
-		<Unit filename="../src/interface.cpp" />
-		<Unit filename="../src/load.cpp" />
-		<Unit filename="../src/main.cpp">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../src/map.cpp" />
-		<Unit filename="../src/mouse.cpp" />
-		<Unit filename="../src/moving_object.cpp" />
-		<Unit filename="../src/parser.cpp" />
-		<Unit filename="../src/parser.h" />
+		<Unit filename="../src/Arrow.cpp" />
+		<Unit filename="../src/Arrow.h" />
+		<Unit filename="../src/AudioManager.cpp" />
+		<Unit filename="../src/AudioManager.h" />
+		<Unit filename="../src/Background.cpp" />
+		<Unit filename="../src/Background.h" />
+		<Unit filename="../src/Bonus.cpp" />
+		<Unit filename="../src/Bonus.h" />
+		<Unit filename="../src/BonusManager.cpp" />
+		<Unit filename="../src/Bot.cpp" />
+		<Unit filename="../src/Bot.h" />
+		<Unit filename="../src/BotManager.cpp" />
+		<Unit filename="../src/BotManager.h" />
+		<Unit filename="../src/Bullet.cpp" />
+		<Unit filename="../src/Bullet.h" />
+		<Unit filename="../src/Chat.cpp" />
+		<Unit filename="../src/Chat.h" />
+		<Unit filename="../src/Collisions.cpp" />
+		<Unit filename="../src/Console.cpp" />
+		<Unit filename="../src/Console.h" />
+		<Unit filename="../src/Controls.cpp" />
+		<Unit filename="../src/FontManager.cpp" />
+		<Unit filename="../src/FontManager.h" />
+		<Unit filename="../src/Fonts.cpp" />
+		<Unit filename="../src/Fonts.h" />
+		<Unit filename="../src/GUI.cpp" />
+		<Unit filename="../src/GUI/DiskObject.cpp" />
+		<Unit filename="../src/GUI/GUIGraphics.cpp" />
+		<Unit filename="../src/GUI/GUIMaps.cpp" />
+		<Unit filename="../src/GUI/GUIMusic.cpp" />
+		<Unit filename="../src/GUI/GUIOptions.cpp" />
+		<Unit filename="../src/GUI/GUIPlayer.cpp" />
+		<Unit filename="../src/GUI/GUIWindowFolderSelector.cpp" />
+		<Unit filename="../src/GUI/GUIWindowNoSoldat.cpp" />
+		<Unit filename="../src/GUI/GUIWindowUpdater.cpp" />
+		<Unit filename="../src/Game.cpp" />
+		<Unit filename="../src/Game.h" />
+		<Unit filename="../src/Globals.h" />
+		<Unit filename="../src/Grenade.cpp" />
+		<Unit filename="../src/Grenade.h" />
+		<Unit filename="../src/InterfaceBaseManager.cpp" />
+		<Unit filename="../src/InterfaceManager.cpp" />
+		<Unit filename="../src/Load.cpp" />
+		<Unit filename="../src/Main.cpp" />
+		<Unit filename="../src/Map.cpp" />
+		<Unit filename="../src/Map.h" />
+		<Unit filename="../src/Mouse.cpp" />
+		<Unit filename="../src/Mouse.h" />
+		<Unit filename="../src/MovingObject.cpp" />
+		<Unit filename="../src/MovingObject.h" />
+		<Unit filename="../src/ParserManager.cpp" />
+		<Unit filename="../src/Singleton.h" />
+		<Unit filename="../src/TVector2D.cpp" />
+		<Unit filename="../src/TVector2D.h" />
+		<Unit filename="../src/TexturesLoader.cpp" />
+		<Unit filename="../src/TexturesLoader.h" />
+		<Unit filename="../src/WeaponManager.cpp" />
+		<Unit filename="../src/WeaponManager.h" />
+		<Unit filename="../src/WindowExit.cpp" />
+		<Unit filename="../src/WindowGuns.cpp" />
+		<Unit filename="../src/WindowScores.cpp" />
+		<Unit filename="../src/WorldMap.cpp" />
+		<Unit filename="../src/WorldMap.h" />
+		<Unit filename="../src/decompress/UnLZMA.cpp" />
+		<Unit filename="../src/decompress/UnLZMA.h" />
+		<Unit filename="../src/decompress/UnTar.cpp" />
+		<Unit filename="../src/decompress/UnTar.h" />
+		<Unit filename="../src/decompress/lzmadec/7zFile.cpp" />
+		<Unit filename="../src/decompress/lzmadec/7zFile.h" />
+		<Unit filename="../src/decompress/lzmadec/7zStream.cpp" />
+		<Unit filename="../src/decompress/lzmadec/7zVersion.h" />
+		<Unit filename="../src/decompress/lzmadec/Alloc.cpp" />
+		<Unit filename="../src/decompress/lzmadec/Alloc.h" />
+		<Unit filename="../src/decompress/lzmadec/LzFind.cpp" />
+		<Unit filename="../src/decompress/lzmadec/LzFind.h" />
+		<Unit filename="../src/decompress/lzmadec/LzHash.h" />
+		<Unit filename="../src/decompress/lzmadec/LzmaDec.cpp" />
+		<Unit filename="../src/decompress/lzmadec/LzmaDec.h" />
+		<Unit filename="../src/decompress/lzmadec/Types.h" />
 		<Unit filename="../src/parser/ConvertUTF.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -117,15 +162,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/soil/stb_image_aug.h" />
-		<Unit filename="../src/soil/stbi_DDS_aug.h" />
-		<Unit filename="../src/soil/stbi_DDS_aug_c.h" />
-		<Unit filename="../src/specials.cpp" />
-		<Unit filename="../src/textures_loader.cpp" />
-		<Unit filename="../src/tvector2d.cpp" />
-		<Unit filename="../src/window_exit.cpp" />
-		<Unit filename="../src/window_guns.cpp" />
-		<Unit filename="../src/window_scores.cpp" />
-		<Unit filename="../src/worldmap.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

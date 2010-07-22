@@ -1,5 +1,14 @@
-0.1.3
+0.1.4
  - 
+
+0.1.3
+ - separate Fonts, Audio, Interface from WorldMap class and create 
+    FontManager, BonusManager, AudioManager, ParserManager, 
+    InterfaceBaseManager and InterfaceManager as singletons
+ - parsing named colors, like : clSilver, clWhite, etc.
+ - fixed saving and loading names of selected interface into options.ini file
+ - fixed changing sound volume
+ - fixed many memory leaks
 
 0.1.2
  - start to make standalone version of Cruel Hessian (initially based 
