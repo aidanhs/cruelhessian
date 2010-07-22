@@ -1,7 +1,10 @@
-/*   arrow.h
+#ifndef ARROW_H
+#define ARROW_H
+
+/*   Arrow.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,10 +21,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ARROW_H
-#define ARROW_H
 
-#include "Globals.h"
+#include "Tex.h"
 #include "MovingObject.h"
 #include "TVector2D.h"
 
@@ -33,7 +34,7 @@ class Arrow : public MovingObject
 
 public:
 
-    Arrow(const Tex& tex);
+    Arrow();
     ~Arrow() {}
 
     void update(const TVector2D& bot_pos);

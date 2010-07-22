@@ -1,7 +1,7 @@
-/*   gui_player.cpp
+/*   GUIPlayer.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,33 +22,30 @@
 
 #include "../GUI.h"
 #include "../Game.h"
-//#include "Globals.h"
-
-//#define _(string) gettext(string)
 
 
 
 bool GUI::onJumpButton(const CEGUI::EventArgs &)
 {
-    game.KEY_UP = GUI_KEY_PRESSED;
+    Parser.KEY_UP = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onMoveLeftButton(const CEGUI::EventArgs &)
 {
-    game.KEY_LEFT = GUI_KEY_PRESSED;
+    Parser.KEY_LEFT = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onMoveRightButton(const CEGUI::EventArgs &)
 {
-    game.KEY_RIGHT = GUI_KEY_PRESSED;
+    Parser.KEY_RIGHT = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onCrouchButton(const CEGUI::EventArgs &)
 {
-    game.KEY_DOWN = GUI_KEY_PRESSED;
+    Parser.KEY_DOWN = GUI_KEY_PRESSED;
     return true;
 }
 
@@ -56,25 +53,25 @@ bool GUI::onReloadWeaponButton(const CEGUI::EventArgs &)
 {
     std::cout << "PRESS " << GUI_KEY_PRESSED << std::endl;
    // IF_PRESSED = false;
-    game.KEY_RELOAD = GUI_KEY_PRESSED;
+    Parser.KEY_RELOAD = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onThrowGrenadeButton(const CEGUI::EventArgs &)
 {
-    game.KEY_GRENADE = GUI_KEY_PRESSED;
+    Parser.KEY_GRENADE = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onChatButton(const CEGUI::EventArgs &)
 {
-    game.KEY_CHAT = GUI_KEY_PRESSED;
+    Parser.KEY_CHAT = GUI_KEY_PRESSED;
     return true;
 }
 
 bool GUI::onTeamChatButton(const CEGUI::EventArgs &)
 {
-    game.KEY_TEAMCHAT = GUI_KEY_PRESSED;
+    Parser.KEY_TEAMCHAT = GUI_KEY_PRESSED;
     return true;
 }
 
@@ -83,7 +80,7 @@ bool GUI::onTeamChatButton(const CEGUI::EventArgs &)
 bool GUI::onPlayerName(const CEGUI::EventArgs& )
 {
 
-    game.PLAYER_NAME = mPlayerName->getText().c_str();
+    Parser.PLAYER_NAME = mPlayerName->getText().c_str();
     return true;
 
 }

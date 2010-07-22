@@ -1,7 +1,7 @@
-/*   gui_graphics.cpp
+/*   GUIGraphics.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,56 +19,51 @@
  */
 
 #include <iostream>
-//#include <locale.h>
-//#include <libintl.h>
 
 #include "../GUI.h"
-//#include "Globals.h"
 #include "../Game.h"
-
-//#define _(string) gettext(string)
 
 
 
 bool GUI::onGraphicsChanged(const CEGUI::EventArgs& )
 {
     if (mDeep16->isSelected())
-        game.MAX_BPP = 16;
+        Parser.MAX_BPP = 16;
     else if (mDeep32->isSelected())
-        game.MAX_BPP = 32;
+        Parser.MAX_BPP = 32;
 
     if (mResol640->isSelected())
     {
-        game.MAX_WIDTH = 640.0f;
-        game.MAX_HEIGHT = 480.0f;
+        Parser.MAX_WIDTH = 640.0f;
+        Parser.MAX_HEIGHT = 480.0f;
     }
     else if (mResol800->isSelected())
     {
-        game.MAX_WIDTH = 800.0f;
-        game.MAX_HEIGHT = 600.0f;
+        Parser.MAX_WIDTH = 800.0f;
+        Parser.MAX_HEIGHT = 600.0f;
     }
     else if (mResol1024->isSelected())
     {
-        game.MAX_WIDTH = 1024.0f;
-        game.MAX_HEIGHT = 768.0f;
+        Parser.MAX_WIDTH = 1024.0f;
+        Parser.MAX_HEIGHT = 768.0f;
     }
 
-    glViewport(0, 0, static_cast<int>(game.MAX_WIDTH), static_cast<int>(game.MAX_HEIGHT));
+    glViewport(0, 0, static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT));
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, game.MAX_WIDTH, game.MAX_HEIGHT, 0, -1.0f, 1.0f);
+    glOrtho(0, Parser.MAX_WIDTH, Parser.MAX_HEIGHT, 0, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     if (mIsFullscreen->isSelected())
     {
-        game.screen = SDL_SetVideoMode(static_cast<int>(game.MAX_WIDTH), static_cast<int>(game.MAX_HEIGHT), game.MAX_BPP, SDL_OPENGL|SDL_FULLSCREEN);
-        game.FULLSCREEN = true;
+        game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_FULLSCREEN);
+        Parser.FULLSCREEN = true;
     }
     else
     {
-        game.screen = SDL_SetVideoMode(static_cast<int>(game.MAX_WIDTH), static_cast<int>(game.MAX_HEIGHT), game.MAX_BPP, SDL_OPENGL|SDL_RESIZABLE);
-        game.FULLSCREEN = false;
+        game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_RESIZABLE);
+        Parser.FULLSCREEN = false;
     }
 
     return true;

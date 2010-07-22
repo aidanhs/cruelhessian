@@ -1,7 +1,7 @@
-/*   console.cpp
+/*   Console.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,9 @@
 
 
 #include "Console.h"
-#include "Game.h"
+#include "WorldMap.h"
+#include "ParserManager.h"
+#include "FontManager.h"
 
 
 
@@ -88,7 +90,7 @@ bool Console::isEscaped() const
 void WorldMap::command_line()
 {
 
-    world.printText(font[1][game.FontConsoleSize], "Cmd : " + cons.GetInput(), textCol[3], 15.0f, 0.8f*game.MAX_HEIGHT);
+    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Cmd : " + cons.GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
 
     if (cons.GetInputEntered() == "kill" || cons.GetInputEntered() == "KILL")
     {
@@ -116,7 +118,7 @@ void WorldMap::command_line()
 void WorldMap::mychat_line()
 {
 
-    world.printText(font[1][game.FontConsoleSize], "Say : " + myChat.GetInput(), textCol[3], 15.0f, 0.8f*game.MAX_HEIGHT);
+    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Say : " + myChat.GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
 
     if (myChat.GetInputEntered() != "")
     {

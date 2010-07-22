@@ -1,7 +1,7 @@
-/*   collisions.cpp
+/*   Collisions.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #include <assert.h>
 
 #include "WorldMap.h"
+#include "AudioManager.h"
 #include "Game.h"
 
 
@@ -317,16 +318,16 @@ void WorldMap::hurt_bot(unsigned int shooted, unsigned int owner, float damage)
             bot[shooted]->killer = owner;
             bot[shooted]->actLife = fullLife;
             bot[shooted]->respawnTime = 1000*(rand()%MAX_RESPAWN_TIME + 1);
-            if (game.CONSOLE_SHOW && bot[owner]->chatWinning != "") chat->addMessage(bot[owner]->name, bot[owner]->chatWinning);
-            if (game.CONSOLE_SHOW && bot[shooted]->chatDead != "") chat->addMessage(bot[shooted]->name, bot[shooted]->chatDead);
+            if (Parser.CONSOLE_SHOW && bot[owner]->chatWinning != "") chat->addMessage(bot[owner]->name, bot[owner]->chatWinning);
+            if (Parser.CONSOLE_SHOW && bot[shooted]->chatDead != "") chat->addMessage(bot[shooted]->name, bot[shooted]->chatDead);
 
             // if I'm dead
             if (shooted == MY_BOT_NR)
             {
-                if (game.SOUNDS_VOL > 0)
+                if (Parser.SOUNDS_VOL > 0)
                 {
-                    Mix_PlayChannel(-1, sound_death[rand()%3], 0);
-                    Mix_PlayChannel(-1, sound_heaven, 0);
+                    Mix_PlayChannel(-1, Audio.sound_death[rand()%3], 0);
+                    Mix_PlayChannel(-1, Audio.sound_heaven, 0);
                 }
 
                 OLD_POS = bot[MY_BOT_NR]->position;
@@ -419,8 +420,8 @@ void WorldMap::collisions()
         //if (collisionCircle2Wall(**temp, delta.x, delta.y, t1, t2))
         if (collisionCircle2Wall(**temp, 0.0f, delta.y, t1, t2))
         {
-            if (game.SOUNDS_VOL > 0)
-                Mix_PlayChannel(-1, sound_kitfall[rand()%2], 0);
+            if (Parser.SOUNDS_VOL > 0)
+                Mix_PlayChannel(-1, Audio.sound_kitfall[rand()%2], 0);
             (*temp)->a = 0;
             (*temp)->velocity.y = -5.0f;
 
@@ -443,13 +444,17 @@ void WorldMap::collisions()
         delta = (*temp)->velocity * fTimeStep;
         if (collisionPoint2Wall(**temp, delta.x, delta.y) >= 0)
         {
-            bullet_list.erase(temp++);
+            //bullet_list.erase(temp++);
+            delete *temp;
+            temp = bullet_list.erase(temp);
         }
         // if ammo touched bot
         else if ((which_bot = collisionPoint2Circle(**temp, **temp)) >= 0)
         {
             hurt_bot(which_bot, (*temp)->owner, Weapons[bot[(*temp)->owner]->gunModel].damage);
-            bullet_list.erase(temp++);
+            //bullet_list.erase(temp++);
+            delete *temp;
+            temp = bullet_list.erase(temp);
         }
         else
         {
@@ -467,8 +472,8 @@ void WorldMap::collisions()
         if (collisionCircle2Wall(**temp, delta.x, delta.y, pol_number, line_number))
         {
 
-            if (game.SOUNDS_VOL > 0)
-                Mix_PlayChannel(-1, grenade_bounce, 0);
+            if (Parser.SOUNDS_VOL > 0)
+                Mix_PlayChannel(-1, Audio.grenade_bounce, 0);
 
             // V -=  2 * N * dot(V • N)
 
@@ -491,7 +496,9 @@ void WorldMap::collisions()
             //std::cout << "SOATAL\n";
             (*temp)->timer_throw -= 4000;
             hurt_bot(shooted, (*temp)->owner, 50.0f);
-            gren_list.erase(temp++);
+            //gren_list.erase(temp++);
+            delete *temp;
+            temp = gren_list.erase(temp);
             continue;
         }
         //else
@@ -502,7 +509,9 @@ void WorldMap::collisions()
         }
         if ((*temp)->killMyself)
         {
-            gren_list.erase(temp++);
+            //gren_list.erase(temp++);
+            delete *temp;
+            temp = gren_list.erase(temp);
             continue;
         }
         else

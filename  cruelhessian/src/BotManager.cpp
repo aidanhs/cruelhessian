@@ -1,7 +1,7 @@
 /*   BotManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +19,16 @@
  */
 
 
-#include "BotManager.h"
+#include <cmath>
 #include "boost/filesystem/fstream.hpp"
-#include "Globals.h"
+
+#include "BotManager.h"
+#include "Enums.h"
+#include "ParserManager.h"
 #include "Game.h"
 #include "parser/SimpleIni.h"
 #include "regexp.h"
 #include "TexturesLoader.h"
-#include <cmath>
 
 
 
@@ -39,33 +41,33 @@ std::string BotManager::anim_type(MT name)
     switch (name)
     {
     case BIEGA:
-        return game.SOL_PATH + "Anims/biega.poa";
+        return Parser.SOL_PATH + "Anims/biega.poa";
     case BIEGA_TYL:
-        return game.SOL_PATH + "Anims/biegatyl.poa";
+        return Parser.SOL_PATH + "Anims/biegatyl.poa";
     case CELUJE:
-        return game.SOL_PATH + "Anims/celuje.poa";
+        return Parser.SOL_PATH + "Anims/celuje.poa";
     case CIESZY:
-        return game.SOL_PATH + "Anims/cieszy.poa";
+        return Parser.SOL_PATH + "Anims/cieszy.poa";
     case GORA:
-        return game.SOL_PATH + "Anims/gora.poa";
+        return Parser.SOL_PATH + "Anims/gora.poa";
     case KUCA:
-        return game.SOL_PATH + "Anims/kuca.poa";
+        return Parser.SOL_PATH + "Anims/kuca.poa";
     case RZUCA:
-        return game.SOL_PATH + "Anims/rzuca.poa";
+        return Parser.SOL_PATH + "Anims/rzuca.poa";
     case SKOK:
-        return game.SOL_PATH + "Anims/skok.poa";
+        return Parser.SOL_PATH + "Anims/skok.poa";
     case SKOK_DOL_OBROT:
-        return game.SOL_PATH + "Anims/skokdolobrot.poa";
+        return Parser.SOL_PATH + "Anims/skokdolobrot.poa";
     case SKOK_DOL_OBROT_TYL:
-        return game.SOL_PATH + "Anims/skokdolobrottyl.poa";
+        return Parser.SOL_PATH + "Anims/skokdolobrottyl.poa";
     case SKOK_W_BOK:
-        return game.SOL_PATH + "Anims/skokwbok.poa";
+        return Parser.SOL_PATH + "Anims/skokwbok.poa";
     case SPADA:
-        return game.SOL_PATH + "Anims/spada.poa";
+        return Parser.SOL_PATH + "Anims/spada.poa";
     case STOI:
-        return game.SOL_PATH + "Anims/stoi.poa";
+        return Parser.SOL_PATH + "Anims/stoi.poa";
     case ZMIEN_BRON:
-        return game.SOL_PATH + "Anims/zmienbron.poa";
+        return Parser.SOL_PATH + "Anims/zmienbron.poa";
         //case
     default:
         break;
@@ -81,7 +83,6 @@ int BotManager::read_poa(const MT name)
     std::string buffer;
     int i = 0, k = 0;
     bool stop = false;
-    //float min_x = 100, max_x = -100, min_z = 100, max_z = -100;
 
     std::ifstream file(anim_type(name).c_str());
 
@@ -112,7 +113,7 @@ int BotManager::read_poa(const MT name)
               if (part_z[name][k][i][RIGHT] < min_z) min_z = part_z[name][k][i][RIGHT];
               if (part_z[name][k][i][RIGHT] > max_z) max_z = part_z[name][k][i][RIGHT];
             */
-            k++;
+            ++k;
         }
         else
         {
@@ -123,7 +124,7 @@ int BotManager::read_poa(const MT name)
             }
             else if (buffer == "NEXTFRAME")
             {
-                i++;
+                ++i;
                 k = 0;
             }
         }
@@ -172,12 +173,12 @@ float BotManager::GetAngle(int a, int b, int c, int x, int y)
 BotManager::BotManager()
 {
 
-    std::cout << "Bot Manager ... " << std::endl;
+    std::cout << "Starting BotManager ... " << std::endl;
 
     std::cout << "   loading bots' information ..." << std::endl;
 
 
-    std::string fold = game.SOL_PATH + "Bots/";
+    std::string fold = Parser.SOL_PATH + "Bots/";
     CSimpleIni ini(false, false, false);
 
     srand(static_cast<unsigned int>(time(0)));
@@ -190,7 +191,7 @@ BotManager::BotManager()
     // reading Bots directory
     if (!boost::filesystem::exists(fold))
     {
-        std::cout << "'Bots' directory doesn't exist !" << std::endl;
+        std::cerr << "'Bots' directory doesn't exist !" << std::endl;
 //        return 1;
     }
 
@@ -211,7 +212,7 @@ BotManager::BotManager()
 
             temp.name = ini.GetValue("BOT", "Name");
 
-            //std::cout << "   loading bot " << ++nr << " : " << temp.name << std::endl;
+            std::cout << "   loading bot : " << temp.name << std::endl;
 
             temp.favouriteWeapon = getWeaponNumber(ini.GetValue("BOT", "Favourite_Weapon"));
             temp.color[SHIRT] = game.tcolor2rgb(ini.GetValue("BOT", "Color1"));
@@ -334,24 +335,24 @@ BotManager::BotManager()
 
     std::cout << "   loading bots' textures ... " << std::endl;
 
-    gostek[STOPA][0]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "stopa");
-    gostek[STOPA][1]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "stopa2");
-    gostek[KLATA][0]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "klata");
-    gostek[KLATA][1]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "klata2");
-    gostek[RAMIE][0]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "ramie");
-    gostek[RAMIE][1]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "ramie2");
-    gostek[MORDA][0]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "morda");
-    gostek[MORDA][1]  = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "morda2");
-    gostek[REKA][0]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "reka");
-    gostek[REKA][1]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "reka2");
-    gostek[DLON][0]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "dlon");
-    gostek[DLON][1]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "dlon2");
-    gostek[BIODRO][0] = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "biodro");
-    gostek[BIODRO][1] = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "biodro2");
-    gostek[UDO][0]    = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "udo");
-    gostek[UDO][1]    = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "udo2");
-    gostek[NOGA][0]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "noga");
-    gostek[NOGA][1]   = SOIL_LoadTextureEx2(game.SOL_PATH + "Gostek-gfx/", "noga2");
+    gostek[STOPA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "stopa");
+    gostek[STOPA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "stopa2");
+    gostek[KLATA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "klata");
+    gostek[KLATA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "klata2");
+    gostek[RAMIE][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "ramie");
+    gostek[RAMIE][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "ramie2");
+    gostek[MORDA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "morda");
+    gostek[MORDA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "morda2");
+    gostek[REKA][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "reka");
+    gostek[REKA][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "reka2");
+    gostek[DLON][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "dlon");
+    gostek[DLON][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "dlon2");
+    gostek[BIODRO][0] = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "biodro");
+    gostek[BIODRO][1] = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "biodro2");
+    gostek[UDO][0]    = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "udo");
+    gostek[UDO][1]    = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "udo2");
+    gostek[NOGA][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "noga");
+    gostek[NOGA][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "noga2");
 
 
 

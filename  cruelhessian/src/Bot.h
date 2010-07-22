@@ -1,7 +1,10 @@
+#ifndef BOT_H
+#define BOT_H
+
 /*   Bot.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,18 +21,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef BOT_H
-#define BOT_H
+
 
 #include <iostream>
+#include <vector>
 
 #include "MovingObject.h"
-#include "Globals.h"
+#include "Enums.h"
+#include "SDL.h"
+#include "TVector2D.h"
 
 
 class Bot : public MovingObject
 {
-   // const Tex* texture[9][2];
 
     void draw_gostek_help(int part);
     float getAngle(int x, int y);
@@ -45,9 +49,8 @@ public:
     std::string chatWinning;
 
     unsigned int points;
-    //float r;
-   // Uint8 *colorShirt;
-    unsigned int color[4][3];
+
+    std::vector<std::vector<unsigned char> > color;
     unsigned int deaths;
     int wayNumber;
     unsigned int number;
@@ -92,6 +95,5 @@ public:
 
 };
 
-
-
 #endif
+

@@ -1,7 +1,7 @@
-/*   textures_loader.cpp
+/*   TexturesLoader.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,54 +33,6 @@
 
 }
 */
-
-Mix_Chunk* loadSoundFile(const std::string& file)
-{
-    Mix_Chunk *temp = NULL;
-    if ((temp = Mix_LoadWAV(file.c_str())) == NULL)
-    {
-        std::cout << "  Cannot load sound file: " << file << ", " << Mix_GetError() << std::endl;
-    }
-    return temp;
-}
-
-
-// urwana nazwa pliku, bez rozszerzenia (najpierw wav, potem ogg), odporna na wielkosc znakow
-Mix_Chunk* loadSoundFile2(const std::string& src_dir, const std::string& file)
-{
-
-    Mix_Chunk *temp = NULL;
-
-    if (!boost::filesystem::exists(src_dir))
-    {
-        std::cerr << "Cannot find source directory : " << src_dir << std::endl;
-        return temp;
-    }
-
-    std::string name_temp;
-    boost::filesystem::directory_iterator end;
-
-    for (int g = 0; g < 2; ++g)
-    {
-        if (g == 0)
-            name_temp = file + ".wav";
-        else
-            name_temp = file + ".ogg";
-
-        for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
-        {
-            if (boost::iequals(iter->leaf(), name_temp))
-            {
-                // !!!!!!!!!fix
-                return loadSoundFile(iter->path().string());
-            }
-        }
-    }
-
-    std::cerr << "Cannot find : " << file << std::endl;
-    return temp;
-}
-
 
 
 Tex SOIL_LoadTextureExBMP(const std::string& file)

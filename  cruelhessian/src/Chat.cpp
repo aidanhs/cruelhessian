@@ -1,7 +1,7 @@
-/*   chat.cpp
+/*   Chat.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 
 #include "Chat.h"
 #include "WorldMap.h"
-#include "Game.h"
+#include "FontManager.h"
 
 
 void Chat::addMessage(const std::string& part1, const std::string& part2)
@@ -43,9 +43,9 @@ void Chat::draw()
     for (std::list<string_pair>::iterator i = chat_list.begin(); i != chat_list.end(); ++i)
     {
         if ((*i).first != "")
-            world.printText(world.font[1][game.FontConsoleSize], "[" + (*i).first + "] " + (*i).second, world.textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "[" + (*i).first + "] " + (*i).second, Fonts.textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
         else
-            world.printText(world.font[1][game.FontConsoleSize], (*i).second, world.textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], (*i).second, Fonts.textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
     }
 }
 

@@ -1,7 +1,7 @@
-/*   window_exit.h
+/*   WindowExit.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe≥ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Pawe≈Ç Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,12 +33,6 @@ class WindowExit
 
 public:
 
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
     WindowExit();
     ~WindowExit() {}
 

@@ -1,7 +1,10 @@
-/*   window_guns.h
+#ifndef HEADER_1D9A3714CC45F2DF
+#define HEADER_1D9A3714CC45F2DF
+
+/*   WindowGuns.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe≥ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Pawe≈Ç Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,29 +24,21 @@
 #ifndef WINDOW_GUNS_H
 #define WINDOW_GUNS_H
 
-#include "Globals.h"
+#include "Tex.h"
 #include "TVector2D.h"
-//#include "WeaponManager.h"
 
 
-class WindowGuns //: public WeaponManager
+class WindowGuns
 {
 
     TVector2D m_mouse_pos;
     float x, y, w, h;
     int m_number;
     void draw_help(const Tex& texture, float dx, float dy) const;
-    //const std::vector<WeaponBase>& m_weapon;
+
 
 public:
 
-    /**
-     *
-     * Constructor
-     *
-     * @param  dest Destination point
-     */
-    //WindowGuns(const std::vector<WeaponBase>& wb);
     WindowGuns();
     ~WindowGuns() {}
 
@@ -53,3 +48,5 @@ public:
 
 
 #endif
+
+#endif // header guard

@@ -1,7 +1,7 @@
 /*   Bot.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 
 #include "Bot.h"
 #include "WorldMap.h"
+#include "BotManager.h"
 
 
 Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest) : name(_name), team(_team)
@@ -66,6 +67,11 @@ Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, T
     deaths = 0;
     ping = 0;
 
+    color.resize(4);
+    for (int i = 0; i < 4; ++i)
+        color[i].resize(3);
+    //std::cout << "MOJE " << color.size() << std::endl;
+
     old_a = TVector2D(0, world.sGravity);
 
 }
@@ -83,7 +89,7 @@ bool Bot::is_inside(int x, int y)
 void Bot::draw_gostek_help(int part)
 {
 
-    BODY name = Bots.indices[part];
+    BODY xname = Bots.indices[part];
     int dir = movementDirection;
 
     glPushMatrix();
@@ -98,17 +104,17 @@ void Bot::draw_gostek_help(int part)
 
       //           glScalef(2,2,1);
 
-    glBindTexture(GL_TEXTURE_2D, Bots.gostek[name][dir].tex);
+    glBindTexture(GL_TEXTURE_2D, Bots.gostek[xname][dir].tex);
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
     glVertex2f(0.0, 0.0);
     glTexCoord2i(1, 1);
-    glVertex2f(Bots.gostek[name][dir].w, 0.0);
+    glVertex2f(Bots.gostek[xname][dir].w, 0.0);
     glTexCoord2i(1, 0);
-    glVertex2f(Bots.gostek[name][dir].w, Bots.gostek[name][dir].h);
+    glVertex2f(Bots.gostek[xname][dir].w, Bots.gostek[xname][dir].h);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, Bots.gostek[name][dir].h);
+    glVertex2f(0.0, Bots.gostek[xname][dir].h);
     glEnd();
 
     glPopMatrix();

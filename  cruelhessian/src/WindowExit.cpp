@@ -1,7 +1,7 @@
-/*   window_exit.cpp
+/*   WindowExit.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,11 +20,12 @@
 
 
 #include "WindowExit.h"
-#include "Game.h"
+#include "ParserManager.h"
+#include "FontManager.h"
 
 
 WindowExit::WindowExit()
-    : x(game.MAX_WIDTH/4), y(game.MAX_HEIGHT/7), w(200), h(80), m_number(false)
+    : x(Parser.MAX_WIDTH/4), y(Parser.MAX_HEIGHT/7), w(200), h(80), m_number(false)
 {
 
 }
@@ -62,16 +63,16 @@ void WindowExit::draw(const TVector2D& pos)
 
     if (stan1 && m_mouse_pos.y > start.y-7 && m_mouse_pos.y < start.y+7)
     {
-        world.printText(world.font[0][game.FontMenuSize], "Exit", world.textColorGunOnTouch, start.x, start.y);
+        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], "Exit", Fonts.textColorGunOnTouch, start.x, start.y);
         m_number = true;
     }
     else
     {
-        world.printText(world.font[0][game.FontMenuSize], "Exit", world.textColorGunNormal, start.x, start.y);
+        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], "Exit", Fonts.textColorGunNormal, start.x, start.y);
     }
 
     start.y += 25;
-    world.printText(world.font[1][game.FontConsoleSize], "Esc - back to game", world.textColorGunNormal, start.x, start.y);
+    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Esc - back to game", Fonts.textColorGunNormal, start.x, start.y);
 
 }
 

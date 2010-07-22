@@ -1,7 +1,10 @@
-/*   window_scores.h
+#ifndef WINDOW_SCORES_H
+#define WINDOW_SCORES_H
+
+/*   WindowScores.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe≥ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Pawe≈Ç Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,12 +21,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef WINDOW_SCORES_H
-#define WINDOW_SCORES_H
 
-#include "Globals.h"
-#include "Bot.h"
+
 #include <iostream>
+
+#include "Tex.h"
+#include "Bot.h"
+
 
 
 class WindowScores
@@ -43,8 +47,10 @@ public:
     ~WindowScores();
 
     void draw() const;
-    void update(const std::vector<Bot *>& bb);
+    //void update(const std::vector<Bot *>& bb);
+    void update();
 };
 
 
 #endif
+

@@ -1,10 +1,10 @@
-#ifndef BONUS_H
-#define BONUS_H
+#ifndef BONUS_MANAGER_H
+#define BONUS_MANAGER_H
 
-/*   Bonus.h
+/*   BonusManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,26 +22,19 @@
  */
 
 
-#include "MovingObject.h"
+#include "Singleton.h"
 #include "Tex.h"
-#include "TVector2D.h"
 
 
-class Bonus : public MovingObject
+class BonusManager : public Singleton<BonusManager>
 {
-    const Tex& texture;
-    float scaleX, scaleY;
+    public:
+        BonusManager();
+        ~BonusManager();
 
-public:
-
-    Bonus(const TVector2D& pos, int _type);
-    ~Bonus() {}
-
-    void draw() const;
-    int typeBonus;
-
+        Tex text_bonus[7];
 };
 
+#define Bonuses BonusManager::GetSingleton()
 
-#endif
-
+#endif // BONUS_MANAGER_H

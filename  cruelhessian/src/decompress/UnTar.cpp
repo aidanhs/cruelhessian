@@ -153,8 +153,12 @@ void UnTar::linkorcopy(char *src, char *dst, int sym)
      */
     fpdst = createpath(dst);
     if (!fpdst)
+    {
+        fclose(fpsrc);
         /* error message already given */
         return;
+    }
+
 
 #ifdef _POSIX_SOURCE
 # ifndef _WEAK_POSIX
@@ -267,7 +271,7 @@ void UnTar::untar(Uchar_t *blk)
     static char	nbuf[256];/* storage space for prefix+name, combined */
     static char	*name,*n2;/* prefix and name, combined */
     static int	first = 1;/* Boolean: first block of archive? */
-    long		sum;	  /* checksum for this block */
+    //long		sum;	  /* checksum for this block */
     unsigned int		i;
     tar_t		tblk[1];
 
@@ -368,6 +372,7 @@ void UnTar::untar(Uchar_t *blk)
             *n2++ = '/';
         *n2 = '\0';
 
+        long sum;
         /* verify the checksum */
         for (sum = 0L, i = 0; i < sizeof((tblk)->checksum); i++)
         {
@@ -538,7 +543,8 @@ int UnTar::Extract(char *file_in, char *dir_out)
 
     /* read the first few bytes, so we can determine whether to decompress */
     size_t q = fread(slide, 1, sizeof(gzhdr_t), infp);
-    if ((((gzhdr_t *)slide)->magic[0] == MAGIC0 && ((gzhdr_t *)slide)->magic[1] == MAGIC1) == 0)
+    if ((((gzhdr_t *)slide)->magic[0] == MAGIC0
+            && ((gzhdr_t *)slide)->magic[1] == MAGIC1) == 0)
     {
 
         /* UNCOMPRESSED */
@@ -584,6 +590,21 @@ UnTar::UnTar()
     listing = 0;
     quiet = 1;
     force = 1;
+    abspath = 0;
+    convert = 0;
+    verbose = 0;
+    noname = 0;
+    didabs = 0;
+    nonlys = 0;
+    outsize = 0;
+    infp = outfp = NULL;
+    inname = NULL;
+    XDIR_IN = NULL;
+    wp = 0;
+
+    for (int i = 0; i < WSIZE; ++i)
+        slide[i] = NULL;
+
 }
 
 UnTar::~UnTar()

@@ -1,7 +1,7 @@
 /*   GUIOptions.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+
+#include "boost/filesystem/fstream.hpp"
 
 #include "../GUI.h"
 #include "../Game.h"
@@ -36,14 +38,10 @@ bool GUI::onSoldatModeClick(const CEGUI::EventArgs& )
     mStatusCHField->setEnabled(false);
     mUpdateButton->setEnabled(false);
 
-    mInterfaces->resetList();
-
-    game.SOL_PATH = game.SOL_PATH_0;
-    game.MODE = 0;
+    Parser.MODE = 0;
+    Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
 
     checkSoldat();
-
-    readM3U();
 
     return true;
 
@@ -53,7 +51,7 @@ bool GUI::onSoldatModeClick(const CEGUI::EventArgs& )
 // wybrano radio button 'cruel hessian mode'
 bool GUI::onCHModeClick(const CEGUI::EventArgs& )
 {
-//std::cout << "POKA" << std::endl;
+
     mPlaceCHDesc->setEnabled(true);
     mPlaceCH->setEnabled(true);
     mStatusCHField->setEnabled(true);
@@ -63,14 +61,10 @@ bool GUI::onCHModeClick(const CEGUI::EventArgs& )
     mPlaceSoldat->setEnabled(false);
     mStatusSoldatField->setEnabled(false);
 
-    mInterfaces->resetList();
-
-    game.SOL_PATH = game.SOL_PATH_1;
-    game.MODE = 1;
+    Parser.MODE = 1;
+    Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
 
     checkCH();
-
-    readM3U();
 
     return true;
 
@@ -81,24 +75,35 @@ bool GUI::onCHModeClick(const CEGUI::EventArgs& )
 void GUI::checkSoldat()
 {
 
-    if (game.checkSoldat())
+    mInterfaces->resetList();
+
+    if (game.checkSoldatStart())
     {
         mStatusSoldatField->setText((CEGUI::utf8*)_("Found !"));
-        showInterfaces(game.SOL_PATH_0);
+        game.CreateManagers();
+        showInterfaces();
+        selectInterface();
+        readM3U();
         CEGUI::EventArgs ev;
+        onInterfaceListClick(ev);
         mDeathmatch->setSelected(true);
         onDeathClick(ev);
     }
-    else if (game.SOL_PATH_0 == "")
+    else if (Parser.SOL_PATH == "")
     {
         mStatusSoldatField->setText((CEGUI::utf8*)_("Not selected !"));
         mPlaceSoldat->setText("Click to select directory with Soldat files");
+
+        if (ONLY_ON_START)
+        {
+            mTab->setSelectedTabAtIndex(2);
+            WINDOW_NO_SOLDAT = true;
+        }
     }
     else
     {
         mStatusSoldatField->setText((CEGUI::utf8*)_("Not found !"));
         mMapList->resetList();
-        mInterfaces->resetList();
 
         if (ONLY_ON_START)
         {
@@ -116,16 +121,22 @@ void GUI::checkSoldat()
 void GUI::checkCH()
 {
 
-    if (game.checkSoldat())
+    mInterfaces->resetList();
+
+    if (game.checkSoldatStart())
     {
         mStatusCHField->setText((CEGUI::utf8*)_("Found !"));
-        showInterfaces(game.SOL_PATH_1);
+        game.CreateManagers();
+        showInterfaces();
+        selectInterface();
+        readM3U();
         CEGUI::EventArgs ev;
+        onInterfaceListClick(ev);
         mDeathmatch->setSelected(true);
         onDeathClick(ev);
         mUpdateButton->setEnabled(false);
     }
-    else if (game.SOL_PATH_1 == "")
+    else if (Parser.SOL_PATH == "")
     {
 
         mStatusCHField->setText((CEGUI::utf8*)_("Not selected !"));
@@ -143,7 +154,6 @@ void GUI::checkCH()
     {
         mStatusCHField->setText((CEGUI::utf8*)_("Not found !"));
         mMapList->resetList();
-        mInterfaces->resetList();
         mUpdateButton->setEnabled(true);
 
         if (ONLY_ON_START)
@@ -155,5 +165,100 @@ void GUI::checkCH()
     }
 
     ONLY_ON_START = false;
+
+}
+
+
+
+// przeszukuje interfejsy z dysku i wstawia je do listy mInterface
+void GUI::showInterfaces()
+{
+
+    std::string str;
+    std::string fold_in = Parser.SOL_PATH + "Interface-gfx/";
+    std::string fold_cus = Parser.SOL_PATH + "Custom-Interfaces/";
+    boost::filesystem::directory_iterator end;
+
+    if (!boost::filesystem::exists(fold_in))
+    {
+        std::cout << "'Interface-gfx' directory doesn't exist !" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    mInterfaces->addItem(new MyListItem("--None--"));
+    mInterfaces->addItem(new MyListItem("Default"));
+
+    if (!boost::filesystem::exists(fold_cus))
+    {
+        std::cout << "'Custom-Interfaces' directory doesn't exist !" << std::endl;
+    }
+    else
+    {
+        for (boost::filesystem::directory_iterator iter(fold_cus); iter != end; ++iter)
+        {
+            str.assign(iter->path().string().begin() + fold_cus.length(), iter->path().string().end());
+            mInterfaces->addItem(new MyListItem(str));
+        }
+    }
+
+}
+
+// zaznacza interfejs, ktory znajduje sie w zmiennej INTERFACE_NAME[MODE] (INTERFACE_NAME[MODE] variable has to be correct)
+void GUI::selectInterface()
+{
+
+    if ((Parser.INTERFACE_NAME_[Parser.MODE] == "--None--") || (boost::filesystem::exists(Parser.INTERFACE_PATH_[Parser.MODE])))
+    {
+
+        CEGUI::ListboxItem *temp = mInterfaces->findItemWithText(Parser.INTERFACE_NAME_[Parser.MODE], NULL);
+
+        if (temp)
+        {
+            mInterfaces->setItemSelectState(temp, true);
+            std::cout << "Set interface to : " << Parser.INTERFACE_NAME_[Parser.MODE] << std::endl;
+        }
+        else
+        {
+            std::cout << "Cannot found : " << Parser.INTERFACE_NAME_[Parser.MODE] << std::endl;
+        }
+
+    }
+    else
+    {
+        std::cout << "Wrong interface : " << Parser.INTERFACE_NAME_[Parser.MODE] << " in path : " << Parser.INTERFACE_PATH_[Parser.MODE] << std::endl;
+    }
+
+}
+
+// ustawia zmienna INTERFACE_NAME i INTERFACE_PATH na podstawie wybranej pozycji w mInterface
+bool GUI::onInterfaceListClick(const CEGUI::EventArgs& )
+{
+
+    if (mInterfaces->getSelectedItem() == NULL)
+    {
+        std::cout << "Cannot found " << Parser.INTERFACE_NAME_[Parser.MODE] << " interface, restoring default" << std::endl;
+        Parser.INTERFACE_NAME = Parser.INTERFACE_NAME_[Parser.MODE] = "Default";
+        mInterfaces->setItemSelectState(size_t(1), true);
+    }
+    else
+    {
+        Parser.INTERFACE_NAME = Parser.INTERFACE_NAME_[Parser.MODE] = mInterfaces->getSelectedItem()->getText().c_str();
+    }
+
+
+    if (Parser.INTERFACE_NAME == "--None--" || Parser.INTERFACE_NAME == "Default")
+    {
+        Parser.INTERFACE_PATH = Parser.SOL_PATH + "Interface-gfx/";
+    }
+    else if (boost::filesystem::exists(Parser.SOL_PATH + "Custom-Interfaces/" + Parser.INTERFACE_NAME + "/"))
+    {
+        Parser.INTERFACE_PATH = Parser.SOL_PATH + "Custom-Interfaces/" + Parser.INTERFACE_NAME + "/";
+    }
+    else
+    {
+        std::cerr << "Some error in 'onInterfaceListClick' function" << std::endl;
+    }
+
+    return true;
 
 }

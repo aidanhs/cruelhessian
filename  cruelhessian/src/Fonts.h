@@ -9,7 +9,7 @@
 #include <freetype/fttrigon.h>
 
 #ifdef WIN32
-	#include <windows.h>
+	#include "CompatibleWindows.h"
 #endif
 
 //OpenGL Headers

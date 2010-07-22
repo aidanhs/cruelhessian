@@ -1,7 +1,7 @@
-/*   mouse.cpp
+/*   Mouse.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,11 +20,13 @@
 
 
 #include "Mouse.h"
-#include "Game.h"
+#include "ParserManager.h"
+#include "SDL.h"
+#include "InterfaceBaseManager.h"
 
 
-Mouse::Mouse(const Tex& tex)
-    : texture(tex), mGlobalPos(TVector2D(game.MAX_WIDTH/2, game.MAX_HEIGHT/2)), mLocalPos(TVector2D(game.MAX_WIDTH/2, game.MAX_HEIGHT/2))
+Mouse::Mouse()
+    : texture(InterfaceBase.text_mouse), mGlobalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2)), mLocalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2))
 {
 
 }
@@ -73,12 +75,12 @@ float Mouse::getGlobalX() const
 {
     return mGlobalPos.x;
 }
-
+/*
 float Mouse::getGlobalY() const
 {
     return mGlobalPos.y;
 }
-
+*/
 
 float Mouse::getLocalX() const
 {

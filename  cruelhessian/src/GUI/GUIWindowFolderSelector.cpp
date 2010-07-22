@@ -1,7 +1,7 @@
 /*   GUIWindowFolderSelector.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -50,6 +50,7 @@ bool GUIWindowFolderSelector::handleClick(const CEGUI::EventArgs &e)
     {
         CEGUI::Listbox* list = static_cast<CEGUI::Listbox*>(winMgr.getWindow("FolderSelector/Frame/FolderList"));
         CEGUI::ListboxTextItem* item = static_cast<CEGUI::ListboxTextItem*>(list->getFirstSelectedItem());
+        //gui.MyListItem* item = static_cast<gui.MyListItem*>(list->getFirstSelectedItem());
         if (item == NULL)
             return 0;
 

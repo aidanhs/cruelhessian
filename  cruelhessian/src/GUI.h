@@ -1,7 +1,10 @@
-/*   gui.h
+#ifndef GUI_H
+#define GUI_H
+
+/*   GUI.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +21,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef GUI_H
-#define GUI_H
+
 
 #include "CEGUI.h"
 #include "RendererModules/OpenGLGUIRenderer/openglrenderer.h"
 #include "GUI/GUIWindowFolderSelector.h"
 #include "GUI/GUIWindowNoSoldat.h"
 #include "GUI/GUIWindowUpdater.h"
-#include "Globals.h"
 #include "Singleton.h"
-//#include "WeaponManager.h"
-//#include "BotManager.h"
+#include "SDL.h"
 
-
+#define _(string) (string)
 
 void handle_mouse_down(Uint8 button);
 void handle_mouse_up(Uint8 button);
@@ -44,11 +44,7 @@ class GUI : public Singleton<GUI>
 public:
 
     GUI();
-    ~GUI();
-
-private:
-
-    bool ONLY_ON_START;
+    virtual ~GUI();
 
     class MyListItem : public CEGUI::ListboxTextItem
     {
@@ -58,6 +54,12 @@ private:
             setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
         }
     };
+
+private:
+
+    bool ONLY_ON_START;
+
+
 
     bool must_quit;
 
@@ -69,17 +71,15 @@ private:
 
     int GUI_KEY_PRESSED;
 
-//    bool FOLDER_SELECTOR;
     bool WINDOW_NO_SOLDAT;
-//    bool WINDOW_UPDATER;
 
-    int apply_configs();
+    int ApplyConfigs();
     void showMaps(const char* mask);
-    void showInterfaces(const std::string& name);
+    void showInterfaces();
+    void selectInterface();
     void inject_input(bool & must_quit);
     bool FolderSelectorClick(const CEGUI::EventArgs& );
     bool WindowUpdaterClick(const CEGUI::EventArgs& );
-    //bool handleClick2(const CEGUI::EventArgs& );
     void setBotStates(bool a, bool b, bool c, bool d);
     void setMusicStates(bool state);
     int readM3U();
@@ -119,6 +119,7 @@ private:
     bool onTeamChatButton(const CEGUI::EventArgs& );
     bool onFolderSelector(const CEGUI::EventArgs& );
     bool onWindowUpdater(const CEGUI::EventArgs& );
+    bool onInterfaceListClick(const CEGUI::EventArgs& );
     bool onGraphicsChanged(const CEGUI::EventArgs& );
 
     void checkSoldat();
@@ -225,3 +226,4 @@ private:
 
 
 #endif
+

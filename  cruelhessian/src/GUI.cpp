@@ -1,7 +1,7 @@
-/*   gui.cpp
+/*   GUI.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,10 +23,8 @@
 
 #include "Game.h"
 #include "GUI.h"
-#include "Parser.h"
+#include "ParserManager.h"
 
-
-//#define _(string) gettext(string)
 
 
 void handle_mouse_down(Uint8 button)
@@ -156,15 +154,15 @@ void inject_time_pulse(float& last_time_pulse)
 }
 
 
-// when pressed OK button in Folder Selector
+// when user pressed OK button in Folder Selector
 bool GUI::FolderSelectorClick(const CEGUI::EventArgs &)
 {
 
     const unsigned int max_string = 25;
-    std::string temp = game.SOL_PATH = fs.getResult();
-    if (game.SOL_PATH[game.SOL_PATH.length()-1] != '/')
+    std::string temp = Parser.SOL_PATH = fs.getResult();
+    if (Parser.SOL_PATH[Parser.SOL_PATH.length()-1] != '/')
     {
-        game.SOL_PATH += '/';
+        Parser.SOL_PATH += '/';
     }
 
     if (temp.length() > max_string)
@@ -172,15 +170,15 @@ bool GUI::FolderSelectorClick(const CEGUI::EventArgs &)
         temp.replace(max_string, temp.length() - max_string, "...");
     }
 
-    if (game.MODE == 0)
+    if (Parser.MODE == 0)
     {
-        game.SOL_PATH_0 = game.SOL_PATH;
+        Parser.SOL_PATH_[0] = Parser.SOL_PATH;
         mPlaceSoldat->setText(temp);
         checkSoldat();
     }
     else
     {
-        game.SOL_PATH_1 = game.SOL_PATH;
+        Parser.SOL_PATH_[1] = Parser.SOL_PATH;
         mPlaceCH->setText(temp);
         checkCH();
     }
@@ -197,6 +195,108 @@ bool GUI::WindowUpdaterClick(const CEGUI::EventArgs &)
 
     return true;
 }
+
+
+// apply in GUI
+int GUI::ApplyConfigs()
+{
+
+    WINDOW_NO_SOLDAT = false;
+    mPlaceSoldat->setText(Parser.SOL_PATH_[0]);
+    mPlaceCH->setText(Parser.SOL_PATH_[1]);
+
+    CEGUI::EventArgs ev;
+
+    // soldat mode
+    if (Parser.MODE == 0)
+    {
+        mSoldatRadio->setSelected(true);
+        onSoldatModeClick(ev);
+    }
+    // cruel hessian mode
+    else
+    {
+        mCHRadio->setSelected(true);
+        onCHModeClick(ev);
+    }
+
+    mSpinn2->setCurrentValue(static_cast<int>(Parser.LIMIT_TIME/60));
+    mRandomBotsSpinner->setCurrentValue(Parser.RANDOM_BOTS);
+    mAlphaSpinner->setCurrentValue(Parser.RANDOM_BOTS_1);
+    mBravoSpinner->setCurrentValue(Parser.RANDOM_BOTS_2);
+    mCharlieSpinner->setCurrentValue(Parser.RANDOM_BOTS_3);
+    mDeltaSpinner->setCurrentValue(Parser.RANDOM_BOTS_4);
+
+    mPlayerName->setText(Parser.PLAYER_NAME);
+
+    mIsFullscreen->setSelected(Parser.FULLSCREEN);
+
+    // resolution
+    if (Parser.MAX_WIDTH == 640 && Parser.MAX_HEIGHT == 480)
+        mResol640->setSelected(true);
+    else if (Parser.MAX_WIDTH == 800 && Parser.MAX_HEIGHT == 600)
+        mResol800->setSelected(true);
+    else if (Parser.MAX_WIDTH == 1024 && Parser.MAX_HEIGHT == 768)
+        mResol1024->setSelected(true);
+
+
+    // deep
+    if (Parser.MAX_BPP == 16)
+        mDeep16->setSelected(true);
+    else if (Parser.MAX_BPP == 32)
+        mDeep32->setSelected(true);
+
+
+    // sounds
+    if (Parser.SOUNDS_VOL == 0)
+    {
+        mIsSounds->setSelected(false);
+        mSoundsSpinner->setEnabled(false);
+    }
+    else if (Parser.SOUNDS_VOL > 0 && Parser.SOUNDS_VOL <= 100)
+    {
+        mIsSounds->setSelected(true);
+        mSoundsSpinner->setEnabled(true);
+        mSoundsSpinner->setCurrentValue(Parser.SOUNDS_VOL);
+    }
+
+    // music
+    if (Parser.MUSIC_VOL == 0)
+    {
+        mIsMusic->setSelected(false);
+        mMusicSpinner->setEnabled(false);
+//        mMusicList->setEnabled(false);
+    }
+    else if (Parser.MUSIC_VOL > 0 && Parser.MUSIC_VOL <= 100)
+    {
+        mIsMusic->setSelected(true);
+        mMusicSpinner->setEnabled(true);
+        mMusicSpinner->setCurrentValue(Parser.MUSIC_VOL);
+//        mMusicList->setEnabled(true);
+//        mMusicList->setItemSelectState((size_t)0, true);
+    }
+
+    if (Parser.AUDIO_QUAL == 11025)
+    {
+        mLowQuality->setSelected(true);
+    }
+    else if (Parser.AUDIO_QUAL == 22050)
+    {
+        mMediumQuality->setSelected(true);
+    }
+    else if (Parser.AUDIO_QUAL == 44100)
+    {
+        mHighQuality->setSelected(true);
+    }
+
+    if (Parser.SOUNDS_VOL + Parser.MUSIC_VOL == 0)
+    {
+        setMusicStates(false);
+    }
+
+    return 0;
+}
+
 
 
 void GUI::run()
@@ -253,16 +353,15 @@ GUI::~GUI()
 GUI::GUI()
 {
 
-    read_configs();
+    Parser.ReadConfigs();
 
     ONLY_ON_START = true;
 
-    //  FOLDER_SELECTOR = WINDOW_UPDATER = false;
     must_quit = false;
 
     game.setSDL();
 
-    renderer = new CEGUI::OpenGLRenderer(0, static_cast<int>(game.MAX_WIDTH), static_cast<int>(game.MAX_HEIGHT));
+    renderer = new CEGUI::OpenGLRenderer(0, static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT));
     new CEGUI::System(renderer);
 
     CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Errors);
@@ -501,6 +600,7 @@ GUI::GUI()
         mInterfacesDesc->setText((CEGUI::utf8*)_("Interface type :"));
 
         mInterfaces = static_cast<CEGUI::Combobox*>(winMgr.getWindow("root/options/InterfacesBox"));
+        mInterfaces->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, CEGUI::Event::Subscriber(&GUI::onInterfaceListClick, this));
 
 
 
@@ -572,7 +672,7 @@ GUI::GUI()
         mExitButton->setText((CEGUI::utf8*)_("Save & Exit"));
         mExitButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GUI::onLeftClickExit, this));
 
-        apply_configs();
+        ApplyConfigs();
 
         // activate DM mode on default
         CEGUI::EventArgs ev;

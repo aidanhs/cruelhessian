@@ -1,7 +1,11 @@
+#ifndef WEAPON_MANAGER_H
+#define WEAPON_MANAGER_H
+
+
 /*   WeaponManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,27 +23,24 @@
  */
 
 
-#ifndef WEAPONMANAGER_H
-#define WEAPONMANAGER_H
+
 
 #include "Singleton.h"
-#include "Globals.h"
+#include "Tex.h"
 #include "SDL.h"
-#include "SDL_mixer.h"
 #include <iostream>
 
 #define WEAPONS_NUMBER 18
+
 
 class WeaponBase
 {
 public:
     std::string name;
-    Mix_Chunk *fireSound;
-    Mix_Chunk *reloadSound;
-    float damage;
     Uint32 fireInterval;
-    unsigned int ammo;
     Uint32 reloadTime;
+    float damage;
+    unsigned int ammo;
     float speed;
     int bulletStyle;
     float startUpTime;
@@ -55,7 +56,6 @@ class WeaponManager : public Singleton<WeaponManager>
 {
 public:
 
-    //std::vector<WeaponBase> element;
     WeaponBase element[WEAPONS_NUMBER];
 
     WeaponManager();

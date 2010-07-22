@@ -1,7 +1,7 @@
-/*   window_scores.cpp
+/*   WindowScores.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,9 @@
 #include <algorithm>
 #include <sstream>
 #include "WindowScores.h"
+#include "WorldMap.h"
 #include "Game.h"
+#include "FontManager.h"
 
 
 WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int nr) : texture_d(tex_d), texture_s(tex_s), my_bot_nr(nr)
@@ -43,7 +45,7 @@ WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int nr) 
         // distance between columns
     off.resize(column_names.size());
 
-    float xx = game.MAX_WIDTH / static_cast<float>(column_names.size());
+    float xx = Parser.MAX_WIDTH / static_cast<float>(column_names.size());
 
     for (unsigned int i = 0; i < column_names.size(); ++i)
         off[i] = xx*(0.5f + i) - 40;
@@ -66,13 +68,14 @@ inline bool cmp(const Bot* bot1, const Bot* bot2)
 
 
 
-void WindowScores::update(const std::vector<Bot *>& bb)
+//void WindowScores::update(const std::vector<Bot *>& bb)
+void WindowScores::update()
 {
 
-    list_long = static_cast<float>(bb.size()*15+80);
+    list_long = static_cast<float>(world.bot.size()*15+80);
 
     // refresh the statistics
-    scores.assign(bb.begin(), bb.end());
+    scores.assign(world.bot.begin(), world.bot.end());
     std::sort(scores.begin(), scores.end(), cmp);
 
 }
@@ -115,14 +118,14 @@ void WindowScores::draw() const
 
     // obramowanie
     glColor4ub(247, 247, 247, 20);
-    glRectf(offset-1, offset-1, game.MAX_WIDTH-offset+1, list_long-1);
+    glRectf(offset-1, offset-1, Parser.MAX_WIDTH-offset+1, list_long-1);
 
     // tlo
     glColor4ub(60, 60, 60, 180);
     glBegin(GL_QUADS);
     glVertex2f(offset, offset);
-    glVertex2f(game.MAX_WIDTH-offset, offset);
-    glVertex2f(game.MAX_WIDTH-offset, list_long);
+    glVertex2f(Parser.MAX_WIDTH-offset, offset);
+    glVertex2f(Parser.MAX_WIDTH-offset, list_long);
     glVertex2f(offset, list_long);
     glEnd();
     glPopMatrix();
@@ -131,7 +134,7 @@ void WindowScores::draw() const
 
     // show columns names
     for (unsigned int i = 0; i < column_names.size(); ++i)
-        world.printText(world.font[0][game.FontMenuSize], column_names[i], world.textColorGunOnTouch, off[i], offset+10);
+        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], column_names[i], Fonts.textColorGunOnTouch, off[i], offset+10);
 
     offset += 40;
 
@@ -147,15 +150,15 @@ void WindowScores::draw() const
             else if (scores[j]->isKilled)
                 draw_help(texture_d, off[0]-10, offset+j*15+5);
 
-            world.printText(world.font[1][game.FontConsoleSize], scores[j]->name, world.textCol[scores[j]->team], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], scores[j]->name, Fonts.textCol[scores[j]->team], off[0], offset+j*15);
             oss << scores[j]->points;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), world.textCol[scores[j]->team], off[1], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[1], offset+j*15);
             oss.str("");
             oss << scores[j]->deaths;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), world.textCol[scores[j]->team], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[2], offset+j*15);
             oss.str("");
             oss << scores[j]->ping;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), world.textCol[scores[j]->team], off[3], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[3], offset+j*15);
             oss.str("");
         }
 
@@ -172,15 +175,15 @@ void WindowScores::draw() const
             else if (scores[j]->isKilled)
                 draw_help(texture_d, off[0]-10, offset+j*15+5);
 
-            world.printText(world.font[1][game.FontConsoleSize], scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
             oss << scores[j]->killedNr;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);
             oss.str("");
             oss << scores[j]->deaths;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[2], offset+j*15);
             oss.str("");
             oss << scores[j]->ping;
-            world.printText(world.font[1][game.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[3], offset+j*15);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[3], offset+j*15);
             oss.str("");
         }
     }

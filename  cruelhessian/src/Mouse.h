@@ -1,7 +1,10 @@
-/*   mouses.h
+#ifndef MOUSE_H
+#define MOUSE_H
+
+/*   Mouse.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +21,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef MOUSE_H
-#define MOUSE_H
 
-
-#include "Globals.h"
+#include "Tex.h"
 #include "TVector2D.h"
 
 
@@ -32,17 +32,18 @@ class Mouse
     TVector2D mGlobalPos;
     TVector2D mLocalPos;
 
+   //float getGlobalY() const;
+
 public:
     TVector2D getGlobalPosition() const;
     TVector2D getLocalPosition() const;
 
     float getGlobalX() const;
-    float getGlobalY() const;
 
     float getLocalX() const;
     float getLocalY() const;
 
-    Mouse(const Tex& tex);
+    Mouse();
     ~Mouse() {}
 
     void draw() const;

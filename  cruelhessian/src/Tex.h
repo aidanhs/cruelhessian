@@ -1,10 +1,10 @@
-#ifndef BONUS_H
-#define BONUS_H
+#ifndef TEX_H
+#define TEX_H
 
-/*   Bonus.h
+/*   Tex.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,25 +22,14 @@
  */
 
 
-#include "MovingObject.h"
-#include "Tex.h"
-#include "TVector2D.h"
+#include "SDL_opengl.h"
 
 
-class Bonus : public MovingObject
+typedef struct
 {
-    const Tex& texture;
-    float scaleX, scaleY;
-
-public:
-
-    Bonus(const TVector2D& pos, int _type);
-    ~Bonus() {}
-
-    void draw() const;
-    int typeBonus;
-
-};
+    float w, h;
+    GLuint tex;
+} Tex;
 
 
 #endif

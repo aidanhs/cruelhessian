@@ -1,7 +1,7 @@
-/*   map.cpp
+/*   Map.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 #include "parser/SimpleIni.h"
 
 
+const float _180overpi = 57.29f;
 
 template<class T> T read_bin(std::istream& is)
 {
@@ -74,8 +75,10 @@ void Map::setPoly(GLuint text)
 
 
 void Map::setScen(GLuint *text)
+//void Map::setScen(GLuint &text)
 {
     text_scen = new GLuint[sceneryCount];
+    //GLuint text_scen[sceneryCount];// = new GLuint[sceneryCount];
 
     for (int i = 0; i < sceneryCount; ++i)
         text_scen[i] = text[i];
@@ -246,7 +249,7 @@ void Map::drawBack()
         {
             glPushMatrix();
             glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * world._180overpi, 0.0, 0.0, 1.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
             glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
             glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
 
@@ -285,7 +288,7 @@ void Map::drawFront()
         {
             glPushMatrix();
             glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * world._180overpi, 0.0, 0.0, 1.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
             glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
             glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
 
@@ -348,7 +351,7 @@ void Map::drawFront()
         {
             glPushMatrix();
             glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * world._180overpi, 0.0, 0.0, 1.0);
+            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
             glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
             glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
 
@@ -379,6 +382,7 @@ void Map::drawFront()
 
 Map::~Map()
 {
+
     waypoint.clear();
     spawnpoint.clear();
     collider.clear();
@@ -387,4 +391,7 @@ Map::~Map()
     prop.clear();
     scenery.clear();
     texture.clear();
+
+    delete[] text_scen;
+
 }

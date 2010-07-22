@@ -1,7 +1,10 @@
+#ifndef BOT_MANAGER_H
+#define BOT_MANAGER_H
+
 /*   BotManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,22 +22,40 @@
  */
 
 
-#ifndef BOTMANAGER_H
-#define BOTMANAGER_H
-
-#include "Singleton.h"
-#include "Globals.h"
-#include "TVector2D.h"
 #include <iostream>
 #include <vector>
+
+#include "Singleton.h"
+#include "Enums.h"
+#include "Tex.h"
+#include "TVector2D.h"
+
+
+
+class Frame
+{
+
+public:
+    float x, y, r;
+};
 
 
 class BotsBase
 {
 public:
+
+    BotsBase()
+    {
+        color.resize(4);
+        for (int i = 0; i < 4; ++i)
+        {
+            color[i].resize(3);
+        }
+    }
+
     std::string name;
     int favouriteWeapon;
-    unsigned int* color[4];
+    std::vector<std::vector<unsigned char> > color;
     std::string chatKill;
     std::string chatDead;
     std::string chatLowhealth;
@@ -47,19 +68,23 @@ public:
 class BotManager : public Singleton<BotManager>
 {
 public:
+
+    BotManager();
+    virtual ~BotManager();
+
     Tex gostek[9][2];
     float mass;
     float massInv;
     TVector2D maxSpeed;
     unsigned int FRAMES_MAX[50];
     Frame frame[20][100][100][2];
-    BotManager();
-    virtual ~BotManager();
+
     std::vector<BotsBase> element;
     TVector2D renderInfo[23];
     BODY indices[15];
-    // protected:
+
 private:
+
     float part_x[20][100][100][2], part_y[20][100][100][2], part_z[20][100][100][2];  // rodzaj ruchu - czesc_ciala - klatka (frame) - ulozenie (prawo, lewo)
     std::string anim_type(MT name);
     int read_poa(const MT name);

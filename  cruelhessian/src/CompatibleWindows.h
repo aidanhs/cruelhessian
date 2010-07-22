@@ -1,4 +1,4 @@
-/*   Main.cpp
+/*   CompatibleWindows.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
@@ -19,15 +19,10 @@
  */
 
 
-#include "Game.h"
+#ifndef COMPATIBLE_WINDOWS_H_
+#define COMPATIBLE_WINDOWS_H_
 
+#define NOMINMAX
+#include <windows.h>
 
-int main(int argc, char *argv[])
-{
-
-    Game *gameMgr = new Game(argc, argv);
-
-    delete gameMgr;
-
-    return 0;
-}
+#endif

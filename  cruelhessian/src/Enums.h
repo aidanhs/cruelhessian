@@ -1,7 +1,10 @@
-/*   globals.h
+#ifndef ENUMS_H
+#define ENUMS_H
+
+/*   Enums.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,36 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
 
-#define _USE_MATH_DEFINES
-
-#include <iostream>
-#include <vector>
-#include "SDL.h"
-#include "SDL_mixer.h"
-//#include "SDL_opengl.h"
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
-#include "Fonts.h"
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#define _(string) (string)
-
-
-class Frame
-{
-
-public:
-    float x, y, r;
-};
 
 
 typedef enum BONUS
@@ -61,13 +35,6 @@ typedef enum BONUS
     BONUS_VESTKIT
 } BONUS;
 
-
-
-typedef struct Tex
-{
-    float w, h;
-    GLuint tex;
-} Tex;
 
 typedef enum GAME_MODE
 {
@@ -160,3 +127,4 @@ typedef enum
 
 
 #endif
+

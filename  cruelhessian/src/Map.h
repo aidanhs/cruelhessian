@@ -1,7 +1,13 @@
-/*   map.h
+#ifndef HEADER_439C342C9BBC7A49
+#define HEADER_439C342C9BBC7A49
+
+#ifndef _PMSMAP_
+#define _PMSMAP_
+
+/*   Map.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawe≥ Konieczny <konp84@gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Pawe≈Ç Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,13 +24,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef _PMSMAP_
-#define _PMSMAP_
+
 
 #include <vector>
 #include <string>
 
-#include "Globals.h"
+#include "SDL_opengl.h"
 
 typedef unsigned char ubyte;
 typedef unsigned short word;
@@ -32,7 +37,7 @@ typedef unsigned short word;
 
 class Map
 {
-    GLuint *text_scen;
+    GLuint* text_scen;
     GLuint text_poly;
 
 public:
@@ -283,7 +288,11 @@ public:
 
 	void setPoly(GLuint text);
 	void setScen(GLuint *text);
+	//void setScen(GLuint &text);
 };
 
 
 #endif
+
+
+#endif // header guard 

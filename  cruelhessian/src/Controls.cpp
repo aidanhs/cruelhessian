@@ -1,7 +1,7 @@
-/*   controls.cpp
+/*   Controls.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 
 #include "WorldMap.h"
 #include "Game.h"
+#include "AudioManager.h"
 
 
 
@@ -68,7 +69,7 @@ void WorldMap::inputUser()
             {
                 takeScreenshot();
             }
-            if (KEY_PRESSED == SDLK_F5 && game.MUSIC_VOL > 0 && !game.gMusicList.empty())
+            if (KEY_PRESSED == SDLK_F5 && Parser.MUSIC_VOL > 0 && !Audio.gMusicList.empty())
             {
                 if (Mix_PausedMusic() == 0)
                     Mix_PauseMusic();
@@ -77,15 +78,15 @@ void WorldMap::inputUser()
             }
             if (KEY_PRESSED == SDLK_F6)
             {
-                playMusic(-1);
+                Audio.playMusic(-1);
             }
             if (KEY_PRESSED == SDLK_F7)
             {
-                playMusic(1);
+                Audio.playMusic(1);
             }
             if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT) return;
 
-            if (KEY_PRESSED == game.KEY_GRENADE)
+            if (KEY_PRESSED == Parser.KEY_GRENADE)
             {
                 if (!CHOICE_GUN && (bot[MY_BOT_NR]->numGrenades >= 1))
                 {
@@ -110,7 +111,7 @@ void WorldMap::inputUser()
             {
                 myChat.Query(KEY_PRESSED);
             }
-            if (KEY_PRESSED == game.KEY_CHAT && !SHOW_COMMAND_LINE)
+            if (KEY_PRESSED == Parser.KEY_CHAT && !SHOW_COMMAND_LINE)
             {
                 SHOW_MYCHAT_LINE = true;
             }
@@ -179,43 +180,85 @@ void WorldMap::inputUser()
 
     // **********  keyboard
 
-    if (key[game.KEY_DOWN])
+    if (key[Parser.KEY_DOWN])
     {
         moveBotDown(MY_BOT_NR);
     }
 
-    if (key[game.KEY_LEFT])
+    if (key[Parser.KEY_LEFT])
     {
         moveBotLeft(MY_BOT_NR);
-        if (key[game.KEY_DOWN])
+        if (key[Parser.KEY_DOWN])
             bot[MY_BOT_NR]->movementType = (bot[MY_BOT_NR]->movementDirection == LEFT) ? SKOK_DOL_OBROT : SKOK_DOL_OBROT_TYL;
     }
 
-    if (key[game.KEY_RIGHT])
+    if (key[Parser.KEY_RIGHT])
     {
         moveBotRight(MY_BOT_NR);
-        if (key[game.KEY_DOWN])
+        if (key[Parser.KEY_DOWN])
             bot[MY_BOT_NR]->movementType = (bot[MY_BOT_NR]->movementDirection == RIGHT) ? SKOK_DOL_OBROT : SKOK_DOL_OBROT_TYL;
     }
 
-    if (key[game.KEY_UP])
+    if (key[Parser.KEY_UP])
     {
         moveBotUp(MY_BOT_NR);
     }
 
-    if (key[game.KEY_LEFT] && key[game.KEY_UP])
+    if (key[Parser.KEY_LEFT] && key[Parser.KEY_UP])
     {
         moveBotJumpLeft(MY_BOT_NR);
     }
 
-    if (key[game.KEY_RIGHT] && key[game.KEY_UP])
+    if (key[Parser.KEY_RIGHT] && key[Parser.KEY_UP])
     {
         moveBotJumpRight(MY_BOT_NR);
     }
 
-    if ((key[game.KEY_RELOAD] && bot[MY_BOT_NR]->leftAmmos < Weapons[bot[MY_BOT_NR]->gunModel].ammo) || bot[MY_BOT_NR]->isReloading)
+    if ((key[Parser.KEY_RELOAD] && bot[MY_BOT_NR]->leftAmmos < Weapons[bot[MY_BOT_NR]->gunModel].ammo) || bot[MY_BOT_NR]->isReloading)
     {
         gunReloading(MY_BOT_NR);
+    }
+
+
+    std::ostringstream oss;
+
+    for (unsigned int i = 0; i < world.bot.size(); ++i)
+    {
+        if (world.bot[i]->isKilled)
+        {
+            Uint32 new_time = world.getCurrentTime - world.bot[i]->timerRespawnTime;
+            if (new_time > world.bot[i]->respawnTime)
+            {
+                world.bot[i]->isKilled = false;
+
+                // set start position
+                int point = static_cast<int>(rand()%world.spawnpoint[world.bot[i]->team].size());
+                world.bot[i]->position.x = world.map->spawnpoint[world.spawnpoint[world.bot[i]->team][point]].x - world.bot[i]->w/2;
+                world.bot[i]->position.y = world.map->spawnpoint[world.spawnpoint[world.bot[i]->team][point]].y - world.bot[i]->h/2;
+
+                if (i == world.MY_BOT_NR)
+                {
+                    world.backg->setPosition(world.OLD_POS.x - world.bot[world.MY_BOT_NR]->position.x, world.OLD_POS.y - world.bot[world.MY_BOT_NR]->position.y);
+                    if (Parser.SOUNDS_VOL > 0)
+                        Mix_PlayChannel(-1, Audio.sound_new_life, 0);
+                }
+
+            }
+            else if (i == world.MY_BOT_NR)
+            {
+                oss << static_cast<float>(world.bot[world.MY_BOT_NR]->respawnTime - new_time)/1000;
+                Fonts.printTextMiddle(Fonts.font[1][Fonts.FontMenuSize], "Respawn in " + oss.str(), Fonts.textCol[1], 50.0f);
+                Fonts.printTextMiddle(Fonts.font[1][Fonts.FontMenuSize], "Killed by " + world.bot[world.bot[world.MY_BOT_NR]->killer]->name, Fonts.textCol[1], Parser.MAX_HEIGHT-94.0f);
+                oss.str("");
+
+                // wait half a second after death and then show gun menu
+                if (new_time >= 500 && !world.CHOICE_GUN && !world.SHOW_GUN_MENU)
+                {
+                    world.window_guns = new WindowGuns();
+                    world.SHOW_GUN_MENU = true;
+                }
+            }
+        }
     }
 
 }

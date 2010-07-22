@@ -1,7 +1,10 @@
-/*   backgroung.h
+#ifndef BACKGROUND_H
+#define BACKGROUND_H
+
+/*   Backgroung.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef BACKGROUND_H
-#define BACKGROUND_H
+
 
 #include "TVector2D.h"
 #include "Map.h"
@@ -43,3 +45,4 @@ public:
 
 
 #endif
+

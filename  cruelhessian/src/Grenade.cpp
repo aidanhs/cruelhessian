@@ -1,7 +1,7 @@
-/*   grenade.cpp
+/*   Grenade.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,8 +19,9 @@
  */
 
 #include "Grenade.h"
-#include "Game.h"
+#include "ParserManager.h"
 #include "WorldMap.h"
+#include "AudioManager.h"
 #include <cmath>
 
 
@@ -90,8 +91,8 @@ void Grenade::update()
     if (world.getCurrentTime - timer_throw > 4000)
     {
         // explode after 4 second
-        if (game.SOUNDS_VOL > 0)
-            Mix_PlayChannel(-1, world.grenade_explosion, 0);
+        if (Parser.SOUNDS_VOL > 0)
+            Mix_PlayChannel(-1, Audio.grenade_explosion, 0);
 
         if (world.getCurrentTime - timer_change_frame >= 20)
         {

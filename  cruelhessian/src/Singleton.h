@@ -15,7 +15,7 @@ public:
         ms_Singleton = (T*)((int)this + offset);
     }
 
-    ~Singleton(void)
+    virtual ~Singleton(void)
     {
         assert(ms_Singleton);
         ms_Singleton = 0;

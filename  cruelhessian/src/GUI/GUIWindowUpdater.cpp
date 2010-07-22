@@ -1,7 +1,7 @@
 /*   GUIWindowUpdater.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -241,12 +241,12 @@ void *func_down_list(void *args)
     pthread_create(&thread_progress, NULL, func_progress, NULL);
 
     sDownload("modifications_server.ini",
-              game.SOL_PATH + "modifications_server.ini",
+              Parser.SOL_PATH + "modifications_server.ini",
               "Downloading information file ...");
 
 
     /*
-        int n = ParseModif(game.SOL_PATH + "modifications_server.ini");
+        int n = ParseModif(Parser.SOL_PATH + "modifications_server.ini");
         if (n == 1)
         {
             cancel_butt->setText("Done");
@@ -254,31 +254,31 @@ void *func_down_list(void *args)
             return 0;
         }
       */
-   /* for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); i++)
+    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
     {
         oss << i+1;
         sDownload(game.SOLDAT_FOLDER[i] + ".tar.lzma",
-                  game.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
+                  Parser.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
                   "Downloading " + game.SOLDAT_FOLDER[i] + " ... (" + oss.str() + "/" + siz.str() + ")");
         oss.str("");
     }
-*/
+
 
     progress = 0.0;
 
-    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); i++)
+    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
     {
         oss << i+1;
-        sExtractDelete(game.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
-                       game.SOL_PATH,
+        sExtractDelete(Parser.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
+                       Parser.SOL_PATH,
                        "Unpacking " + game.SOLDAT_FOLDER[i] + " ... (" + oss.str() + "/" + siz.str() + ")");
         oss.str("");
     }
 
 
     // creating Mp3 and Mods directories, if they were not existed
-    boost::filesystem::create_directory(game.SOL_PATH + "Mods");
-    boost::filesystem::create_directory(game.SOL_PATH + "Mp3");
+    boost::filesystem::create_directory(Parser.SOL_PATH + "Mods");
+    boost::filesystem::create_directory(Parser.SOL_PATH + "Mp3");
 
     if (!NO_CONNECTION)
     {

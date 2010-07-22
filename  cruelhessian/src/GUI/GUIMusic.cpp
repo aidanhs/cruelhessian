@@ -1,7 +1,7 @@
-/*   gui_music.cpp
+/*   GUIMusic.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,22 +20,23 @@
 
 #include <iostream>
 #include "boost/filesystem/fstream.hpp"
+
+#include "../AudioManager.h"
 #include "../regexp.h"
 #include "../GUI.h"
 #include "../Game.h"
 
-//#define _(string) gettext(string)
 
 
 int GUI::readM3U()
 {
-    std::string fold_mp3 = game.SOL_PATH + "Mp3/", buffer;
+    std::string fold_mp3 = Parser.SOL_PATH + "Mp3/", buffer;
     std::vector<std::string> gM3UFiles;
     //boost::regex re(SOL_PATH + "Mp3/.+.(m3u|M3U)");
-    std::string re = game.SOL_PATH + "Mp3/.+.(m3u|M3U)";
+    std::string re = Parser.SOL_PATH + "Mp3/.+.(m3u|M3U)";
     boost::filesystem::directory_iterator end;
 
-    game.gMusicList.clear();
+    Audio.gMusicList.clear();
 
     if (!boost::filesystem::exists(fold_mp3))
     {
@@ -82,7 +83,7 @@ int GUI::readM3U()
         {
             getline(file, buffer);
             if (buffer[0] != '#' && buffer[0] != '\n' && buffer != "")
-                game.gMusicList.push_back(buffer);
+                Audio.gMusicList.push_back(buffer);
         }
 
         file.close();
@@ -111,18 +112,23 @@ bool GUI::onSoundBoxChanged(const CEGUI::EventArgs& )
     {
         mSoundsSpinner->setEnabled(false);
         mSoundsDesc->setEnabled(false);
-        game.SOUNDS_VOL = 0;
+        Parser.SOUNDS_VOL = 0;
         if (!mIsMusic->isSelected())
             setMusicStates(false);
     }
     else
     {
         mSoundsSpinner->setEnabled(true);
-        mSoundsSpinner->setCurrentValue(game.SOUNDS_VOL);
+        mSoundsSpinner->setCurrentValue(Parser.SOUNDS_VOL);
         mSoundsDesc->setEnabled(true);
-        game.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
         setMusicStates(true);
+
+        // create (if not exists) AudioManager - not implemented
+        Parser.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
     }
+
+    Audio.setVolume();
+
     return true;
 }
 
@@ -131,8 +137,11 @@ bool GUI::onSoundSpinnerChanged(const CEGUI::EventArgs& )
 {
     if (mIsSounds->isSelected())
     {
-        game.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
+        Parser.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
     }
+
+    Audio.setVolume();
+
     return true;
 }
 
@@ -145,17 +154,20 @@ bool GUI::onMusicBoxChanged(const CEGUI::EventArgs& )
         mMusicSpinner->setEnabled(false);
         mMusicDesc->setEnabled(false);
         mMusicSongDesc->setEnabled(false);
-        game.MUSIC_VOL = 0;
+        Parser.MUSIC_VOL = 0;
         if (!mIsSounds->isSelected())
             setMusicStates(false);
     }
     else
     {
         mMusicSpinner->setEnabled(true);
-        mMusicSpinner->setCurrentValue(game.MUSIC_VOL);
+        mMusicSpinner->setCurrentValue(Parser.MUSIC_VOL);
         mMusicDesc->setEnabled(true);
         mMusicSongDesc->setEnabled(true);
-        game.MUSIC_VOL = mMusicSpinner->getCurrentValue();
+
+        // create (if not exists) AudioManager - not implemented
+        Parser.MUSIC_VOL = mMusicSpinner->getCurrentValue();
+
         readM3U();
         setMusicStates(true);
     }
@@ -168,7 +180,7 @@ bool GUI::onMusicSpinnerChanged(const CEGUI::EventArgs& )
 {
     if (mIsMusic->isSelected())
     {
-        game.MUSIC_VOL = mMusicSpinner->getCurrentValue();
+        Parser.MUSIC_VOL = mMusicSpinner->getCurrentValue();
     }
     return true;
 }
@@ -177,10 +189,10 @@ bool GUI::onMusicSpinnerChanged(const CEGUI::EventArgs& )
 bool GUI::onAudioQualityChanged(const CEGUI::EventArgs& )
 {
     if (mLowQuality->isSelected())
-        game.AUDIO_QUAL = 11025;
+        Parser.AUDIO_QUAL = 11025;
     else if (mMediumQuality->isSelected())
-        game.AUDIO_QUAL = 22050;
+        Parser.AUDIO_QUAL = 22050;
     else if (mHighQuality->isSelected())
-        game.AUDIO_QUAL = 44100;
+        Parser.AUDIO_QUAL = 44100;
     return true;
 }

@@ -1,7 +1,10 @@
-/*   moving_objects.h
+#ifndef MOV_OBJ_H
+#define MOV_OBJ_H
+
+/*   MovingObject.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +21,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef MOV_OBJ_H
-#define MOV_OBJ_H
 
-//#include "WorldMap.h"
-#include "Globals.h"
+#include "Tex.h"
+#include "Enums.h"
 #include "TVector2D.h"
 
 
 class MovingObject
 {
-
-private:
-  //  TVector2D temp;
-    //TVector2D temp_a;
 
 
 protected:
@@ -43,6 +40,8 @@ protected:
     // Tex texture;
 
 public:
+
+    virtual ~MovingObject() {}
 
     OBJECT_SHAPE type;
     unsigned int owner;
@@ -65,5 +64,5 @@ public:
 };
 
 
-
 #endif
+

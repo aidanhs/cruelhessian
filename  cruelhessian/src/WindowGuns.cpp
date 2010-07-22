@@ -1,7 +1,7 @@
 /*   WindowGuns.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,16 @@
 
 
 #include <sstream>
+
 #include "WeaponManager.h"
 #include "WindowGuns.h"
-#include "Game.h"
+#include "FontManager.h"
+#include "ParserManager.h"
 
 
 
 WindowGuns::WindowGuns()
-    : x(game.MAX_WIDTH/4), y(game.MAX_HEIGHT/7), w(300), h(350), m_number(-1)
+    : x(Parser.MAX_WIDTH/4), y(Parser.MAX_HEIGHT/7), w(300), h(350), m_number(-1)
 {
 
 }
@@ -92,7 +94,7 @@ void WindowGuns::draw(const TVector2D& pos)
 
     // tekst
     TVector2D start = TVector2D(x + 10, y + 10);
-    world.printText(world.font[1][game.FontConsoleSize], "Primary Weapon:", world.textGunColor, start.x, start.y);
+    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Primary Weapon:", Fonts.textGunColor, start.x, start.y);
 
     m_number = -1;
 
@@ -100,19 +102,19 @@ void WindowGuns::draw(const TVector2D& pos)
     for (int i = 1; i <= 10; ++i)
     {
         start.y += delta;
-        if (game.WEAPON[i-1])
+        if (Parser.WEAPON[i-1])
         {
             draw_help(Weapons[i].textureGun, start.x-85, start.y);
             oss << i%10;
             oss << " " + Weapons[i].name;
             if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
             {
-                world.printText(world.font[1][game.FontConsoleSize], oss.str(), world.textColorGunOnTouch, start.x, start.y);
+                Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textColorGunOnTouch, start.x, start.y);
                 m_number = i;
             }
             else
             {
-                world.printText(world.font[1][game.FontConsoleSize], oss.str(), world.textColorGunNormal, start.x, start.y);
+                Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textColorGunNormal, start.x, start.y);
             }
 
             oss.str("");
@@ -121,65 +123,65 @@ void WindowGuns::draw(const TVector2D& pos)
     }
 
     start.y += 30.0f;
-    world.printText(world.font[1][game.FontConsoleSize], "Secondary Weapon:", world.textGunColor, start.x-85, start.y);
+    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Secondary Weapon:", Fonts.textGunColor, start.x-85, start.y);
 
     start.y += delta;
-    if (game.WEAPON[10])
+    if (Parser.WEAPON[10])
     {
         draw_help(Weapons[0].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[0].name, world.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[0].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 0;
         }
         else
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[0].name, world.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[0].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
     start.y += delta;
-    if (game.WEAPON[11])
+    if (Parser.WEAPON[11])
     {
         draw_help(Weapons[14].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[14].name, world.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[14].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 14;
         }
         else
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[14].name, world.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[14].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
     start.y += delta;
-    if (game.WEAPON[12])
+    if (Parser.WEAPON[12])
     {
         draw_help(Weapons[15].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[15].name, world.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[15].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 15;
         }
         else
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[15].name, world.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[15].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
     start.y += delta;
-    if (game.WEAPON[13])
+    if (Parser.WEAPON[13])
     {
         draw_help(Weapons[16].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[16].name, world.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[16].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 16;
         }
         else
         {
-            world.printText(world.font[1][game.FontConsoleSize], Weapons[16].name, world.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], Weapons[16].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 

@@ -1,7 +1,7 @@
-/*   bonus.cpp
+/*   Bonus.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,10 +20,11 @@
 
 
 #include "Bonus.h"
+#include "BonusManager.h"
 
 
 
-Bonus::Bonus(const TVector2D& pos, const Tex& tex, int bontype) : texture(tex), typeBonus(bontype)
+Bonus::Bonus(const TVector2D& pos, int bontype) : texture(Bonuses.text_bonus[bontype]), typeBonus(bontype)
 {
 
     //type = SQUARE;
@@ -41,7 +42,8 @@ Bonus::Bonus(const TVector2D& pos, const Tex& tex, int bontype) : texture(tex), 
     velocity = TVector2D(0.0f, 0.0f);
     //a = TVector2D(0, -20);
 //old_position = position;
-old_a = TVector2D(0,0);
+    old_a = TVector2D(0,0);
+    ;
 }
 
 

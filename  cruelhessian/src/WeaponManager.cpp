@@ -1,7 +1,7 @@
 /*   WeaponManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,19 +29,19 @@
 WeaponManager::WeaponManager()
 {
 
-    std::cout << "Weapon Manager ... " << std::endl;
+    std::cout << "Starting WeaponManager ... " << std::endl;
 
     std::cout << "   loading guns' information ..." << std::endl;
 
     CSimpleIni ini(false, false, false);
-    if (ini.LoadFile((game.SOL_PATH + "weapons.ini").c_str()) < 0)
+    if (ini.LoadFile((Parser.SOL_PATH + "weapons.ini").c_str()) < 0)
     {
         std::cerr << "Cannot read 'weapons.ini' file" << std::endl;
         return;
     }
 
     std::string str;
-    std::ifstream file((game.SOL_PATH + "Txt/weaponnames.txt").c_str());
+    std::ifstream file((Parser.SOL_PATH + "Txt/weaponnames.txt").c_str());
     int i = 0;
 
     while (std::getline(file, str) && i < WEAPONS_NUMBER)
@@ -79,40 +79,42 @@ WeaponManager::WeaponManager()
 
     std::cout << "   loading guns' textures ... " << std::endl;
 
-    element[0].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "10");
-    element[1].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "1");
-    element[2].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "2");
-    element[3].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "3");
-    element[4].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "4");
-    element[5].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "5");
-    element[6].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "6");
-    element[7].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "7");
-    element[8].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "8");
-    element[9].textureGun  = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "9");
-    element[10].textureGun = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "0");
-    element[14].textureGun = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "knife");
-    element[15].textureGun = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "chainsaw");
-    element[16].textureGun = SOIL_LoadTextureEx2(game.SOL_PATH + "Interface-gfx/Guns/", "law");
+    element[0].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "10");
+    element[1].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "1");
+    element[2].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "2");
+    element[3].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "3");
+    element[4].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "4");
+    element[5].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "5");
+    element[6].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "6");
+    element[7].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "7");
+    element[8].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "8");
+    element[9].textureGun  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "9");
+    element[10].textureGun = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "0");
+    element[14].textureGun = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "knife");
+    element[15].textureGun = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "chainsaw");
+    element[16].textureGun = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Interface-gfx/Guns/", "law");
 
 
     std::cout << "   loading bullets' textures ... " << std::endl;
 
-    element[0].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "minigun-bullet");
-    element[1].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "eagles-bullet");
-    element[2].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
-    element[3].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
-    element[4].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "steyraug-bullet");
-    element[5].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
-    element[6].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "ruger77-bullet");
-    element[7].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "m79-bullet");
-    element[8].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "barretm82-bullet");
-    element[9].textureAmmo  = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
-    element[10].textureAmmo = SOIL_LoadTextureEx2(game.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[0].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "minigun-bullet");
+    element[1].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "eagles-bullet");
+    element[2].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
+    element[3].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
+    element[4].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "steyraug-bullet");
+    element[5].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[6].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "ruger77-bullet");
+    element[7].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "m79-bullet");
+    element[8].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "barretm82-bullet");
+    element[9].textureAmmo  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[10].textureAmmo = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
 
 }
 
+
 WeaponManager::~WeaponManager()
 {
+
     std::cout << "Removing WeaponManager ..." << std::endl;
-//    element.clear();
+
 }

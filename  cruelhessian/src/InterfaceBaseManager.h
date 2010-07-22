@@ -1,10 +1,10 @@
-#ifndef BONUS_H
-#define BONUS_H
+#ifndef INTERFACE_BASE_MANAGER_H
+#define INTERFACE_BASE_MANAGER_H
 
-/*   Bonus.h
+/*   InterfaceBaseManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,26 +22,29 @@
  */
 
 
-#include "MovingObject.h"
+
 #include "Tex.h"
-#include "TVector2D.h"
+#include "Singleton.h"
 
 
-class Bonus : public MovingObject
+class InterfaceBaseManager : public Singleton<InterfaceBaseManager>
 {
-    const Tex& texture;
-    float scaleX, scaleY;
 
 public:
 
-    Bonus(const TVector2D& pos, int _type);
-    ~Bonus() {}
+    InterfaceBaseManager();
+    virtual ~InterfaceBaseManager();
 
-    void draw() const;
-    int typeBonus;
+    void Draw();
+
+    Tex text_arrow;
+    Tex text_mouse;
+    Tex text_deaddot;
+    Tex text_smalldot;
+
 
 };
 
+#define InterfaceBase InterfaceBaseManager::GetSingleton()
 
 #endif
-
