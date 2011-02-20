@@ -24,23 +24,26 @@
 
 
 #include "TVector2D.h"
-#include "Map.h"
+#include "Drawable.h"
 
 
-class Background
+//class Map;
+
+
+class Background : public Drawable
 {
-
-    TVector2D move, old_pos;
-    bool flag;
+   // const Map& m_map;
+    TVector2D m_xMove, m_xOldPos;
+    bool m_bFlag;
 
 public:
 
-    Background(float startX, float startY, const TVector2D& bot_pos);
+    Background(const TVector2D& start, const TVector2D& bot_pos);
     ~Background() {}
 
-    void setPosition(float startX, float startY);
-    void draw(const Map& map);
-    void update(const TVector2D& mouse_pos, const TVector2D& bot_pos);
+    void SetPosition(const float startX, const float startY);
+    void Draw();
+    void Update(const TVector2D& mouse_pos, const TVector2D& bot_pos);
 };
 
 

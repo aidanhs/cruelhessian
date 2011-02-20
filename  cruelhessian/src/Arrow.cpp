@@ -1,7 +1,7 @@
 /*   Arrow.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,41 +21,49 @@
 
 #include "Arrow.h"
 #include "InterfaceBaseManager.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
-Arrow::Arrow() : texture(InterfaceBase.text_arrow)
+Arrow::Arrow() :
+    m_xTexture(InterfaceBase.text_arrow),
+    m_xPosition(0.0f, 0.0f)
 {
-
 }
 
-void Arrow::draw() const
+
+void Arrow::Update(const TVector2D& bot_pos)
 {
+    m_xPosition.x = bot_pos.x;
+    m_xPosition.y = bot_pos.y - 50;
+}
+
+
+void Arrow::Draw() const
+{
+	glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
 
-    glTranslatef(position.x, position.y, 0.0f);
-    glBindTexture(GL_TEXTURE_2D, texture.tex);
+    glTranslatef(m_xPosition.x, m_xPosition.y, 0.0f);
+    glBindTexture(GL_TEXTURE_2D, m_xTexture.tex);
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2i(0, 0);
     glTexCoord2i(1, 1);
-    glVertex2f(texture.w, 0.0);
+    glVertex2i(m_xTexture.w, 0);
     glTexCoord2i(1, 0);
-    glVertex2f(texture.w, texture.h);
+    glVertex2i(m_xTexture.w, m_xTexture.h);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture.h);
+    glVertex2i(0, m_xTexture.h);
     glEnd();
 
     glPopMatrix();
 
+	glDisable(GL_TEXTURE_2D);
 }
 
-
-void Arrow::update(const TVector2D& bot_pos)
-{
-
-    position.x = bot_pos.x;
-    position.y = bot_pos.y - 50;
-
-}

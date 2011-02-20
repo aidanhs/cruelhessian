@@ -1,7 +1,7 @@
 /*   AudioManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,193 +22,182 @@
 #include "boost/filesystem/fstream.hpp"
 #include "boost/algorithm/string.hpp"
 
+#include "textinout/TextOutput.h"
 #include "AudioManager.h"
 #include "WorldMap.h"
 #include "ParserManager.h"
+#include "SoundBufferManager.h"
+
+
+
 
 
 AudioManager::AudioManager()
 {
 
-    std::cout << "Starting AudioManager ... " << std::endl;
 
-    CURRENT_SONG_NUMBER = 0;
+    m_iCurrentSongNumber= 0;
 
-    music = NULL;
+    std::cout << "Starting AudioManager ... " << std::flush;
 
-    //if (Parser.SOUNDS_VOL + Parser.MUSIC_VOL > 0)
-    // {
-    std::cout << "   loading audio ... " << std::endl;
+    music = new sf::Music();
 
-    if (SDL_Init(SDL_INIT_AUDIO) < 0)
-    {
-        std::cout << "  Unable to init audio: " << SDL_GetError() << std::endl;
-        //return 1;
-    }
+    grenade_pullout.SetBuffer  (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-pullout"));
+    grenade_throw.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-throw"));
+    grenade_bounce.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-bounce"));
+    grenade_explosion.SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-explosion"));
+    cluster_explosion.SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "cluster-explosion"));
+    cluster.SetBuffer          (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "clustergrenade"));
+    sound_new_life.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "wermusic"));
+    sound_heaven.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "playerdeath"));
+    sound_spawn.SetBuffer      (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spawn"));
+    menu_click.SetBuffer       (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "menuclick"));
+    take_medikit.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "takemedikit"));
+    take_vestkit.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "vesttake"));
+    take_flamer.SetBuffer      (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "godflame"));
+    take_berserker.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "berserker"));
+    take_predator.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "predator"));
+    take_grenades.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "pickupgun"));
 
-    if (Mix_OpenAudio(Parser.AUDIO_QUAL, AUDIO_S16SYS, 1, 2048) != 0)
-    {
-        std::cout << "  Unable to initialize audio: " << Mix_GetError() << std::endl;
-        //return 1;
-    }
+    fireSound[0].SetBuffer( *LoadSoundExt(Parser.SOL_PATH + "Sfx/", "colt1911-fire"));
+    fireSound[1].SetBuffer( * LoadSoundExt(Parser.SOL_PATH + "Sfx/", "deserteagle-fire"));
+    fireSound[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "mp5-fire"));
+    fireSound[3].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ak74-fire"));
+    fireSound[4].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "steyraug-fire"));
+    fireSound[5].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spas12-fire"));
+    fireSound[6].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ruger77-fire"));
+    fireSound[7].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m79-fire"));
+    fireSound[8].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "barretm82-fire"));
+    fireSound[9].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m249-fire"));
+    fireSound[10].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "minigun-fire"));
+    fireSound[11].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "flamer"));
+    fireSound[12].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "chainsaw-r"));
 
-    //if (Parser.SOUNDS_VOL > 0)
-    //{
-    //fireSound[0] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "colt1911-fire");
-    //  if (fireSound[0] != NULL) Mix_VolumeChunk(fireSound[0], SOUNDS_VOL_INT);
-    //
-    fireSound[0] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "colt1911-fire");//) != NULL) Mix_VolumeChunk(fireSound[0], SOUNDS_VOL_INT);
-    fireSound[1] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "deserteagle-fire");//) != NULL) Mix_VolumeChunk(fireSound[1], SOUNDS_VOL_INT);
-    fireSound[2] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "mp5-fire");//) != NULL) Mix_VolumeChunk(fireSound[2], SOUNDS_VOL_INT);
-    fireSound[3] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "ak74-fire");//) != NULL) Mix_VolumeChunk(fireSound[3], SOUNDS_VOL_INT);
-    fireSound[4] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "steyraug-fire");//) != NULL) Mix_VolumeChunk(fireSound[4], SOUNDS_VOL_INT);
-    fireSound[5] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "spas12-fire");//) != NULL) Mix_VolumeChunk(fireSound[5], SOUNDS_VOL_INT);
-    fireSound[6] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "ruger77-fire");//) != NULL) Mix_VolumeChunk(fireSound[6], SOUNDS_VOL_INT);
-    fireSound[7] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "m79-fire");//) != NULL) Mix_VolumeChunk(fireSound[7], SOUNDS_VOL_INT);
-    fireSound[8] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "barretm82-fire");//) != NULL) Mix_VolumeChunk(fireSound[8], SOUNDS_VOL_INT);
-    fireSound[9] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "m249-fire");//) != NULL) Mix_VolumeChunk(fireSound[9], SOUNDS_VOL_INT);
-    fireSound[10] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "minigun-fire");//) != NULL) Mix_VolumeChunk(fireSound[10], SOUNDS_VOL_INT);
-    fireSound[11] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "flamer");//) != NULL) Mix_VolumeChunk(fireSound[11], SOUNDS_VOL_INT);
-    fireSound[12] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "chainsaw-r");//) != NULL) Mix_VolumeChunk(fireSound[12], SOUNDS_VOL_INT);
+    reloadSound[0].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "colt1911-reload"));
+    reloadSound[1].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "deserteagle-reload"));
+    reloadSound[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "mp5-reload"));
+    reloadSound[3].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ak74-reload"));
+    reloadSound[4].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "steyraug-reload"));
+    reloadSound[5].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spas12-reload"));
+    reloadSound[6].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ruger77-reload"));
+    reloadSound[7].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m79-reload"));
+    reloadSound[8].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "barretm82-reload"));
+    reloadSound[9].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m249-reload"));
+    reloadSound[10].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "minigun-reload"));
 
-    reloadSound[0] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "colt1911-reload");//) != NULL) Mix_VolumeChunk(reloadSound[0], SOUNDS_VOL_INT);
-    reloadSound[1] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "deserteagle-reload");//) != NULL) Mix_VolumeChunk(reloadSound[1], SOUNDS_VOL_INT);
-    reloadSound[2] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "mp5-reload");//) != NULL) Mix_VolumeChunk(reloadSound[2], SOUNDS_VOL_INT);
-    reloadSound[3] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "ak74-reload");//) != NULL) Mix_VolumeChunk(reloadSound[3], SOUNDS_VOL_INT);
-    reloadSound[4] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "steyraug-reload");//) != NULL) Mix_VolumeChunk(reloadSound[4], SOUNDS_VOL_INT);
-    reloadSound[5] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "spas12-reload");//) != NULL) Mix_VolumeChunk(reloadSound[5], SOUNDS_VOL_INT);
-    reloadSound[6] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "ruger77-reload");//) != NULL) Mix_VolumeChunk(reloadSound[6], SOUNDS_VOL_INT);
-    reloadSound[7] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "m79-reload");//) != NULL) Mix_VolumeChunk(reloadSound[7], SOUNDS_VOL_INT);
-    reloadSound[8] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "barretm82-reload");//) != NULL) Mix_VolumeChunk(reloadSound[8], SOUNDS_VOL_INT);
-    reloadSound[9] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "m249-reload");//) != NULL) Mix_VolumeChunk(reloadSound[9], SOUNDS_VOL_INT);
-    reloadSound[10] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "minigun-reload");//) != NULL) Mix_VolumeChunk(reloadSound[10], SOUNDS_VOL_INT);
+    sound_death[0].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death"));
+    sound_death[1].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death2"));
+    sound_death[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death3"));
+    sound_kitfall[0].SetBuffer ( *LoadSoundExt(Parser.SOL_PATH + "Sfx/", "kit-fall"));
+    sound_kitfall[1].SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "kit-fall2"));
 
-    grenade_pullout = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "grenade-pullout");//) != NULL)
-    grenade_throw = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "grenade-throw");//) != NULL)
-    grenade_bounce = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "grenade-bounce");//) != NULL)
-    grenade_explosion = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "grenade-explosion");//) != NULL)
-    sound_new_life = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "wermusic");//) != NULL)
-    sound_death[0] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "death");//) != NULL)
-    sound_death[1] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "death2");//) != NULL) Mix_VolumeChunk(sound_death[1], SOUNDS_VOL_INT);
-    sound_death[2] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "death3");//) != NULL) Mix_VolumeChunk(sound_death[2], SOUNDS_VOL_INT);
-    //sound_kitfall[0] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "kit-fall")) != NULL)
-    //sound_kitfall[1] = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "kit-fall2")) != NULL) Mix_VolumeChunk(sound_kitfall[1], SOUNDS_VOL_INT);
-    sound_heaven = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "playerdeath");//) != NULL)
-    sound_spawn = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "spawn");//) != NULL)
-    menu_click = loadSoundFile2(Parser.SOL_PATH + "Sfx/", "menuclick");//) != NULL)
-
-    sound_kitfall[0] = NULL;
-    sound_kitfall[1] = NULL;
 
     setVolume();
-    //}
-    //}
+
+    std::cout << " DONE" << std::endl;
 }
 
 
 void AudioManager::setVolume()
 {
 
-    int SOUNDS_VOL_INT = static_cast<int>(Parser.SOUNDS_VOL*MIX_MAX_VOLUME/100);
-
+    //sf::Listener::SetGlobalVolume(Parser.SOUNDS_VOL);
     for (unsigned int i = 0; i < 13; ++i)
     {
-        Mix_VolumeChunk(fireSound[i], SOUNDS_VOL_INT);
+        fireSound[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
     for (unsigned int i = 0; i < 11; ++i)
     {
-        Mix_VolumeChunk(reloadSound[i], SOUNDS_VOL_INT);
+        reloadSound[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
     for (int i = 0; i < 2; ++i)
     {
-        //Mix_VolumeChunk(sound_kitfall[i], SOUNDS_VOL_INT);
+         sound_kitfall[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
     for (int i = 0; i < 3; ++i)
     {
-        Mix_VolumeChunk(sound_death[i], SOUNDS_VOL_INT);
+        sound_death[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
-    Mix_VolumeChunk(grenade_pullout, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(grenade_throw, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(grenade_bounce, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(grenade_explosion, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(sound_new_life, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(sound_heaven, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(sound_spawn, SOUNDS_VOL_INT);
-    Mix_VolumeChunk(menu_click, SOUNDS_VOL_INT);
+    grenade_pullout.SetVolume(Parser.SOUNDS_VOL);
+    grenade_throw.SetVolume(Parser.SOUNDS_VOL);
+    grenade_bounce.SetVolume(Parser.SOUNDS_VOL);
+    grenade_explosion.SetVolume(Parser.SOUNDS_VOL);
+    cluster_explosion.SetVolume(Parser.SOUNDS_VOL);
+    cluster.SetVolume(Parser.SOUNDS_VOL);
+    sound_new_life.SetVolume(Parser.SOUNDS_VOL);
+    sound_heaven.SetVolume(Parser.SOUNDS_VOL);
+    sound_spawn.SetVolume(Parser.SOUNDS_VOL);
+    menu_click.SetVolume(Parser.SOUNDS_VOL);
+    take_berserker.SetVolume(Parser.SOUNDS_VOL);
+    take_medikit.SetVolume(Parser.SOUNDS_VOL);
+    take_predator.SetVolume(Parser.SOUNDS_VOL);
+    take_vestkit.SetVolume(Parser.SOUNDS_VOL);
+    take_grenades.SetVolume(Parser.SOUNDS_VOL);
+    take_flamer.SetVolume(Parser.SOUNDS_VOL);
 
 }
 
 AudioManager::~AudioManager()
 {
 
-    std::cout << "Removing AudioManager ..." << std::endl;
+    std::cout << "Removing AudioManager ..." << std::flush;
 
-    //if (Parser.SOUNDS_VOL > 0)
-    //{
+/*
     for (int i = 0; i < 13; ++i)
     {
-        Mix_FreeChunk(fireSound[i]);
-        fireSound[i] = NULL;
+        delete fireSound[i];
     }
     for (int i = 0; i < 11; ++i)
     {
-        Mix_FreeChunk(reloadSound[i]);
-        reloadSound[i] = NULL;
+        delete reloadSound[i];
     }
     for (int i = 0; i < 2; ++i)
     {
-        Mix_FreeChunk(sound_kitfall[i]);
-        sound_kitfall[i] = NULL;
+        delete sound_kitfall[i];
     }
     for (int i = 0; i < 3; ++i)
     {
-        Mix_FreeChunk(sound_death[i]);
-        sound_death[i] = NULL;
+        delete sound_death[i];
     }
 
-    Mix_FreeChunk(grenade_explosion);
-    grenade_explosion = NULL;
-    Mix_FreeChunk(grenade_bounce);
-    grenade_bounce = NULL;
-    Mix_FreeChunk(grenade_throw);
-    grenade_throw = NULL;
-    Mix_FreeChunk(grenade_pullout);
-    grenade_pullout = NULL;
-    Mix_FreeChunk(sound_new_life);
-    sound_new_life = NULL;
-    Mix_FreeChunk(sound_heaven);
-    sound_heaven = NULL;
-    Mix_FreeChunk(sound_spawn);
-    sound_spawn = NULL;
-    Mix_FreeChunk(menu_click);
-    menu_click = NULL;
+    delete cluster;
+    delete cluster_explosion;
+    delete grenade_explosion;
+    delete grenade_bounce;
+    delete grenade_throw;
+    delete grenade_pullout;
+    delete sound_new_life;
+    delete sound_heaven;
+    delete sound_spawn;
+    delete menu_click;
 
-    //}
+    delete take_berserker;
+    delete take_grenades;
+    delete take_medikit;
+    delete take_predator;
+    delete take_vestkit;
+    delete take_flamer;
+*/
+    delete music;
 
-    //if (Parser.SOUNDS_VOL + Parser.MUSIC_VOL > 0)
-    Mix_CloseAudio();
+    std::cout << " DONE" << std::endl;
 
 }
 
 
-Mix_Chunk* AudioManager::loadSoundFile(const std::string& file)
+
+void AudioManager::Play(sf::Sound &snd)
 {
-    Mix_Chunk *temp = NULL;
-    if ((temp = Mix_LoadWAV(file.c_str())) == NULL)
-    {
-        std::cerr << "  Cannot load sound file: " << file << ", " << Mix_GetError() << std::endl;
-    }
-    return temp;
+    snd.Play();
 }
-
 
 
 // urwana nazwa pliku, bez rozszerzenia (najpierw wav, potem ogg), odporna na wielkosc znakow (tylko w nazwach plikow)
-Mix_Chunk* AudioManager::loadSoundFile2(const std::string& src_dir, const std::string& file)
+sf::SoundBuffer* AudioManager::LoadSoundExt(const std::string& src_dir, const std::string& file) const
 {
 
     if (!boost::filesystem::exists(src_dir))
@@ -221,19 +210,10 @@ Mix_Chunk* AudioManager::loadSoundFile2(const std::string& src_dir, const std::s
 
     for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
     {
-        if (boost::iequals(iter->leaf(), file + ".wav"))
+        if (boost::iequals(iter->leaf(), file + ".wav") || boost::iequals(iter->leaf(), file + ".ogg"))
         {
-            // !!!!!!!!!fix
-            return loadSoundFile(iter->path().string());
-        }
-    }
-
-    for (boost::filesystem::directory_iterator iter(src_dir); iter != end; ++iter)
-    {
-        if (boost::iequals(iter->leaf(), file + ".ogg"))
-        {
-            // !!!!!!!!!fix
-            return loadSoundFile(iter->path().string());
+            //return g.Load(iter->path().string());
+            return g.getResource(iter->path().string());
         }
     }
 
@@ -243,41 +223,51 @@ Mix_Chunk* AudioManager::loadSoundFile2(const std::string& src_dir, const std::s
 
 
 
-int AudioManager::playMusic(int pos)
+int AudioManager::playMusic(const int pos)
 {
 
-    if (Parser.MUSIC_VOL > 0 && !gMusicList.empty())
+    if (Parser.MUSIC_VOL > 0 && !m_musicList.empty())
     {
-        CURRENT_SONG_NUMBER += pos;
-        if (CURRENT_SONG_NUMBER < 0)
+        m_iCurrentSongNumber += pos;
+        if (m_iCurrentSongNumber < 0)
         {
-            CURRENT_SONG_NUMBER = static_cast<int>(gMusicList.size()-1);
+            m_iCurrentSongNumber = static_cast<int>(m_musicList.size()-1);
         }
-        else if (CURRENT_SONG_NUMBER > static_cast<int>(gMusicList.size()-1))
+        else if (m_iCurrentSongNumber > static_cast<int>(m_musicList.size()-1))
         {
-            CURRENT_SONG_NUMBER = 0;
-        }
-
-        if (Mix_PlayingMusic())
-        {
-            Mix_HaltMusic();
-            Mix_FreeMusic(music);
+            m_iCurrentSongNumber = 0;
         }
 
-
-        world.chat->addMessage("Playing : " + gMusicList[CURRENT_SONG_NUMBER]);
-
-        if ((music = Mix_LoadMUS(gMusicList[CURRENT_SONG_NUMBER].c_str())) == NULL)
+        if (music->GetStatus() == sf::Music::Playing)
         {
-            std::cerr << "Error Mixer: " << Mix_GetError() << std::endl;
+            music->Stop();
+            //Mix_FreeMusic(music);
+        }
+
+        if (!music->OpenFromFile(m_musicList[m_iCurrentSongNumber]))
+        {
+           // std::cerr << "Error Mixer: " << std::endl;
             return -1;
         }
-        if (Mix_PlayMusic(music, 0) == -1)
+        else
         {
-            std::cerr << "Unable to play file: " << Mix_GetError() << std::endl;
-            return -1;
+            world.text_output->AddMessage("Playing : " + m_musicList[m_iCurrentSongNumber]);
+            music->Play();
         }
+
     }
 
     return 0;
+}
+
+
+void AudioManager::AddToPlaylist(const std::string& buffer)
+{
+    m_musicList.push_back(buffer);
+}
+
+
+void AudioManager::ClearPlaylist()
+{
+    m_musicList.clear();
 }

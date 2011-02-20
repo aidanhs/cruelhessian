@@ -4,7 +4,7 @@
 /*   AudioManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Pawe³ Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,31 +27,44 @@
 #include <iostream>
 
 #include "Singleton.h"
-#include "SDL_mixer.h"
+#include "SoundBufferManager.h"
+#include <SFML/Audio.hpp>
 
+
+
+
+//#define g SoundBufferManager
+//extern SoundBufferManager g;
 
 class AudioManager : public Singleton<AudioManager>
 {
 
 private:
-
-    Mix_Chunk* loadSoundFile(const std::string& file);
-    Mix_Chunk* loadSoundFile2(const std::string& src_dir, const std::string& file);
+    //SoundBufferManager g;
+    //sf::SoundBuffer* loadSoundFile(const std::string& file) const;
+    sf::SoundBuffer* LoadSoundExt(const std::string& src_dir, const std::string& file) const;
+    int m_iCurrentSongNumber;
+    std::vector<std::string> m_musicList;
+    AudioManager(const AudioManager&) {}
+    AudioManager& operator=(const AudioManager&) {return *this;}
 
 public:
 
     AudioManager();
     virtual ~AudioManager();
+
+    void AddToPlaylist(const std::string& buffer);
+    void ClearPlaylist();
+    void Play(sf::Sound &snd);
+    int playMusic(const int pos);
     void setVolume();
 
-    int CURRENT_SONG_NUMBER;
-    std::vector<std::string> gMusicList;
+    sf::Music *music;
+    sf::Sound grenade_throw, grenade_bounce, grenade_explosion, grenade_pullout, cluster, cluster_explosion, sound_new_life, sound_heaven, sound_death[3], sound_kitfall[2], sound_spawn, menu_click;
+    sf::Sound take_medikit, take_vestkit, take_berserker, take_predator, take_grenades, take_flamer;
+    sf::Sound fireSound[20], reloadSound[20];
 
-    Mix_Music *music;
-    Mix_Chunk *grenade_throw, *grenade_bounce, *grenade_explosion, *grenade_pullout, *sound_new_life, *sound_heaven, *sound_death[3], *sound_kitfall[2], *sound_spawn, *menu_click;
-    Mix_Chunk *fireSound[20], *reloadSound[20];
 
-    int playMusic(int pos);
 };
 
 #define Audio AudioManager::GetSingleton()
