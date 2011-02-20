@@ -14,54 +14,50 @@ CONFIGURE_FILE(
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
-SET(CMAKE_C_COMPILER "/opt/intel/Compiler/11.1/072/bin/ia32/icc")
-SET(CMAKE_CXX_COMPILER "/opt/intel/Compiler/11.1/072/bin/ia32/icpc")
+#SET(CMAKE_C_COMPILER "llvm-gcc")
+#SET(CMAKE_CXX_COMPILER "llvm-g++")
 
-SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -pipe -fomit-frame-pointer")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -pipe -fomit-frame-pointer")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pipe -fomit-frame-pointer")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pipe -fomit-frame-pointer")
-
-FIND_PACKAGE(SDL_mixer REQUIRED)
-FIND_PACKAGE(SDL REQUIRED)
+FIND_PACKAGE(SFML REQUIRED)
 FIND_PACKAGE(CEGUI 0.6 REQUIRED)
-FIND_PACKAGE(Freetype REQUIRED)
-FIND_PACKAGE(Boost 1.38 REQUIRED COMPONENTS filesystem)
+FIND_PACKAGE(Boost 1.38 REQUIRED COMPONENTS filesystem system)
 FIND_LIBRARY(CURL_LIBRARY NAMES curl)
 
-INCLUDE_DIRECTORIES( ${SDLMIXER_INCLUDE_DIR} )
-INCLUDE_DIRECTORIES( ${SDL_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${SFML_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${CEGUI_INCLUDE_DIRS} )
-INCLUDE_DIRECTORIES( ${FREETYPE_INCLUDE_DIR_freetype2} )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+
 
 
 SET(src_executable
 	src/Arrow.cpp
 	src/AudioManager.cpp
 	src/Background.cpp
+	src/Body.cpp
 	src/Bonus.cpp
 	src/BonusManager.cpp
     src/Bot.cpp
     src/BotManager.cpp
 	src/Bullet.cpp
-	src/Chat.cpp
-	src/Collisions.cpp
-	src/Console.cpp
+	src/Cluster.cpp
+	src/ClusterGrenade.cpp
 	src/Controls.cpp
+	src/Events.cpp
 	src/FontManager.cpp
 	src/decompress/UnLZMA.cpp
 	src/decompress/UnTar.cpp
-	src/decompress/lzmadec/7zFile.cpp
-	src/decompress/lzmadec/7zStream.cpp
-	src/decompress/lzmadec/Alloc.cpp
-	src/decompress/lzmadec/LzFind.cpp
-	src/decompress/lzmadec/LzmaDec.cpp
-	src/Fonts.cpp
+	src/decompress/lzmadec/7zFile.c
+	src/decompress/lzmadec/7zStream.c
+	src/decompress/lzmadec/Alloc.c
+	src/decompress/lzmadec/LzFind.c
+	src/decompress/lzmadec/LzmaDec.c
 	src/Game.cpp
 	src/Grenade.cpp
-    src/GUI.cpp
     src/GUI/DiskObject.cpp
+    src/GUI/GUI.cpp
     src/GUI/GUIGraphics.cpp
 	src/GUI/GUIMaps.cpp
 	src/GUI/GUIMusic.cpp
@@ -72,22 +68,29 @@ SET(src_executable
 	src/GUI/GUIWindowUpdater.cpp
     src/InterfaceBaseManager.cpp
     src/InterfaceManager.cpp
-	src/Load.cpp
     src/Main.cpp
     src/Map.cpp
     src/Mouse.cpp
-    src/MovingObject.cpp
+    src/parser/ConvertUTF.c
 	src/ParserManager.cpp
-	src/parser/ConvertUTF.c
-	src/parser/ConvertUTF.h
-	src/parser/SimpleIni.h
-	src/regexp.cpp
+	src/PhysicsManager.cpp
+	src/physics/Contact.cpp
+	src/physics/ContactListener.cpp
+	src/physics/Polygon.cpp
+	src/Regex.cpp
+	src/RenderManager.cpp
+	src/SoundBufferManager.cpp
+	src/SpatialManager.cpp
 	src/soil/SOIL.c
 	src/soil/image_DXT.c
-	src/soil/image_helper.c
-	src/soil/stb_image_aug.c
+	src/textinout/ChatLine.cpp
+	src/textinout/CommandLine.cpp
+	src/textinout/Line.cpp
+	src/textinout/TextOutput.cpp
 	src/TexturesLoader.cpp
+	src/TMatrix2D.cpp
 	src/TVector2D.cpp
+	src/Weapon.cpp
 	src/WeaponManager.cpp
 	src/WindowExit.cpp
 	src/WindowGuns.cpp
@@ -99,10 +102,13 @@ LINK_LIBRARIES(CEGUIBase)
 LINK_LIBRARIES(CEGUIOpenGLRenderer)
 LINK_LIBRARIES(GLU)
 LINK_LIBRARIES(GL)
-LINK_LIBRARIES(SDL_mixer)
-LINK_LIBRARIES(freetype)
+LINK_LIBRARIES(sfml-graphics)
+LINK_LIBRARIES(sfml-window)
+LINK_LIBRARIES(sfml-system)
+LINK_LIBRARIES(sfml-audio)
 LINK_LIBRARIES(boost_filesystem-mt)
-LINK_LIBRARIES(curl)
+LINK_LIBRARIES(boost_system-mt)
+LINK_LIBRARIES(pcre)
 
 ADD_EXECUTABLE(cruelhessian ${src_executable})
 
