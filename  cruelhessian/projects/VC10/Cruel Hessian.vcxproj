@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{435A73E1-ACE6-48EA-89B8-10248D5FD531}</ProjectGuid>
+    <RootNamespace>Cruel Hessian</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>CruelHessian</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\visual-add\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\visual-add\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\visual-add\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\visual-add\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_USE_MATH_DEFINES;_DEBUG;_WINDOWS;PCRE_STATIC;CEGUI_STATIC;SILLY_STATIC;CURL_STATICLIB;FREEIMAGE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;sfml-main-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-audio-s-d.lib;CEGUIBase_Static_d.lib;OpenGLGUIRenderer_Static_d.lib;CEGUITinyXMLParser_Static_d.lib;CEGUITGAImageCodec_Static_d.lib;CEGUIFalagardWRBase_Static_d.lib;pcre_d.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32;_USE_MATH_DEFINES;_WIN32;NDEBUG;_WINDOWS;PCRE_STATIC;CEGUI_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OpenMPSupport>false</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sfml-main.lib;sfml-system-s.lib;sfml-window-s.lib;sfml-graphics-s.lib;sfml-audio-s.lib;opengl32.lib;glu32.lib;CEGUIBase_Static.lib;OpenGLGUIRenderer_Static.lib;CEGUITinyXMLParser_Static.lib;CEGUITGAImageCodec_Static.lib;CEGUIFalagardWRBase_Static.lib;pcre.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\AudioManager.h" />
+    <ClInclude Include="..\..\src\Body.h" />
+    <ClInclude Include="..\..\src\BonusManager.h" />
+    <ClInclude Include="..\..\src\Bot.h" />
+    <ClInclude Include="..\..\src\Bullet.h" />
+    <ClInclude Include="..\..\src\Cluster.h" />
+    <ClInclude Include="..\..\src\ClusterGrenade.h" />
+    <ClInclude Include="..\..\src\CMaterial.h" />
+    <ClInclude Include="..\..\src\CompatibleWindows.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\7zFile.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\7zVersion.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\Alloc.h" />
+    <ClInclude Include="..\..\src\Arrow.h" />
+    <ClInclude Include="..\..\src\Background.h" />
+    <ClInclude Include="..\..\src\Bonus.h" />
+    <ClInclude Include="..\..\src\BotManager.h" />
+    <ClInclude Include="..\..\src\Drawable.h" />
+    <ClInclude Include="..\..\src\Enums.h" />
+    <ClInclude Include="..\..\src\FontManager.h" />
+    <ClInclude Include="..\..\src\Fonts.h" />
+    <ClInclude Include="..\..\src\Grenade.h" />
+    <ClInclude Include="..\..\src\InterfaceBaseManager.h" />
+    <ClInclude Include="..\..\src\InterfaceManager.h" />
+    <ClInclude Include="..\..\src\Mouse.h" />
+    <ClInclude Include="..\..\src\ParserManager.h" />
+    <ClInclude Include="..\..\src\PhysicsManager.h" />
+    <ClInclude Include="..\..\src\physics\Contact.h" />
+    <ClInclude Include="..\..\src\physics\ContactFilter.h" />
+    <ClInclude Include="..\..\src\physics\ContactListener.h" />
+    <ClInclude Include="..\..\src\parser\ConvertUTF.h" />
+    <ClInclude Include="..\..\src\GUI\DiskObject.h" />
+    <ClInclude Include="..\..\src\Game.h" />
+    <ClInclude Include="..\..\src\GUI\GUIWindowFolderSelector.h" />
+    <ClInclude Include="..\..\src\GUI\GUIWindowNoSoldat.h" />
+    <ClInclude Include="..\..\src\GUI\GUIWindowUpdater.h" />
+    <ClInclude Include="..\..\src\physics\Material.h" />
+    <ClInclude Include="..\..\src\physics\Polygon.h" />
+    <ClInclude Include="..\..\src\Regex.h" />
+    <ClInclude Include="..\..\src\RenderManager.h" />
+    <ClInclude Include="..\..\src\soil\image_DXT.h" />
+    <ClInclude Include="..\..\src\soil\image_helper.h" />
+    <ClInclude Include="..\..\src\Interface.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\LzFind.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\LzHash.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\LzmaDec.h" />
+    <ClInclude Include="..\..\src\Map.h" />
+    <ClInclude Include="..\..\src\MovingObject.h" />
+    <ClInclude Include="..\..\src\parser\SimpleIni.h" />
+    <ClInclude Include="..\..\src\Singleton.h" />
+    <ClInclude Include="..\..\src\soil\SOIL.h" />
+    <ClInclude Include="..\..\src\soil\stb_image.h" />
+    <ClInclude Include="..\..\src\soil\stb_image_aug.h" />
+    <ClInclude Include="..\..\src\soil\stb_image_write.h" />
+    <ClInclude Include="..\..\src\SpatialManager.h" />
+    <ClInclude Include="..\..\src\stb_truetype.h" />
+    <ClInclude Include="..\..\src\soil\stbi_DDS_aug.h" />
+    <ClInclude Include="..\..\src\soil\stbi_DDS_aug_c.h" />
+    <ClInclude Include="..\..\src\Tex.h" />
+    <ClInclude Include="..\..\src\textinout\ChatLine.h" />
+    <ClInclude Include="..\..\src\textinout\CommandLine.h" />
+    <ClInclude Include="..\..\src\textinout\TextOutput.h" />
+    <ClInclude Include="..\..\src\TexturesLoader.h" />
+    <ClInclude Include="..\..\src\TMatrix2D.h" />
+    <ClInclude Include="..\..\src\TVector2D.h" />
+    <ClInclude Include="..\..\src\decompress\lzmadec\Types.h" />
+    <ClInclude Include="..\..\src\decompress\UnLZMA.h" />
+    <ClInclude Include="..\..\src\decompress\UnTar.h" />
+    <ClInclude Include="..\..\src\WeaponManager.h" />
+    <ClInclude Include="..\..\src\WindowExit.h" />
+    <ClInclude Include="..\..\src\WindowGuns.h" />
+    <ClInclude Include="..\..\src\WindowScores.h" />
+    <ClInclude Include="..\..\src\worldmap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Cluster.cpp" />
+    <ClCompile Include="..\..\src\ClusterGrenade.cpp" />
+    <ClCompile Include="..\..\src\decompress\lzmadec\7zFile.c" />
+    <ClCompile Include="..\..\src\decompress\lzmadec\7zStream.c" />
+    <ClCompile Include="..\..\src\decompress\lzmadec\Alloc.c" />
+    <ClCompile Include="..\..\src\Arrow.cpp" />
+    <ClCompile Include="..\..\src\AudioManager.cpp" />
+    <ClCompile Include="..\..\src\Background.cpp" />
+    <ClCompile Include="..\..\src\Body.cpp" />
+    <ClCompile Include="..\..\src\Bonus.cpp" />
+    <ClCompile Include="..\..\src\BonusManager.cpp" />
+    <ClCompile Include="..\..\src\Bot.cpp" />
+    <ClCompile Include="..\..\src\BotManager.cpp" />
+    <ClCompile Include="..\..\src\Bullet.cpp" />
+    <ClCompile Include="..\..\src\Events.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUI.cpp" />
+    <ClCompile Include="..\..\src\InterfaceBaseManager.cpp" />
+    <ClCompile Include="..\..\src\InterfaceManager.cpp" />
+    <ClCompile Include="..\..\src\physics\Contact.cpp" />
+    <ClCompile Include="..\..\src\physics\ContactListener.cpp" />
+    <ClCompile Include="..\..\src\Controls.cpp" />
+    <ClCompile Include="..\..\src\parser\ConvertUTF.c" />
+    <ClCompile Include="..\..\src\GUI\DiskObject.cpp" />
+    <ClCompile Include="..\..\src\FontManager.cpp" />
+    <ClCompile Include="..\..\src\Game.cpp" />
+    <ClCompile Include="..\..\src\Grenade.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIGraphics.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIMaps.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIMusic.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIOptions.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIPlayer.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIWindowFolderSelector.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIWindowNoSoldat.cpp" />
+    <ClCompile Include="..\..\src\GUI\GUIWindowUpdater.cpp" />
+    <ClCompile Include="..\..\src\physics\Polygon.cpp" />
+    <ClCompile Include="..\..\src\RenderManager.cpp" />
+    <ClCompile Include="..\..\src\decompress\lzmadec\LzFind.c" />
+    <ClCompile Include="..\..\src\decompress\lzmadec\LzmaDec.c" />
+    <ClCompile Include="..\..\src\Main.cpp" />
+    <ClCompile Include="..\..\src\Map.cpp" />
+    <ClCompile Include="..\..\src\Mouse.cpp" />
+    <ClCompile Include="..\..\src\ParserManager.cpp" />
+    <ClCompile Include="..\..\src\PhysicsManager.cpp" />
+    <ClCompile Include="..\..\src\Regex.cpp" />
+    <ClCompile Include="..\..\src\soil\image_DXT.c" />
+    <ClCompile Include="..\..\src\soil\SOIL.c" />
+    <ClCompile Include="..\..\src\SoundBufferManager.cpp" />
+    <ClCompile Include="..\..\src\SpatialManager.cpp" />
+    <ClCompile Include="..\..\src\textinout\ChatLine.cpp" />
+    <ClCompile Include="..\..\src\textinout\CommandLine.cpp" />
+    <ClCompile Include="..\..\src\textinout\Line.cpp" />
+    <ClCompile Include="..\..\src\textinout\TextOutput.cpp" />
+    <ClCompile Include="..\..\src\TexturesLoader.cpp" />
+    <ClCompile Include="..\..\src\TMatrix2D.cpp" />
+    <ClCompile Include="..\..\src\TVector2D.cpp" />
+    <ClCompile Include="..\..\src\decompress\UnLZMA.cpp" />
+    <ClCompile Include="..\..\src\decompress\UnTar.cpp" />
+    <ClCompile Include="..\..\src\Weapon.cpp" />
+    <ClCompile Include="..\..\src\WeaponManager.cpp" />
+    <ClCompile Include="..\..\src\WindowExit.cpp" />
+    <ClCompile Include="..\..\src\WindowGuns.cpp" />
+    <ClCompile Include="..\..\src\WindowScores.cpp" />
+    <ClCompile Include="..\..\src\WorldMap.cpp" />
+    <ClCompile Include="..\..\src\WritingLine.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
