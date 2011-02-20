@@ -6,7 +6,7 @@ Changes:
 
  *
  *   Cruel Hessian
- *   Copyright (C) 2010 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2010 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -89,6 +89,10 @@ FILE *UnTar::createpath(char *name2)
     strcpy(name, XDIR_IN);
     strcat(name, name2);
 
+    //name = const_cast<char*>(XDIR_IN);
+    //strcat(name, name2);
+
+
     /* if we aren't allowed to overwrite and this file exists, return NULL */
     if (!force && _access(name, 0) == 0)
     {
@@ -113,11 +117,11 @@ FILE *UnTar::createpath(char *name2)
         if (name[i] == '/')
         {
             name[i] = '\0';
-            #ifdef _MSC_VER
+#ifdef _WIN32
             (void)_mkdir(name);
-            #else
+#else
             (void)_mkdir(name, 0777);
-            #endif
+#endif
             name[i] = '/';
         }
         else
@@ -542,7 +546,7 @@ int UnTar::Extract(char *file_in, char *dir_out)
     }
 
     /* read the first few bytes, so we can determine whether to decompress */
-    size_t q = fread(slide, 1, sizeof(gzhdr_t), infp);
+    size_t q;// = fread(slide, 1, sizeof(gzhdr_t), infp);
     if ((((gzhdr_t *)slide)->magic[0] == MAGIC0
             && ((gzhdr_t *)slide)->magic[1] == MAGIC1) == 0)
     {
@@ -585,25 +589,26 @@ int UnTar::Extract(char *file_in, char *dir_out)
 }
 
 
-UnTar::UnTar()
+UnTar::UnTar() :
+    listing(0),
+    quiet(1),
+    force(1),
+    abspath(0),
+    convert(0),
+    verbose(0),
+    noname(0),
+    didabs(0),
+    nonlys(0),
+    outsize(0),
+    infp(NULL),
+    outfp(NULL),
+    inname(NULL),
+    XDIR_IN(NULL),
+    wp(0)
 {
-    listing = 0;
-    quiet = 1;
-    force = 1;
-    abspath = 0;
-    convert = 0;
-    verbose = 0;
-    noname = 0;
-    didabs = 0;
-    nonlys = 0;
-    outsize = 0;
-    infp = outfp = NULL;
-    inname = NULL;
-    XDIR_IN = NULL;
-    wp = 0;
 
     for (int i = 0; i < WSIZE; ++i)
-        slide[i] = NULL;
+        slide[i] = 0;
 
 }
 

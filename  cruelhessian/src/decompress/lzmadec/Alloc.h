@@ -1,10 +1,14 @@
+#ifndef __COMMON_ALLOC_H
+#define __COMMON_ALLOC_H
+
 /* Alloc.h -- Memory allocation functions
 2008-03-13
 Igor Pavlov
 Public domain */
 
-#ifndef __COMMON_ALLOC_H
-#define __COMMON_ALLOC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stddef.h>
 
@@ -27,6 +31,10 @@ void BigFree(void *address);
 #define BigAlloc(size) MyAlloc(size)
 #define BigFree(address) MyFree(address)
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
