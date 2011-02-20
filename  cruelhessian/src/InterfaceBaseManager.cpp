@@ -19,36 +19,43 @@
  */
 
 
-#include <sstream>
-
 #include "InterfaceBaseManager.h"
+#include <cstdio>
+#include "Bot.h"
+#include "textinout/ChatLine.h"
+#include "textinout/CommandLine.h"
+#include "textinout/TextOutput.h"
+#include "WindowScores.h"
+#include "WindowExit.h"
+#include "WindowGuns.h"
+#include "Mouse.h"
 #include "WeaponManager.h"
 #include "AudioManager.h"
 #include "ParserManager.h"
 #include "FontManager.h"
 #include "TexturesLoader.h"
 #include "WorldMap.h"
+#include "Game.h"
 
 
 
-InterfaceBaseManager::InterfaceBaseManager()
+InterfaceBaseManager::InterfaceBaseManager(void) :
+    text_arrow   (Texture::LoadExt(Parser.INTERFACE_PATH, "arrow")),
+    text_mouse   (Texture::LoadExt(Parser.INTERFACE_PATH, "cursor")),
+    text_deaddot (Texture::LoadExt(Parser.INTERFACE_PATH, "deaddot")),
+    text_smalldot(Texture::LoadExt(Parser.INTERFACE_PATH, "smalldot"))
 {
 
     std::cout << "Starting InterfaceBaseManager ..." << std::endl;
 
     std::cout << "   loading textures ... " << std::endl;
 
-    text_arrow     = SOIL_LoadTextureEx2(Parser.INTERFACE_PATH, "arrow");
-    text_mouse     = SOIL_LoadTextureEx2(Parser.INTERFACE_PATH, "cursor");
-    text_deaddot   = SOIL_LoadTextureEx2(Parser.INTERFACE_PATH, "deaddot");
-    text_smalldot  = SOIL_LoadTextureEx2(Parser.INTERFACE_PATH, "smalldot");
-
 }
 
-InterfaceBaseManager::~InterfaceBaseManager()
+InterfaceBaseManager::~InterfaceBaseManager(void)
 {
 
-    std::cout << "Removing InterfaceBaseManager ..." << std::endl;
+    std::cout << "Removing InterfaceBaseManager ... DONE" << std::endl;
 
 }
 
@@ -57,28 +64,77 @@ void InterfaceBaseManager::Draw()
 {
 
     if (!world.bot[world.MY_BOT_NR]->isKilled)
+    {
         world.CHOICE_GUN = false;
+    }
+    else
+    {
+        if (world.getCurrentTime - world.bot[world.MY_BOT_NR]->timerRespawnTime <= world.bot[world.MY_BOT_NR]->respawnPeriod)
+        {
+
+            // wait half a second after death and then show gun menu
+            if (world.getCurrentTime - world.bot[world.MY_BOT_NR]->timerRespawnTime >= 500 && !world.CHOICE_GUN && world.window_guns->GetSingletonPtr() == NULL)
+            {
+                world.window_guns = new WindowGuns();
+//                world.SHOW_GUN_MENU = true;
+            }
+
+            char chars[512];
+
+            sprintf(chars, "%.2f", static_cast<float>(world.bot[world.MY_BOT_NR]->respawnPeriod - world.getCurrentTime + world.bot[world.MY_BOT_NR]->timerRespawnTime)/1000);
+            std::string str = chars;
+
+            Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, "Respawn in " + str, Fonts.textCol[1], 50.0f);
+            Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, "Killed by " + world.bot[world.bot[world.MY_BOT_NR]->killer]->name, Fonts.textCol[1], Parser.MAX_HEIGHT-94.0f);
+        }
+
+    }
+
 
     if (world.YOU_KILLED)
     {
         if (world.getCurrentTime - world.bot[world.MY_BOT_NR]->youKilledTime <= 1000)
-            Fonts.printTextMiddle(Fonts.font[1][Fonts.FontMenuSize], "You killed " + world.bot[world.bot[world.MY_BOT_NR]->killed]->name, Fonts.textCol[1], 50.0f);
+            Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, "You killed " + world.bot[world.bot[world.MY_BOT_NR]->killed]->name, Fonts.textCol[1], 50.0f);
         else
             world.YOU_KILLED = false;
     }
 
+    char chars[512];
+    std::string str;
 
-    if (world.SHOW_GUN_MENU && !world.CHOICE_GUN)
+    if (world.bot[world.MY_BOT_NR]->MODE_FLAMEGOD)
     {
-        int x, y;
-        //SDL_ShowCursor(SDL_ENABLE);
-        world.window_guns->draw(world.mouse->getLocalPosition());
+        sprintf(chars, "%.2f", static_cast<float>(10000 - world.getCurrentTime + (world.bot[world.MY_BOT_NR]->timeGetSuperbonus))/1000);
+        str = "Flamegod mode : ";// + chars;
+        str.append(chars);
+        Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, str, Fonts.textCol[1], Parser.MAX_HEIGHT-150.0f);
+    }
+    else if (world.bot[world.MY_BOT_NR]->MODE_BERSERKER)
+    {
+        sprintf(chars, "%.2f", static_cast<float>(15000 - world.getCurrentTime + (world.bot[world.MY_BOT_NR]->timeGetSuperbonus))/1000);
+        str = "Berserker mode : ";// + chars;
+        str.append(chars);
+        Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, str, Fonts.textCol[1], Parser.MAX_HEIGHT-150.0f);
+    }
+    else if (world.bot[world.MY_BOT_NR]->MODE_PREDATOR)
+    {
+        sprintf(chars, "%.2f", static_cast<float>(25000 - world.getCurrentTime + (world.bot[world.MY_BOT_NR]->timeGetSuperbonus))/1000);
+        str = "Predator mode : ";// + chars;
+        str.append(chars);
+        Fonts.printTextMiddle(Fonts.font[1], Fonts.FontMenuSize, str, Fonts.textCol[1], Parser.MAX_HEIGHT-150.0f);
+    }
+
+
+    if (world.window_guns->GetSingletonPtr() != NULL && !world.CHOICE_GUN)
+    {
+        world.window_guns->Update(world.mouse->getLocalPosition());
+        world.window_guns->Draw();
 
         // if select gun with mouse button
-        if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
+        if (game.App.GetInput().IsMouseButtonDown(sf::Mouse::Left))
         {
             if (Parser.SOUNDS_VOL > 0)
-                Mix_PlayChannel(-1, Audio.menu_click, 0);
+                Audio.Play(Audio.menu_click);
 
             int nr = world.window_guns->select();
 
@@ -87,62 +143,62 @@ void InterfaceBaseManager::Draw()
                 world.bot[world.MY_BOT_NR]->gunModel = nr;
                 world.bot[world.MY_BOT_NR]->leftAmmos = Weapons[world.bot[world.MY_BOT_NR]->gunModel].ammo;
                 world.CHOICE_GUN = true;
-                world.SHOW_GUN_MENU = false;
+                delete world.window_guns;
             }
         }
         // if select gun with key
-        else if (world.KEY_PRESSED >= SDLK_0 && world.KEY_PRESSED <= SDLK_9)
+        else if (world.KEY_PRESSED >= sf::Key::Num0 && world.KEY_PRESSED <= sf::Key::Num9)
         {
             if (Parser.SOUNDS_VOL > 0)
-                Mix_PlayChannel(-1, Audio.menu_click, 0);
+                Audio.Play(Audio.menu_click);
 
-            world.bot[world.MY_BOT_NR]->gunModel = world.KEY_PRESSED-48;
-            world.bot[world.MY_BOT_NR]->leftAmmos = Weapons[world.bot[world.MY_BOT_NR]->gunModel].ammo;
-            world.CHOICE_GUN = true;
-            world.SHOW_GUN_MENU = false;
+            if (Parser.WEAPON[world.KEY_PRESSED-48])
+            {
+                world.bot[world.MY_BOT_NR]->gunModel = world.KEY_PRESSED-48;
+                world.bot[world.MY_BOT_NR]->leftAmmos = Weapons[world.bot[world.MY_BOT_NR]->gunModel].ammo;
+                world.CHOICE_GUN = true;
+                delete world.window_guns;
+            }
+
         }
-        //glutSetCursor(GLUT_CURSOR_NONE);
+
     }
 
-    world.chat->update();
-    world.chat->draw();
-
-    std::ostringstream oss;
+    world.text_output->Update();
+    world.text_output->Draw();
 
     if (world.SHOW_STATS)
     {
-        oss << "FPS: ";
-        oss << world.currentFPS;
-        Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[3], 0.8f*Parser.MAX_WIDTH, 15.0f);
-        oss.str("");
+        sprintf(chars, "%i", world.currentFPS);
+        str = "FPS: ";
+        str.append(chars);
+        Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, str, Fonts.textCol[3], 0.8f*Parser.MAX_WIDTH, 15.0f);
     }
 
     // scores
     if (world.SHOW_SCORES)
     {
-        world.window_scores->draw();
+        world.window_scores->Draw();
     }
 
-    if (world.SHOW_COMMAND_LINE)
+    if (world.command_line->GetSingletonPtr() != NULL)
     {
-        world.command_line();
+        world.command_line->Draw();
     }
 
-    if (Parser.CONSOLE_SHOW && world.SHOW_MYCHAT_LINE)
+    if (Parser.CONSOLE_SHOW && world.chat_line->GetSingletonPtr() != NULL)
     {
-        world.mychat_line();
+        world.chat_line->Draw();
     }
 
-    if (world.SHOW_ESC)
+    if (world.window_exit->GetSingletonPtr() != NULL)
     {
-        int x, y;
-        //glutSetCursor(GLUT_CURSOR_INHERIT);
-        world.window_exit->draw(world.mouse->getLocalPosition());
-        if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
+        world.window_exit->Draw(world.mouse->getLocalPosition());
+
+        if (game.App.GetInput().IsMouseButtonDown(sf::Mouse::Left))
         {
-            world.CHOICE_EXIT = world.window_exit->select();
-            // std::cout << "C " << CHOICE_EXIT << std::endl;
+            world.CHOICE_EXIT = world.window_exit->Select();
         }
-        //glutSetCursor(GLUT_CURSOR_NONE);
+
     }
 }
