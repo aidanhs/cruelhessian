@@ -4,7 +4,7 @@
 /*   Bonus.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at mail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,24 +22,30 @@
  */
 
 
-#include "MovingObject.h"
-#include "Tex.h"
-#include "TVector2D.h"
+#include "Drawable.h"
+#include "Body.h"
 
 
-class Bonus : public MovingObject
+
+class Tex;
+class TVector2D;
+
+
+class Bonus : public Drawable, public Body
 {
-    const Tex& texture;
-    float scaleX, scaleY;
+    const Tex& m_xTexture;
+    float m_fHalfWidth, m_fHalfHeight;
+	Bonus& operator=(const Bonus&) {}
 
 public:
 
     Bonus(const TVector2D& pos, int _type);
-    ~Bonus() {}
+    ~Bonus();
 
-    void draw() const;
-    int typeBonus;
-
+    int m_iTypeBonus;
+    void Update();
+    bool killMyself;
+    void Draw() const;
 };
 
 

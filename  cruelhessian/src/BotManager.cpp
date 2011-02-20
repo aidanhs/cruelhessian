@@ -1,7 +1,7 @@
 /*   BotManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,22 @@
 
 
 #include <cmath>
+#include <sstream>
 #include "boost/filesystem/fstream.hpp"
 
+#include "Bot.h"
+#include "Body.h"
+#include "Map.h"
 #include "BotManager.h"
+#include "Background.h"
+#include "WeaponManager.h"
+#include "FontManager.h"
+#include "WorldMap.h"
 #include "Enums.h"
 #include "ParserManager.h"
 #include "Game.h"
 #include "parser/SimpleIni.h"
-#include "regexp.h"
+#include "Regex.h"
 #include "TexturesLoader.h"
 
 
@@ -36,7 +44,7 @@ const TVector2D multiplier = TVector2D(2.6f, 3.2f);
 const float _180overpi = 57.29f;
 
 
-std::string BotManager::anim_type(MT name)
+const std::string BotManager::anim_type(MT name) const
 {
     switch (name)
     {
@@ -134,6 +142,7 @@ int BotManager::read_poa(const MT name)
     //world.SOL_HEIGHT[name] = max_z - min_z;
 
     FRAMES_MAX[name] = i+1;
+    //std::cout << "FRAMES : " << FRAMES_MAX[name] << std::endl;
 
     file.close();
 
@@ -141,9 +150,9 @@ int BotManager::read_poa(const MT name)
 
 }
 
-int BotManager::getWeaponNumber(const std::string& gun)
+int BotManager::getWeaponNumber(const std::string& gun) const
 {
-    for (unsigned int i = 0; i < WEAPONS_NUMBER; ++i)
+    for (unsigned int i = 0; i < WeaponManager::WEAPONS_NUMBER; ++i)
     {
         if (Weapons[i].name == gun)
             return i;
@@ -153,24 +162,15 @@ int BotManager::getWeaponNumber(const std::string& gun)
 }
 
 
-float BotManager::getAngle(float x, float y)
+float BotManager::GetAngle(int a, int b, int c, int x, int y) const
 {
 
-    return _180overpi*atan2(x, y);
+    return _180overpi*atan2(part_y[a][x][b][c] - part_y[a][y][b][c],
+                            part_x[a][x][b][c] - part_x[a][y][b][c]);
 
 }
 
-float BotManager::GetAngle(int a, int b, int c, int x, int y)
-{
-
-    return getAngle(part_x[a][x][b][c]-
-                    part_x[a][y][b][c],
-                    part_y[a][x][b][c]-
-                    part_y[a][y][b][c]);
-
-}
-
-BotManager::BotManager()
+BotManager::BotManager(void)
 {
 
     std::cout << "Starting BotManager ... " << std::endl;
@@ -178,15 +178,20 @@ BotManager::BotManager()
     std::cout << "   loading bots' information ..." << std::endl;
 
 
+    sGravity = 9.81f;
+    sDrag = 0.3f;
+    sDragWalking = 300.0f;
+    sWalking = 10.0f;
+    sFlying = 1000.0f;
+    sJumping = 20.0f;
+    fullLife = 495.0f;
+
+
     std::string fold = Parser.SOL_PATH + "Bots/";
     CSimpleIni ini(false, false, false);
 
     srand(static_cast<unsigned int>(time(0)));
 
-    //boost::regex re(fold + ".+.bot");
-    //boost::regex re(".+.bot");
-    std::string re = ".+.bot";
-    boost::filesystem::directory_iterator end;
 
     // reading Bots directory
     if (!boost::filesystem::exists(fold))
@@ -195,13 +200,12 @@ BotManager::BotManager()
 //        return 1;
     }
 
-    //int nr = 0;
     BotsBase temp;
+    boost::filesystem::directory_iterator end;
 
     for (boost::filesystem::directory_iterator iter(fold); iter != end; ++iter)
     {
-        //if (boost::regex_match(iter->leaf(), re))
-        if (regexec(regcomp((char *)re.c_str()), (char *)iter->leaf().c_str()))
+        if (regex_match(iter->leaf(), ".+.bot"))
         {
 
             if (ini.LoadFile((iter->path().string()).c_str()) < 0)
@@ -335,24 +339,24 @@ BotManager::BotManager()
 
     std::cout << "   loading bots' textures ... " << std::endl;
 
-    gostek[STOPA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "stopa");
-    gostek[STOPA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "stopa2");
-    gostek[KLATA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "klata");
-    gostek[KLATA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "klata2");
-    gostek[RAMIE][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "ramie");
-    gostek[RAMIE][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "ramie2");
-    gostek[MORDA][0]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "morda");
-    gostek[MORDA][1]  = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "morda2");
-    gostek[REKA][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "reka");
-    gostek[REKA][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "reka2");
-    gostek[DLON][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "dlon");
-    gostek[DLON][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "dlon2");
-    gostek[BIODRO][0] = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "biodro");
-    gostek[BIODRO][1] = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "biodro2");
-    gostek[UDO][0]    = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "udo");
-    gostek[UDO][1]    = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "udo2");
-    gostek[NOGA][0]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "noga");
-    gostek[NOGA][1]   = SOIL_LoadTextureEx2(Parser.SOL_PATH + "Gostek-gfx/", "noga2");
+    gostek[STOPA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "stopa");
+    gostek[STOPA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "stopa2");
+    gostek[KLATA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "klata");
+    gostek[KLATA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "klata2");
+    gostek[RAMIE][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "ramie");
+    gostek[RAMIE][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "ramie2");
+    gostek[MORDA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "morda");
+    gostek[MORDA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "morda2");
+    gostek[REKA][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "reka");
+    gostek[REKA][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "reka2");
+    gostek[DLON][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "dlon");
+    gostek[DLON][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "dlon2");
+    gostek[BIODRO][0] = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "biodro");
+    gostek[BIODRO][1] = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "biodro2");
+    gostek[UDO][0]    = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "udo");
+    gostek[UDO][1]    = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "udo2");
+    gostek[NOGA][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "noga");
+    gostek[NOGA][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "noga2");
 
 
 
@@ -367,16 +371,16 @@ BotManager::BotManager()
     indices[11] = MORDA;
 
 
-    renderInfo[9].x = 1; //biodro
+    renderInfo[9].x = 1.0f; //biodro
     renderInfo[9].y = 2.5f;
     renderInfo[10].x = 1.5f; //klata
-    renderInfo[10].y = 4;
+    renderInfo[10].y = 4.0f;
     renderInfo[11].x = 1.5f; //morda
-    renderInfo[11].y = 4;
+    renderInfo[11].y = 4.0f;
 
-    renderInfo[0].x = 2; //prawa stopa
+    renderInfo[0].x = 2.0f; //prawa stopa
     renderInfo[0].y = 2.5f;
-    renderInfo[3].x = 2; //lewa stopa
+    renderInfo[3].x = 2.0f; //lewa stopa
     renderInfo[3].y = 2.5f;
 
     renderInfo[1].x = 1.5f; //prawe udo
@@ -394,25 +398,129 @@ BotManager::BotManager()
     renderInfo[13].x = 1.5f; //lewa reka
     renderInfo[13].y = 1.5f;
 
-    renderInfo[8].x = 2; //prawa dlon
+    renderInfo[8].x = 2.0f; //prawa dlon
     renderInfo[8].y = 1.5f;
-    renderInfo[14].x = 2; // lewa dlon
+    renderInfo[14].x = 2.0f; // lewa dlon
     renderInfo[14].y = 1.5f;
 
-    renderInfo[12].x = 2; //lewe ramie
-    renderInfo[12].y = 2;
-    renderInfo[6].x = 2; // prawe ramie
-    renderInfo[6].y = 2;
+    renderInfo[12].x = 2.0f; //lewe ramie
+    renderInfo[12].y = 2.0f;
+    renderInfo[6].x = 2.0f; // prawe ramie
+    renderInfo[6].y = 2.0f;
 
 
-    mass = 100;
-    massInv = 1 / mass;
+//    mass = 100;
+//    massInv = 1 / mass;
     maxSpeed = TVector2D(140, 150);
 }
 
 
-BotManager::~BotManager()
+BotManager::~BotManager(void)
 {
     std::cout << "Removing BotManager ..." << std::endl;
     element.clear();
+}
+
+
+int BotManager::LoadBots(unsigned int bot_count, TEAM team)
+{
+
+    if (bot_count == 0)
+    {
+        std::cerr << "   no bots assigned for " << team << " team" << std::endl;
+        return 0;
+    }
+
+    /* losujemy boty, zeby byly niepowtarzalne w teamie (CTF, ...) lub w calej rozgrywce (DM, ...)
+       (numery umieszczamy w unikalnej liscie - u nas vector).
+       jesli liczba botow, ktore maja zostac dodane przekracza
+       liczbe zaladowanych botow z dysku,
+       to dodawaj nazwom botow liczbe od 10 do 99
+
+       flist zawiera tyle elementow, ile wynosi liczba botow z kalatogu "Bots" */
+
+    if (!world.spawnpoint[team].empty())
+    {
+        unsigned int b_cnt = 0, sol_nr, bot_nr;
+        std::vector<unsigned int>::iterator it;
+        std::vector<unsigned int> flist;
+        std::ostringstream oss;
+
+        while (b_cnt < bot_count)
+        {
+
+            for (unsigned int k = 0; k < element.size(); ++k)
+            {
+                flist.push_back(k);
+            }
+
+            while (b_cnt < bot_count && !flist.empty())
+            {
+                sol_nr = rand() % flist.size();
+                bot_nr = world.addBot(element[flist[sol_nr]], world.spawnpoint[team][rand() % world.spawnpoint[team].size()], team);
+
+                // check, if there is already bot with the same name
+                for (unsigned int k = 0; k < world.bot.size(); ++k)
+                {
+                    if (world.bot[k]->name == world.bot[bot_nr]->name && world.bot[k]->team == world.bot[bot_nr]->team && k != bot_nr)
+                    {
+                        oss << rand() % 90 + 10;
+                        world.bot[bot_nr]->name += " " + oss.str();
+                        oss.str("");
+                        break;
+                    }
+                }
+
+                std::cout << "   assigning " << world.bot[bot_nr]->name << " to " << world.bot[bot_nr]->team << " team" << std::endl;
+
+                it = flist.begin();
+                it += sol_nr;
+                flist.erase(it);
+
+                b_cnt++;
+            }
+        }
+        flist.clear();
+    }
+    else
+    {
+        std::cerr << "Cannot find spawnpoints for " << team << " team !" << std::endl;
+        return -1;
+    }
+
+    return 0;
+}
+
+
+int BotManager::LoadBots(TEAM team)
+{
+
+    BotsBase temp;
+
+    temp.name = Parser.PLAYER_NAME;
+    temp.color[SKIN]  = Parser.COLOR_SKIN;
+    temp.color[HAIR]  = Parser.COLOR_HAIR;
+    temp.color[PANTS] = Parser.COLOR_PANTS;
+
+    if (game.CURRENT_GAME_MODE == CTF || game.CURRENT_GAME_MODE == TM)
+    {
+        temp.color[SHIRT] = Fonts.textCol[team];
+    }
+    else
+        temp.color[SHIRT] = Parser.COLOR_SHIRT;
+
+
+    //szukaj druzyny, ktora ma spawnpointy
+    int team_nr = team;
+    while (world.spawnpoint[team_nr].empty() && team_nr < 5) team_nr++;
+
+    int point = static_cast<int>(rand() % world.spawnpoint[team_nr].size());
+    world.MY_BOT_NR = world.addBot(temp, world.spawnpoint[team_nr][point], (TEAM)team_nr);
+
+    TVector2D wsk = TVector2D(static_cast<float>(Parser.MAX_WIDTH/2 - world.map->spawnpoint[world.spawnpoint[team_nr][point]].x),
+                                 static_cast<float>(Parser.MAX_HEIGHT/2 - world.map->spawnpoint[world.spawnpoint[team_nr][point]].y));
+
+    world.backg = new Background(wsk, world.bot[world.MY_BOT_NR]->GetPosition());
+
+    return 0;
 }

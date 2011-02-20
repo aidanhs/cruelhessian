@@ -1,7 +1,7 @@
 /*   Bonus.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,55 +20,75 @@
 
 
 #include "Bonus.h"
+#include "Body.h"
 #include "BonusManager.h"
+#include "TexturesLoader.h"
+#include "TVector2D.h"
+#include "physics/ContactListener.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
 
-Bonus::Bonus(const TVector2D& pos, int bontype) : texture(Bonuses.text_bonus[bontype]), typeBonus(bontype)
+Bonus::Bonus(const TVector2D& pos, int bontype) :
+    m_iTypeBonus(bontype),
+    m_xTexture(Bonuses.text_bonus[bontype]),
+    killMyself(false)
 {
 
-    //type = SQUARE;
-    scaleX = scaleY = 0.7f;
-    //scaleX = scaleY = 1.0f;
+    m_xScale = TVector2D(0.8f, 0.8f);
+    m_fHalfWidth = m_xScale.x * m_xTexture.w / 2.0f;
+    m_fHalfHeight = m_xScale.y * m_xTexture.h / 2.0f;
 
-    w = scaleX*texture.w;
-    h = scaleY*texture.h;
-    r = w/2;
-    position.x = pos.x+r;
-    position.y = pos.y-r;
-    mass = 10;
-    massInv = 1 / mass;
-    //maxSpeed = TVector2D(10000, 10000);
-    velocity = TVector2D(0.0f, 0.0f);
-    //a = TVector2D(0, -20);
-//old_position = position;
-    old_a = TVector2D(0,0);
-    ;
+    std::vector<TVector2D> axVertices;
+    axVertices.resize(4);
+
+    axVertices[0] = TVector2D(-m_fHalfWidth, -m_fHalfHeight);
+    axVertices[1] = TVector2D(m_fHalfWidth, -m_fHalfHeight);
+    axVertices[2] = TVector2D(m_fHalfWidth, m_fHalfHeight);
+    axVertices[3] = TVector2D(-m_fHalfWidth, m_fHalfHeight);
+
+    Set(pos, TVector2D(0,0), axVertices, 0.3f);
+    SetCollisionCallback(HandleContact);
+    type = TYPE_BONUS;
+
 }
 
 
-void Bonus::draw() const
+Bonus::~Bonus()
 {
+//    delete axVertices;
+}
 
+
+void Bonus::Update()
+{
+//    m_translateX = bod->GetPosition().x;
+//    m_translateY = bod->GetPosition().y;
+}
+
+void Bonus::Draw() const
+{
     glPushMatrix();
 
-    glTranslatef(position.x, position.y, 0.0f);
-    glScalef(scaleX, scaleY, 0.0);
-    glBindTexture(GL_TEXTURE_2D, texture.tex);
+    glTranslatef(GetPosition().x, GetPosition().y, 0.0f);
+    glRotatef(RadiansToDegrees(GetAngle()), 0, 0, 1);
+    glScalef(m_xScale.x, m_xScale.y, 0.0);
+    glBindTexture(GL_TEXTURE_2D, m_xTexture.tex);
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2f(-m_fHalfWidth, -m_fHalfHeight);
     glTexCoord2i(1, 1);
-    glVertex2f(texture.w, 0.0);
+    glVertex2f(m_fHalfWidth, -m_fHalfHeight);
     glTexCoord2i(1, 0);
-    glVertex2f(texture.w, texture.h);
+    glVertex2f(m_fHalfWidth, m_fHalfHeight);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture.h);
+    glVertex2f(-m_fHalfWidth, m_fHalfHeight);
     glEnd();
 
     glPopMatrix();
-
 }
-
-

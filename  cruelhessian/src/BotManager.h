@@ -4,7 +4,7 @@
 /*   BotManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,17 +27,10 @@
 
 #include "Singleton.h"
 #include "Enums.h"
-#include "Tex.h"
+#include "TexturesLoader.h"
 #include "TVector2D.h"
 
 
-
-class Frame
-{
-
-public:
-    float x, y, r;
-};
 
 
 class BotsBase
@@ -67,30 +60,46 @@ public:
 
 class BotManager : public Singleton<BotManager>
 {
+
+
 public:
 
-    BotManager();
-    virtual ~BotManager();
+    struct Frame
+    {
+        float x, y, r;
+    };
 
+    BotManager(void);
+    virtual ~BotManager(void);
+
+    BODY indices[15];
     Tex gostek[9][2];
-    float mass;
-    float massInv;
     TVector2D maxSpeed;
     unsigned int FRAMES_MAX[50];
     Frame frame[20][100][100][2];
 
     std::vector<BotsBase> element;
     TVector2D renderInfo[23];
-    BODY indices[15];
+
+    int LoadBots(unsigned int bot_count, TEAM team);
+    int LoadBots(TEAM team);       //  == insertMe
+
+    float sGravity; // Przyspieszenie ziemskie
+    float sDrag; // Wspólczynnik oporu
+    float sDragWalking; // Wspólczynnik oporu podczas chodzenia
+    float sDragFly; // Wspólczynnik oporu podczas latania (im mniejszy tym wyzej dolatuje)
+    float sWalking; // Szybkosc chodzenia
+    float sFlying; // Szybkosc latania
+    float sJumping; // Sila skoku
+    float fullLife;
 
 private:
 
     float part_x[20][100][100][2], part_y[20][100][100][2], part_z[20][100][100][2];  // rodzaj ruchu - czesc_ciala - klatka (frame) - ulozenie (prawo, lewo)
-    std::string anim_type(MT name);
+    const std::string anim_type(MT name) const;
     int read_poa(const MT name);
-    float getAngle(float x, float y);
-    float GetAngle(int a, int b, int c, int x, int y);
-    int getWeaponNumber(const std::string& gun);
+    float GetAngle(int a, int b, int c, int x, int y) const;
+    int getWeaponNumber(const std::string& gun) const;
 };
 
 #define Bots BotManager::GetSingleton()

@@ -22,193 +22,243 @@
 #include "Bot.h"
 #include "WorldMap.h"
 #include "BotManager.h"
+#include "PhysicsManager.h"
+#include "Background.h"
+#include "Body.h"
+#include "ParserManager.h"
+#include "AudioManager.h"
+#include "WeaponManager.h"
+#include "Map.h"
+#include "WorldMap.h"
+#include "Mouse.h"
+#include "Weapon.h"
+#include "Grenade.h"
+#include "Cluster.h"
+#include "physics/ContactListener.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
-Bot::Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest) : name(_name), team(_team)
+//const float _180overpi = 57.29f;
+
+
+Bot::Bot(const std::string& _name, const TVector2D& spawn, int gunmodel, TEAM _team, unsigned int bot_nr, int dest=0) :
+    name(_name),
+    team(_team),
+    number(bot_nr),
+    MODE_BERSERKER(false),
+    MODE_PREDATOR(false),
+    MODE_FLAMEGOD(false),
+    movementType(STOI),
+    movementDirection(LEFT),
+    isKilled(false),
+    isReloading(false),
+    isShooting(false),
+    isAbleToFly(false),
+    isAbleToJump(false),
+    shotPoint(TVector2D(0,0)),
+    gunModel(gunmodel),
+    procJet(1.0f),
+    procVest(0.0f),
+    actLife(Bots.fullLife),
+    respawnPeriod(0),
+    lastShotTime(0),
+    currentFrame(0),
+    timerChangeFrame(0),
+    timerRespawnTime(0),
+    youKilledTime(0),
+    destinationPoint(0),
+    leftAmmos(1),
+    numGrenades(5),
+    points(0),
+    numClusters(0),
+    deaths(0),
+    killedNr(0),
+    ping(0),
+    moveLeft(false),
+    moveRight(false),
+    moveUp(false),
+    moveDown(false),
+    changeMove(true),
+    chatKill(""),
+    chatDead(""),
+    chatLowhealth(""),
+    chatSeeEnemy(""),
+    chatWinning(""),
+    wayNumber(0),
+    killer(0),
+    killed(0),
+    startReloadingTime(0),
+    timeGetSuperbonus(0)
 {
 
-    type = CIRCLE;
-    number = bot_nr;
-    movementDirection = LEFT;
-    movementType = STOI;
-    position = TVector2D(spawn_x, spawn_y);
-
-    // treat as a circle (ellipse - that will be the best)
-    //w = SOL_WIDTH[STOI];
-    //h = SOL_HEIGHT[STOI];
-    w = h = 0;
-    friction = 0;
-    //r = world.SOL_HEIGHT[movementType] / 2;
-    //std::cout << "WER " << r << std::endl;
-    r = 4;
-
-    velocity = TVector2D(0.0f, 0.0f);
-    mass = Bots.mass;
-    massInv = Bots.massInv;
-    maxSpeed = Bots.maxSpeed;
-    isAbleToFly = isReloading = isKilled = isAbleToJump = false;
-    procJet = 1.0;
-    actLife = world.fullLife;
-
-    gunModel = gunmodel;
-    respawnTime = 0;
-    lastShotTime = 0;
-    currentFrame = 0;
-    timerChangeFrame = 0;
-    timerRespawnTime = 0;
-    youKilledTime = 0;
-    //if (bot_nr != MY_BOT_NR)
-    destinationPoint = dest;
-    //else destinationPoint = 0;
-    leftAmmos = 1;
-    numGrenades = 5;
-    points = 0;
-    killedNr = 0;
-    deaths = 0;
-    ping = 0;
+    weapon = new Weapon(spawn, gunModel, number);
 
     color.resize(4);
     for (int i = 0; i < 4; ++i)
         color[i].resize(3);
-    //std::cout << "MOJE " << color.size() << std::endl;
 
-    old_a = TVector2D(0, world.sGravity);
+
+    Set(spawn, TVector2D(0,0), 8, 6, 8, 80);
+    //body->SetDensity(0.9);
+    SetCollisionCallback(HandleContact);
+    GetInvInertia() = 0.0f;
+    GetInertia() = 0.0f;
+    GetAngVelocity() = 0.0f;
+    SetOrientation(0.0f);
+    type = TYPE_PLAYER;
+   // Physics.m_movingObj.push_back(this);
 
 }
 
 
 
-bool Bot::is_inside(int x, int y)
+bool Bot::is_inside(int x=0, int y=0)
 {
-    return ((x > position.x - r) && (x < position.x + r) &&
-            (y > position.y - r) && (y < position.y + r));
+//    return ((x > position.x - r) && (x < position.x + r) &&
+//            (y > position.y - r) && (y < position.y + r));
+    return false;
 }
 
 
 
-void Bot::draw_gostek_help(int part)
+void Bot::draw_gostek_help(int part, BODY_COLOR xbody) const
 {
 
     BODY xname = Bots.indices[part];
     int dir = movementDirection;
 
+    if (xbody != NONE)
+        glColor3ub(color[xbody][0], color[xbody][1], color[xbody][2]);
+
     glPushMatrix();
 
-    glTranslatef(position.x + Bots.frame[movementType][part][currentFrame][dir].x + Bots.renderInfo[part].x,
-                 position.y + Bots.frame[movementType][part][currentFrame][dir].y + Bots.renderInfo[part].y, 0.0f);
+//   glTranslatef(position.x + Bots.frame[movementType][part][currentFrame][dir].x + Bots.renderInfo[part].x,
+    //              position.y + Bots.frame[movementType][part][currentFrame][dir].y + Bots.renderInfo[part].y, 0.0f);
+
+    glTranslatef(GetPosition().x + Bots.frame[movementType][part][currentFrame][dir].x + Bots.renderInfo[part].x,
+                 GetPosition().y + Bots.frame[movementType][part][currentFrame][dir].y + Bots.renderInfo[part].y, 0.0f);
 
     glRotatef(Bots.frame[movementType][part][currentFrame][dir].r, 0.0f, 0.0f, 1.0f);
 
     glTranslatef(-Bots.renderInfo[part].x,
                  -Bots.renderInfo[part].y, 0.0f);
 
-      //           glScalef(2,2,1);
 
     glBindTexture(GL_TEXTURE_2D, Bots.gostek[xname][dir].tex);
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2i(0, 0);
     glTexCoord2i(1, 1);
-    glVertex2f(Bots.gostek[xname][dir].w, 0.0);
+    glVertex2i(Bots.gostek[xname][dir].w, 0);
     glTexCoord2i(1, 0);
-    glVertex2f(Bots.gostek[xname][dir].w, Bots.gostek[xname][dir].h);
+    glVertex2i(Bots.gostek[xname][dir].w, Bots.gostek[xname][dir].h);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, Bots.gostek[xname][dir].h);
+    glVertex2i(0, Bots.gostek[xname][dir].h);
     glEnd();
 
     glPopMatrix();
 
 }
 
-void Bot::draw()
-{
 
+
+void Bot::Draw() const
+{
+//std::cout << "FKDFKDFK" << std::endl;
     if (!isKilled)
     {
 
         // torso (biodro)
-        glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
-        //draw_gostek_help(9, &Bots.gostek[BIODRO][dir]);
-        draw_gostek_help(9);
-
-        // lewa noga
-        glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
-        //draw_gostek_help(5, &Bots.gostek[NOGA][dir]);
-        draw_gostek_help(5);
-
-        // prawa noga
-        glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
-        //draw_gostek_help(2, &Bots.gostek[NOGA][dir]);
-        draw_gostek_help(2);
-
-        // lewe udo
-        glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
-        //draw_gostek_help(4, &Bots.gostek[UDO][dir]);
-        draw_gostek_help(4);
-
-        // prawe udo
-        glColor3ub(color[PANTS][0], color[PANTS][1], color[PANTS][2]);
-        //draw_gostek_help(1, &Bots.gostek[UDO][dir]);
-        draw_gostek_help(1);
-        glColor3f(1,1,1);
-
-        // lewa stopa
-        //draw_gostek_help(3, &Bots.gostek[STOPA][dir]);
-        draw_gostek_help(3);
+        draw_gostek_help(9, PANTS);
 
         // prawa stopa
-        //draw_gostek_help(0, &Bots.gostek[STOPA][dir]);
-        draw_gostek_help(0);
+        draw_gostek_help(0, NONE);
+
+        // lewa stopa
+        draw_gostek_help(3, NONE);
+
+        // prawa noga
+        draw_gostek_help(2, PANTS);
+
+        // lewa noga
+        draw_gostek_help(5, PANTS);
+
+        // prawe udo
+        draw_gostek_help(1, PANTS);
+
+        // lewe udo
+        draw_gostek_help(4, PANTS);
 
         // prawe ramie
-        glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
-        //draw_gostek_help(6, &Bots.gostek[RAMIE][dir]);
-        draw_gostek_help(6);
+        draw_gostek_help(6, SHIRT);
 
         // prawa reka
-        glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
-        //draw_gostek_help(7, &Bots.gostek[REKA][dir]);
-        draw_gostek_help(7);
+        draw_gostek_help(7, SHIRT);
 
         // prawa dlon
-        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
-        //draw_gostek_help(8, &Bots.gostek[DLON][dir]);
-        draw_gostek_help(8);
+        draw_gostek_help(8, SKIN);
 
         // (chest) klata
-        glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
-        //draw_gostek_help(10, &Bots.gostek[KLATA][dir]);
-        draw_gostek_help(10);
+        draw_gostek_help(10, SHIRT);
 
         // (head) morda
-        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
-        //draw_gostek_help(11, &Bots.gostek[MORDA][dir]);
-        draw_gostek_help(11);
+        draw_gostek_help(11, SKIN);
 
         // lewe ramie
-        glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
-        //draw_gostek_help(12, &Bots.gostek[RAMIE][dir]);
-        draw_gostek_help(12);
+        draw_gostek_help(12, SHIRT);
 
         // lewa reka
-        glColor3ub(color[SHIRT][0], color[SHIRT][1], color[SHIRT][2]);
-        //draw_gostek_help(13, &Bots.gostek[REKA][dir]);
-        draw_gostek_help(13);
+        draw_gostek_help(13, SHIRT);
 
         // lewa dlon
-        glColor3ub(color[SKIN][0], color[SKIN][1], color[SKIN][2]);
-        //draw_gostek_help(14, &Bots.gostek[DLON][dir]);
-        draw_gostek_help(14);
-        glColor3f(1,1,1);
+        draw_gostek_help(14, SKIN);
+
+        //weapon->Draw();
 
     }
 
 }
 
 
-void Bot::update()
+
+void Bot::Update()
 {
+
+
+    if (moveRight)
+    {
+        if (moveUp && isAbleToJump)
+        {
+            movementType = SKOK_W_BOK;
+        }
+        movementType = (movementDirection == RIGHT) ? BIEGA : BIEGA_TYL;
+    }
+    else if (moveLeft)
+    {
+        if (moveUp && isAbleToJump)
+        {
+            movementType = SKOK_W_BOK;
+        }
+        movementType = (movementDirection == LEFT) ? BIEGA : BIEGA_TYL;
+    }
+    else if (moveUp && isAbleToJump)
+    {
+        movementType = SKOK;
+    }
+    else if (moveDown)
+    {
+        movementType = KUCA;
+    }
+    else
+    {
+        movementType = STOI;
+    }
+
 
     if (!isKilled && (world.getCurrentTime - timerChangeFrame >= 30))
     {
@@ -217,15 +267,171 @@ void Bot::update()
         {
             if (movementType != KUCA)
                 currentFrame = 0;
+            changeMove = true;
         }
         else
+        {
             currentFrame++;
+            changeMove = false;
+        }
+
     }
 
+    else if (isKilled)
+    {
+        //Uint32 new_time = world.getCurrentTime - world.bot[i]->timerRespawnTime;
+        if (world.getCurrentTime - timerRespawnTime > respawnPeriod)
+        {
+            isKilled = false;
+            procVest = 0.0f;
+            procJet = 1.0f;
+
+            // set start position
+            int point = static_cast<int>(rand()%world.spawnpoint[team].size());
+            TVector2D pos(static_cast<float>(world.map->spawnpoint[world.spawnpoint[team][point]].x),
+                          static_cast<float>(world.map->spawnpoint[world.spawnpoint[team][point]].y));
+
+            GetPosition() = pos;
+
+            if (number == world.MY_BOT_NR)
+            {
+                world.backg->SetPosition(world.OLD_POS.x - pos.x, world.OLD_POS.y - pos.y);
+                if (Parser.SOUNDS_VOL > 0)
+                    Audio.sound_new_life.Play();
+            }
+
+        }
+
+    }
+
+    if (isReloading)
+        world.gunReloading(number);
+//std::cout << "WE " << movementType << std::endl;
+    // flamegod - 10sec
+    if (MODE_FLAMEGOD && (world.getCurrentTime - timeGetSuperbonus >= 10000))
+    {
+        MODE_FLAMEGOD = false;
+    }
+
+    // berserker - 15sec
+    else if (MODE_BERSERKER && (world.getCurrentTime - timeGetSuperbonus >= 15000))
+    {
+        MODE_BERSERKER = false;
+    }
+
+    // predator - 25sec
+    else if (MODE_PREDATOR && (world.getCurrentTime - timeGetSuperbonus >= 25000))
+    {
+        MODE_PREDATOR = false;
+    }
+
+    weapon->Update(GetPosition(), world.mouse->getGlobalPosition());
+
     // speed limit
-    if (velocity.x > maxSpeed.x) velocity.x = maxSpeed.x;
-    else if (velocity.x < -maxSpeed.x) velocity.x = -maxSpeed.x;
-    if (velocity.y > maxSpeed.y) velocity.y = maxSpeed.y;
-    else if (velocity.y < -maxSpeed.y) velocity.y = -maxSpeed.y;
+//    if (velocity.x > maxSpeed.x) velocity.x = maxSpeed.x;
+//    else if (velocity.x < -maxSpeed.x) velocity.x = -maxSpeed.x;
+//    if (velocity.y > maxSpeed.y) velocity.y = maxSpeed.y;
+//    else if (velocity.y < -maxSpeed.y) velocity.y = -maxSpeed.y;
+
+}
+
+
+void Bot::Shot(const TVector2D& aim)
+{
+
+    if (world.getCurrentTime - lastShotTime >= Weapons[gunModel].fireInterval && !isReloading && leftAmmos > 0)
+    {
+
+        movementType = CELUJE;
+
+        if (Parser.SOUNDS_VOL > 0)
+        {
+            // make noise
+
+            TVector2D vec = GetPosition() - world.bot[world.MY_BOT_NR]->GetPosition();
+            vec.normalize();
+
+//            std::cout << "KAT " << vec.x << " " << vec.y << std::endl;
+
+            Audio.fireSound[gunModel].SetPosition(-vec.x, -vec.y, 0.f);
+            Audio.Play(Audio.fireSound[gunModel]);
+
+        }
+        //std::cout << "KAT " << std::endl;
+        //Bullet *sbullet = new Bullet(bot[bot_nr]->shotPoint, dest, bot[bot_nr]->gunModel, bot_nr);
+        weapon->Shot(aim);
+        leftAmmos--;
+//        bullet_list.push_back(sbullet);
+        // m_objects.push_back(sbullet);
+        lastShotTime = world.getCurrentTime;
+
+        //bot.resize(bot.size()+1);
+        //bot[bot.size()-1] = newbot;
+    }
+
+    if (leftAmmos == 0) world.gunReloading(number);
+}
+
+
+
+void Bot::ThrowGrenade(const TVector2D& aim, float push_time)
+{
+    movementType = RZUCA;
+
+    if (Parser.SOUNDS_VOL > 0)
+    {
+        Audio.Play(Audio.grenade_pullout);
+        Audio.Play(Audio.grenade_throw);
+    }
+
+    float divider = (aim.y - m_xPosition.y) / (aim.x - m_xPosition.x);
+    float inverted = (aim.x < m_xPosition.x) ? 180.0f : 0.0f;    // if mouse on left add 180 degrees
+    float m_fAngle = atan(divider) * RAD_TO_DEG + inverted;
+
+    const float cosa = cos(m_fAngle * DEG_TO_RAD);
+    const float sina = sin(m_fAngle * DEG_TO_RAD);
+
+    TVector2D p = TVector2D(cosa, sina);
+    TVector2D v = p*push_time;
+    //v *= Weapons[m_iModel].speed;
+    p += m_xPosition;
+
+    Grenade *grenade = new Grenade(p, v, number);
+
+	Physics.m_movingObj.push_back(grenade);
+
+    numGrenades--;
+
+}
+
+
+
+void Bot::ThrowCluster(const TVector2D& aim, float push_time)
+{
+    movementType = RZUCA;
+
+    if (Parser.SOUNDS_VOL > 0)
+    {
+        Audio.Play(Audio.grenade_pullout);
+        Audio.Play(Audio.grenade_throw);
+    }
+
+    float divider = (aim.y - m_xPosition.y) / (aim.x - m_xPosition.x);
+    float inverted = (aim.x < m_xPosition.x) ? 180.0f : 0.0f;    // if mouse on left add 180 degrees
+    float m_fAngle = atan(divider) * RAD_TO_DEG + inverted;
+
+    const float cosa = cos(m_fAngle * DEG_TO_RAD);
+    const float sina = sin(m_fAngle * DEG_TO_RAD);
+
+    TVector2D p = TVector2D(cosa, sina);
+    TVector2D v = p*push_time;
+    //v *= Weapons[m_iModel].speed;
+    p += m_xPosition;
+
+    Cluster *cluster = new Cluster(p, v, number);
+
+	Physics.m_movingObj.push_back(cluster);
+
+    numClusters--;
 
 }

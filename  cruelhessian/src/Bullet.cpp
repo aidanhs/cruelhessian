@@ -1,7 +1,7 @@
 /*   Bullet.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at mail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,52 +22,75 @@
 #include <cmath>
 
 #include "Bullet.h"
+#include "Body.h"
+#include "TexturesLoader.h"
+#include "TVector2D.h"
+#include "WeaponManager.h"
+#include "physics/ContactListener.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
-const float _180overpi = 57.29f;
 
-
-Bullet::Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, float speed, const Tex& tex) : texture(tex)
+Bullet::Bullet(const TVector2D& src, const TVector2D& velocity, float angle, unsigned int gunmodel, unsigned int _owner) :
+    m_iOwner(_owner),
+    m_iGunModel(gunmodel),
+    m_xTexture(Weapons[gunmodel].textureAmmo),
+    killMyself(false)
 {
-    type = XPOINT;
-    position = src;
-    w = texture.w;
-    h = texture.h;
-    gunModel = gunmodel;
-    owner = _owner;
-    mass = 100;
-    massInv = 1 / mass;
-    maxSpeed = TVector2D(10000, 10000);
+    m_fHalfWidth = m_xTexture.w/2.0f;
+    m_fHalfHeight = m_xTexture.h/2.0f;
 
-    float tang = (dest.y - src.y) / (dest.x - src.x);
-    float sq = 8 * speed / sqrt(1+tang*tang);
+    std::vector<TVector2D> axVertices;
+    axVertices.resize(2);
 
-    velocity = (dest.x - src.x > 0) ? TVector2D(sq, sq * tang) : TVector2D(-sq, -sq * tang);
-    //  velocity = TVector2D(0.0f, 0.0f);
-//old_position = position;
-    old_a = TVector2D(0,0);
+    axVertices[0] = TVector2D(-m_fHalfWidth, 0.0f);
+    axVertices[1] = TVector2D(m_fHalfWidth, 0.0f);
+
+    Set(src, velocity, axVertices, 0.01f);
+    SetOrientation(angle);
+    SetCollisionCallback(HandleContact);
+    type = TYPE_BULLET;
+
 }
 
 
-void Bullet::draw() const
+Bullet::~Bullet()
 {
+//    delete axVertices;
+}
 
+
+
+void Bullet::Update()
+{
+  //  m_translateX = position.x;
+  //  m_translateY = position.y;
+  //  m_rotate = _180overpi * atan(velocity.y / velocity.x);
+}
+
+void Bullet::Draw() const
+{
     glPushMatrix();
 
-    glTranslatef(position.x, position.y, 0.0f);
-    glRotatef(_180overpi * atan(velocity.y / velocity.x), 0.0f, 0.0f, 1.0f);
-    glBindTexture(GL_TEXTURE_2D, texture.tex);
+    glTranslatef(GetPosition().x, GetPosition().y, 0.0f);
+    glRotatef(RadiansToDegrees(GetAngle()), 0, 0, 1);
+    glBindTexture(GL_TEXTURE_2D, m_xTexture.tex);
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2f(-m_fHalfWidth, -m_fHalfHeight);
     glTexCoord2i(1, 1);
-    glVertex2f(texture.w, 0.0);
+    glVertex2f(m_fHalfWidth, -m_fHalfHeight);
     glTexCoord2i(1, 0);
-    glVertex2f(texture.w, texture.h);
+    glVertex2f(m_fHalfWidth, m_fHalfHeight);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture.h);
+    glVertex2f(-m_fHalfWidth, m_fHalfHeight);
     glEnd();
-    glPopMatrix();
 
+    glPopMatrix();
 }
+

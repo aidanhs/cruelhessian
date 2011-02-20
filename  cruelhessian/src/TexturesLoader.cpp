@@ -1,7 +1,7 @@
 /*   TexturesLoader.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,27 +35,20 @@
 */
 
 
-Tex SOIL_LoadTextureExBMP(const std::string& file)
+Tex Texture::SOIL_LoadTextureExBMP(const std::string& file)
 {
-    Tex res_tex;
-    int width = 0, height = 0;
-
+    Tex res_tex(0, 0, 0);
+    //Tex& res_tex = res_texx;
     int channels;
-    unsigned char *imgdata = SOIL_load_image
-                             (
-                                 file.c_str(),
-                                 &width, &height, &channels,
-                                 SOIL_LOAD_RGBA
-                             );
+    unsigned char *imgdata = SOIL_load_image(file.c_str(), &res_tex.w, &res_tex.h, &channels, SOIL_LOAD_RGBA);
 
     if (imgdata == NULL)
     {
         std::cout << "Image was not loaded : " << file << std::endl;
-        res_tex.w = res_tex.h = 0;
         return res_tex;
     }
 
-    for (int i = 0; i < width*height*channels; i += 4)
+    for (int i = 0; i < res_tex.w*res_tex.h*channels; i += 4)
     {
         if (imgdata[i] == 0 && imgdata[i+1] == 255 && imgdata[i+2] == 0)
         {
@@ -65,30 +58,27 @@ Tex SOIL_LoadTextureExBMP(const std::string& file)
 
     res_tex.tex = SOIL_create_OGL_texture
                   (
-                      imgdata, width, height, channels, SOIL_CREATE_NEW_ID,
+                      imgdata, res_tex.w, res_tex.h, channels, SOIL_CREATE_NEW_ID,
                       SOIL_LOAD_RGBA | SOIL_FLAG_INVERT_Y
                   );
 
     SOIL_free_image_data(imgdata);
 
-    res_tex.w = static_cast<float>(width);
-    res_tex.h = static_cast<float>(height);
     return res_tex;
 }
 
 
 
-Tex SOIL_LoadTextureExPNG(const std::string& file)
+Tex Texture::SOIL_LoadTextureExPNG(const std::string& file)
 {
-    Tex res_tex;
-    int width = 0, height = 0;
+    Tex res_tex(0, 0, 0);
+    //Tex& res_tex = res_texx;
     int channels;
-    unsigned char* imgdata = SOIL_load_image(file.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+    unsigned char* imgdata = SOIL_load_image(file.c_str(), &res_tex.w, &res_tex.h, &channels, SOIL_LOAD_RGBA);
 
     if (imgdata == NULL)
     {
         std::cout << "Image was not loaded : " << file << std::endl;
-        res_tex.w = res_tex.h = 0;
         return res_tex;
     }
 
@@ -98,18 +88,15 @@ Tex SOIL_LoadTextureExPNG(const std::string& file)
                       SOIL_LOAD_AUTO,
                       SOIL_CREATE_NEW_ID,
                       SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-                      //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
                   );
 
     SOIL_free_image_data(imgdata);
 
-    res_tex.w = static_cast<float>(width);
-    res_tex.h = static_cast<float>(height);
     return res_tex;
 }
 
 
-GLuint SOIL_LoadTextureBMP(const std::string& file)
+GLuint Texture::SOIL_LoadTextureBMP(const std::string& file)
 {
 
     GLuint texID = 0;
@@ -143,7 +130,7 @@ GLuint SOIL_LoadTextureBMP(const std::string& file)
 }
 
 
-GLuint SOIL_LoadTexturePNG(const std::string& file)
+GLuint Texture::SOIL_LoadTexturePNG(const std::string& file)
 {
 
     return SOIL_load_OGL_texture
@@ -152,7 +139,6 @@ GLuint SOIL_LoadTexturePNG(const std::string& file)
                SOIL_LOAD_AUTO,
                SOIL_CREATE_NEW_ID,
                SOIL_LOAD_RGBA | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
-               //SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
            );
 
 }
@@ -160,14 +146,13 @@ GLuint SOIL_LoadTexturePNG(const std::string& file)
 
 
 // urwana nazwa pliku, bez rozszerzenia (najpierw png, potem bmp), odporna na wielkosc znakow
-Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file)
+Tex Texture::LoadExt(const std::string& src_dir, const std::string& file)
 {
 
     if (!boost::filesystem::exists(src_dir))
     {
-        Tex res_tex;
-        res_tex.w = res_tex.h = 0.0f;
-		res_tex.tex = 0;
+        Tex res_tex(0, 0, 0);
+        //const Tex& res_tex = res_texx;
         std::cerr << "Cannot find source directory : " << src_dir << std::endl;
         return res_tex;
     }
@@ -195,9 +180,8 @@ Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file)
         }
     }
 
-    Tex res_tex;
-    res_tex.w = res_tex.h = 0.0f;
-	res_tex.tex = 0;
+    Tex res_texx(0, 0, 0);
+    const Tex& res_tex = res_texx;
     std::cerr << "Cannot find : " << file << std::endl;
 
     return res_tex;
@@ -207,7 +191,7 @@ Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file)
 
 
 // urwana nazwa pliku, bez rozszerzenia (najpierw png, potem bmp), odporna na wielkosc znakow
-GLuint SOIL_LoadTexture2(const std::string& src_dir, const std::string& file)
+GLuint Texture::Load(const std::string& src_dir, const std::string& file)
 {
 
     if (!boost::filesystem::exists(src_dir))

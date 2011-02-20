@@ -22,7 +22,12 @@
 #ifndef COMPATIBLE_WINDOWS_H_
 #define COMPATIBLE_WINDOWS_H_
 
-#define NOMINMAX
+#ifndef NOMINMAX
+#define NOMINMAX 1
+#endif
+
+
 #include <windows.h>
+#include <GL/gl.h>
 
 #endif

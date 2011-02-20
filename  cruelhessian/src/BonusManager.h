@@ -23,16 +23,22 @@
 
 
 #include "Singleton.h"
-#include "Tex.h"
+#include "TexturesLoader.h"
+#include <vector>
 
 
 class BonusManager : public Singleton<BonusManager>
 {
     public:
-        BonusManager();
-        ~BonusManager();
+        BonusManager(void);
+        ~BonusManager(void);
 
         Tex text_bonus[7];
+        int LoadBonuses(void);
+        int RemoveIfNeeded(void);
+
+    private:
+    std::vector<std::vector<int> > bonus;
 };
 
 #define Bonuses BonusManager::GetSingleton()

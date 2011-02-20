@@ -25,29 +25,48 @@
 
 #include <iostream>
 #include <vector>
-
-#include "MovingObject.h"
 #include "Enums.h"
-#include "SDL.h"
 #include "TVector2D.h"
+#include "Drawable.h"
+#include "Body.h"
+
+class Weapon;
 
 
-class Bot : public MovingObject
+class Bot : public Drawable, public Body
 {
 
-    void draw_gostek_help(int part);
-    float getAngle(int x, int y);
-    float getAngleTemp(float x, float y);
+    void draw_gostek_help(int part, BODY_COLOR xbody) const;
+    Bot& operator=(const Bot&) {return *this;}
 
 public:
-
+//Body *bod;
+    bool MODE_BERSERKER, MODE_PREDATOR, MODE_FLAMEGOD;
+//    Body *body;
+    Weapon* weapon;
     std::string name;
+    TEAM team;
     std::string chatKill;
     std::string chatDead;
     std::string chatLowhealth;
     std::string chatSeeEnemy;
     std::string chatWinning;
-
+    void setMoveLeft(bool shouldMove)
+    {
+        moveLeft = shouldMove;
+    };
+    void setMoveRight(bool shouldMove)
+    {
+        moveRight = shouldMove;
+    };
+    void setMoveUp(bool shouldMove)
+    {
+        moveUp = shouldMove;
+    };
+    void setMoveDown(bool shouldMove)
+    {
+        moveDown = shouldMove;
+    };
     unsigned int points;
 
     std::vector<std::vector<unsigned char> > color;
@@ -60,15 +79,17 @@ public:
     unsigned int ping;
     unsigned int gunModel;
     unsigned int numGrenades;
+    unsigned int numClusters;
     unsigned int leftAmmos;
     unsigned int currentFrame;       // aktualnie wyswietlana ramka
     int destinationPoint;
-    Uint32 lastShotTime;
-    Uint32 startReloadingTime;
-    Uint32 timerRespawnTime;
-    Uint32 respawnTime;
-    Uint32 timerChangeFrame;
-    Uint32 youKilledTime;
+    float lastShotTime;
+    float startReloadingTime;
+    float timerRespawnTime;
+    float respawnPeriod;
+    float timerChangeFrame;
+    float timeGetSuperbonus;
+    float youKilledTime;
 
     bool isShooting;
     bool isKilled;
@@ -76,22 +97,33 @@ public:
     bool isReloading;
     bool isAbleToJump;
 
+    bool moveLeft;
+    bool moveRight;
+    bool moveUp;
+    bool moveDown;
+    bool changeMove;
+
     TVector2D shotPoint;
     float procJet;
+    float procVest;
     float actLife;
 
-    TEAM team;
+
 
     MT movementType;        // sposob poruszania sie
     MD movementDirection;   // kierunek poruszania sie bota
 
-    Bot(const std::string& _name, float spawn_x, float spawn_y, int gunmodel, TEAM _team, unsigned int bot_nr, int dest);
+    Bot(const std::string& _name, const TVector2D& spawn, int gunmodel, TEAM _team, unsigned int bot_nr, int dest);
+    ~Bot(void) {}
 
 
-    void draw();
-    void update();
+    void Draw() const;
+	void Shot(const TVector2D& dest);
+	void ThrowGrenade(const TVector2D& dest, float push_time);
+	void ThrowCluster(const TVector2D& dest, float push_time);
+    void Update();
     bool is_inside(int x, int y);
-   //void AccumulateForces();
+    //void AccumulateForces();
 
 };
 

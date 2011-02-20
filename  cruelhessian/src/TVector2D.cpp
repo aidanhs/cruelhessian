@@ -1,7 +1,7 @@
 /*   TVector2D.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,28 +20,54 @@
 
 
 #include "TVector2D.h"
+#include "TMatrix2D.h"
 #include <cmath>
 
 
-
-void TVector2D::normalize()
+TVector2D TVector2D::operator * (const TMatrix2D& M) const
 {
-    float len = sqrt(this->x*this->x + this->y*this->y);
 
-    this->x = (len == 0) ? 0 : this->x / len;
-    this->y = (len == 0) ? 0 : this->y / len;
+    return TVector2D(x * M.e11 + y * M.e12,
+                     x * M.e21 + y * M.e22);
 }
 
-TVector2D::TVector2D()
+TVector2D TVector2D::operator ^ (const TMatrix2D& M) const
 {
-    x = y = 0;
+
+    return TVector2D(x * M.e11 + y * M.e21,
+                     x * M.e12 + y * M.e22);
 }
 
-TVector2D::TVector2D(float a, float b)
+TVector2D& TVector2D::operator *=(const TMatrix2D& M)
 {
-    x = a;
-    y = b;
+    TVector2D T = *this;
+    x = T.x * M.e11 + T.y * M.e12;
+    y = T.x * M.e21 + T.y * M.e22;
+    return *this;
 }
+
+TVector2D& TVector2D::operator ^=(const TMatrix2D& M)
+{
+    TVector2D T = *this;
+    x = T.x * M.e11 + T.y * M.e21;
+    y = T.x * M.e12 + T.y * M.e22;
+    return *this;
+}
+
+
+float TVector2D::normalize()
+{
+
+    float fLength = sqrt(x*x + y*y);
+
+    if (fLength == 0.0f)
+        return 0.0f;
+
+    (*this) *= (1.0f / fLength);
+
+    return fLength;
+}
+
 
 TVector2D& TVector2D::operator=(float b)
 {
@@ -61,6 +87,7 @@ bool TVector2D::operator==(const TVector2D& b) const
 {
     return ((x == b.x) && (y == b.y));
 }
+
 
 bool TVector2D::operator!=(const TVector2D& b) const
 {
@@ -99,85 +126,87 @@ TVector2D& TVector2D::operator/=(float b)
 
 TVector2D TVector2D::operator+(const TVector2D& b) const
 {
-    TVector2D tmp;
 
-    tmp.x = x + b.x;
-    tmp.y = y + b.y;
-
-    return tmp;
+    return TVector2D(x + b.x, y + b.y);
 }
 
 TVector2D TVector2D::operator-(const TVector2D& b) const
 {
-    TVector2D tmp;
 
-    tmp.x = x - b.x;
-    tmp.y = y - b.y;
-
-    return tmp;
+    return TVector2D(x - b.x, y - b.y);
 }
 
+TVector2D TVector2D::operator-() const
+{
+    return TVector2D(-x, -y);
+}
+
+// iloczyn skalarny
 float TVector2D::operator*(const TVector2D& b) const
 {
     return x * b.x + y * b.y;
+}
+
+// iloczyn wektorowy
+float TVector2D::operator^(const TVector2D& b) const
+{
+    return x * b.y - y * b.x;
 }
 
 
 
 TVector2D TVector2D::operator*(float a) const
 {
-    TVector2D tmp;
 
-    tmp.x = x * a;
-    tmp.y = y * a;
-
-    return tmp;
+    return TVector2D(x * a, y * a);
 }
+
 
 TVector2D TVector2D::operator/(float a) const
 {
-    TVector2D tmp;
 
-    tmp.x = x / a;
-    tmp.y = y / a;
-
-    return tmp;
+    return TVector2D(x / a, y / a);
 }
 
 TVector2D TVector2D::operator-(float a) const
 {
-    TVector2D tmp;
 
-    tmp.x = x - a;
-    tmp.y = y - a;
-
-    return tmp;
+    return TVector2D(x - a, y - a);
 }
 
+
+TVector2D TVector2D::Direction(void) const
+{
+    TVector2D Temp(*this);
+    Temp.normalize();
+    return Temp;
+}
+
+TVector2D& TVector2D::Rotate(float angle)
+{
+    float tx = x;
+    x =  x * cos(angle) - y * sin(angle);
+    y = tx * sin(angle) + y * cos(angle);
+    return *this;
+}
+
+TVector2D& TVector2D::Rotate(const TVector2D& xCentre, float fAngle)
+{
+    TVector2D D = *this - xCentre;
+    D.Rotate(fAngle);
+    *this = xCentre + D;
+    return *this;
+}
 
 
 TVector2D operator*(float a, const TVector2D& b)
 {
-    TVector2D tmp;
 
-    tmp.x = b.x * a;
-    tmp.y = b.y * a;
-
-    return tmp;
+    return TVector2D(b.x * a, b.y * a);
 }
 
 TVector2D operator/(float a, const TVector2D& b)
 {
-    TVector2D tmp;
 
-    tmp.x = b.x / a;
-    tmp.y = b.y / a;
-
-    return tmp;
-}
-
-// iloczyn skalarny
-float TVector2D::dot(const TVector2D& a, const TVector2D& b) const
-{
-    return (a.x*a.y + b.x*b.y);
+    return TVector2D(b.x / a, b.y / a);
 }

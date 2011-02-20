@@ -1,10 +1,10 @@
-#ifndef SOIL_LOADER_H
-#define SOIL_LOADER_H
+#ifndef TEXTURES_LOADER_H
+#define TEXTURES_LOADER_H
 
 /*   TexturesLoader.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,18 +24,38 @@
 
 
 #include <iostream>
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
-#include "SDL_opengl.h"
-#include "Tex.h"
 
 
+class Tex
+{
+public:
+    Tex() : w(0), h(0), tex(0) {};
+    Tex(int _w, int _h, GLuint _tex) : w(_w), h(_h), tex(_tex) {};
+    int w, h;
+    GLuint tex;
+};
 
-GLuint SOIL_LoadTextureBMP(const std::string& file);
-GLuint SOIL_LoadTexturePNG(const std::string& file);
-GLuint SOIL_LoadTexture2(const std::string& src_dir, const std::string& file);
 
-Tex SOIL_LoadTextureExBMP(const std::string& file);
-Tex SOIL_LoadTextureExPNG(const std::string& file);
-Tex SOIL_LoadTextureEx2(const std::string& src_dir, const std::string& file);
+class Texture
+{
+private:
+    static Tex SOIL_LoadTextureExBMP(const std::string& file);
+    static Tex SOIL_LoadTextureExPNG(const std::string& file);
+    static GLuint SOIL_LoadTextureBMP(const std::string& file);
+    static GLuint SOIL_LoadTexturePNG(const std::string& file);
+
+public:
+
+    static GLuint Load(const std::string& src_dir, const std::string& file);
+    static Tex LoadExt(const std::string& src_dir, const std::string& file);
+};
+
+
 
 #endif

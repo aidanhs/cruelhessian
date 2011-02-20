@@ -22,23 +22,30 @@
  */
 
 
-#include "Tex.h"
-#include "TVector2D.h"
-#include "MovingObject.h"
+#include "Drawable.h"
+#include "Body.h"
 
 
-class Bullet : public MovingObject
+class Tex;
+class TVector2D;
+
+
+class Bullet : public Drawable, public Body
 {
-    const Tex& texture;
+    const Tex& m_xTexture;
+    float m_fHalfWidth, m_fHalfHeight;
+	Bullet& operator=(const Bullet&) {return *this;}
 
 public:
+    unsigned int m_iOwner;
+    unsigned int m_iGunModel;
 
-    unsigned int gunModel;
+    Bullet(const TVector2D& src, const TVector2D& velocity, float angle, unsigned int gunmodel, unsigned int _owner);
+    ~Bullet();
 
-    Bullet(const TVector2D& src, const TVector2D& dest, unsigned int gunmodel, unsigned int _owner, float speed, const Tex& tex);
-
-    void draw() const;
-
+    void Draw() const;
+    void Update();
+    bool killMyself;
 };
 
 
