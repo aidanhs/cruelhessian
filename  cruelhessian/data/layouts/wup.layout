@@ -23,12 +23,12 @@
                 <Property Name="StepSize" Value="0.01" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="CurrentProgress" Value="0" />
-                <Property Name="UnifiedAreaRect" Value="{{0.119048,0},{0.396138,0},{0.940476,0},{0.646138,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0885718,0},{0.409872,0},{0.91,0},{0.659872,0}}" />
             </Window>
             <Window Type="TaharezLook/Button" Name="WindowUpdater/Frame/Cancel" >
                 <Property Name="Text" Value="Cancel" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.537143,0},{0.738773,0},{0.817619,0},{0.901791,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.525714,0},{0.738773,0},{0.80619,0},{0.901791,0}}" />
             </Window>
         </Window>
     </Window>
