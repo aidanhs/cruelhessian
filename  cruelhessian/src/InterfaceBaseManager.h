@@ -23,8 +23,9 @@
 
 
 
-#include "Tex.h"
+#include "TexturesLoader.h"
 #include "Singleton.h"
+
 
 
 class InterfaceBaseManager : public Singleton<InterfaceBaseManager>
@@ -32,8 +33,8 @@ class InterfaceBaseManager : public Singleton<InterfaceBaseManager>
 
 public:
 
-    InterfaceBaseManager();
-    virtual ~InterfaceBaseManager();
+    InterfaceBaseManager(void);
+    virtual ~InterfaceBaseManager(void);
 
     void Draw();
 
@@ -41,7 +42,6 @@ public:
     Tex text_mouse;
     Tex text_deaddot;
     Tex text_smalldot;
-
 
 };
 

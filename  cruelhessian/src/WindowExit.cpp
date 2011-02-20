@@ -1,7 +1,7 @@
 /*   WindowExit.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,22 +22,30 @@
 #include "WindowExit.h"
 #include "ParserManager.h"
 #include "FontManager.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
-WindowExit::WindowExit()
-    : x(Parser.MAX_WIDTH/4), y(Parser.MAX_HEIGHT/7), w(200), h(80), m_number(false)
+WindowExit::WindowExit() :
+    m_fX(Parser.MAX_WIDTH/4),
+    m_fY(Parser.MAX_HEIGHT/7),
+    m_fWidth(200),
+    m_fHeight(80),
+    m_bNumber(false)
 {
 
 }
 
 
-void WindowExit::draw(const TVector2D& pos)
+void WindowExit::Draw(const TVector2D& m_xMousePos)
 {
 
-    m_mouse_pos = pos;
     bool stan1 = false;
 
-    if ((m_mouse_pos.x > x + 5) && (m_mouse_pos.x < x + w - 5))
+    if ((m_xMousePos.x > m_fX + 5) && (m_xMousePos.x < m_fX + m_fWidth - 5))
         stan1 = true;
 
     glPushMatrix();
@@ -45,40 +53,43 @@ void WindowExit::draw(const TVector2D& pos)
 
     // obramowanie
     glColor4ub(85, 85, 85, 200);
-    glRectf(x, y, x + w, y + h);
+    glRectf(m_fX, m_fY, m_fX + m_fWidth, m_fY + m_fHeight);
 
     // inner rectangle
     glColor4ub(100, 100, 100, 200);
     glBegin(GL_QUADS);
-    glVertex2f(x - 1, y - 1);
-    glVertex2f(x + w + 1, y - 1);
-    glVertex2f(x + w + 1, y + h + 1);
-    glVertex2f(x - 1, y + h + 1);
+    glVertex2f(m_fX - 1, m_fY - 1);
+    glVertex2f(m_fX + m_fWidth + 1, m_fY - 1);
+    glVertex2f(m_fX + m_fWidth + 1, m_fY + m_fHeight + 1);
+    glVertex2f(m_fX - 1, m_fY + m_fHeight + 1);
     glEnd();
     glPopMatrix();
 
-    // tekst
-    TVector2D start = TVector2D(x + 10, y + 20);
-    m_number = false;
+	glColor3f(1.0f, 1.0f, 1.0f);
 
-    if (stan1 && m_mouse_pos.y > start.y-7 && m_mouse_pos.y < start.y+7)
+    // tekst
+    TVector2D start = TVector2D(m_fX + 10, m_fY + 20);
+    m_bNumber = false;
+
+    // opcja jest zaznaczona
+    if (stan1 && m_xMousePos.y > start.y-7 && m_xMousePos.y < start.y+7)
     {
-        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], "Exit", Fonts.textColorGunOnTouch, start.x, start.y);
-        m_number = true;
+        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, "Exit", Fonts.textColorGunOnTouch, start.x, start.y);
+        m_bNumber = true;
     }
     else
     {
-        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], "Exit", Fonts.textColorGunNormal, start.x, start.y);
+        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, "Exit", Fonts.textColorGunNormal, start.x, start.y);
     }
 
     start.y += 25;
-    Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], "Esc - back to game", Fonts.textColorGunNormal, start.x, start.y);
+    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Esc - back to game", Fonts.textColorGunNormal, start.x, start.y);
 
 }
 
 
 // return 1 if CHOICE_EXIT should be true
-bool WindowExit::select() const
+bool WindowExit::Select() const
 {
-    return m_number;
+    return m_bNumber;
 }

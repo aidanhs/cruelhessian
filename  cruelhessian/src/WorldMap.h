@@ -28,27 +28,37 @@
 #include <vector>
 #include <list>
 
-//#include "Globals.h"
-#include "Arrow.h"
-#include "Background.h"
-#include "Bonus.h"
-#include "Bot.h"
-#include "Bullet.h"
-#include "Grenade.h"
-#include "MovingObject.h"
-#include "Map.h"
-#include "Console.h"
-#include "Mouse.h"
-#include "Chat.h"
-#include "WindowScores.h"
-#include "WindowExit.h"
-#include "WindowGuns.h"
+#include "Enums.h"
+//#include "Console.h"
 #include "Singleton.h"
-#include "BotManager.h"
-#include "InterfaceBaseManager.h"
-#include "InterfaceManager.h"
-#include "Tex.h"
+#include "TVector2D.h"
+//#include "SDL.h"
+#include <SFML/Graphics.hpp>
 
+
+class Mouse;
+class TextOutput;
+class CommandLine;
+class ChatLine;
+class Arrow;
+class Background;
+class Grenade;
+class Bonus;
+class Bullet;
+class Map;
+class MapFront;
+class MapBack;
+class Bot;
+class Body;
+class BotsBase;
+class WindowScores;
+class WindowExit;
+class WindowGuns;
+class InterfaceBaseManager;
+class InterfaceManager;
+class RenderManager;
+class SpatialManager;
+class PhysicsManager;
 
 
 class WorldMap : public Singleton<WorldMap>
@@ -56,29 +66,23 @@ class WorldMap : public Singleton<WorldMap>
 
 public:
 
-    WorldMap(const std::string& map, int alpha_cnt, int bravo_cnt, int charlie_cnt, int delta_cnt);
-    WorldMap(const std::string& map, int bots_cnt);
-    virtual ~WorldMap();
+    WorldMap(const std::string& mapp);
+    ~WorldMap();
 
-    float sGravity; // Przyspieszenie ziemskie
-    float sDrag; // Wspólczynnik oporu
-    float sDragWalking; // Wspólczynnik oporu podczas chodzenia
-    float sDragFly; // Wspólczynnik oporu podczas latania (im mniejszy tym wyzej dolatuje)
-    float sWalking; // Szybkosc chodzenia
-    float sFlying; // Szybkosc latania
-    float sJumping; // Sila skoku
-    float fTimeStep; // Krok czasowy fizyki
+    void SetPlayers(int amount, ...);
 
+    void onReceiveShot(unsigned int shooted, unsigned int owner, float damage);
+    void onBonusFall();
+    void onTouchBonus(Bot* xbot, Bonus* xbonus);
+
+    std::string REST_TIME;
     bool CHOICE_GUN;
-    bool SHOW_GUN_MENU;
-    bool SHOW_COMMAND_LINE;
-    bool SHOW_MYCHAT_LINE;
-    bool SHOW_ESC;
     bool SHOW_STATS;
     TVector2D OLD_POS;
     unsigned int MY_CURRENT_POS;
     int DISTANCE_SCORE;
     std::vector<std::vector<int> > spawnpoint;
+
 
     int currentFPS;
 
@@ -87,57 +91,55 @@ public:
 //    float _180overpi;
     unsigned int MY_BOT_NR;
 
-    SDLKey KEY_PRESSED; // = int
+    sf::Key::Code KEY_PRESSED; // = int
     bool YOU_KILLED;
 
-    Uint32 getCurrentTime;
+    float getCurrentTime;
 
-    float fullLife;
+   // float fTimeStep; // Krok czasowy fizyki
 
-    Chat *chat;
     std::vector<Bot *> bot;
+    void onMouseButtonDown(sf::Mouse::Button& butt);
+    void onMouseButtonUp(sf::Mouse::Button& butt);
 
 // --------------------------------------   loading interface  ------------------------------------------
     InterfaceBaseManager *interfaceBaseMgr;// = new InterfaceBaseManager();
     InterfaceManager *interfaceMgr;// = new InterfaceManager();
+    RenderManager *renderMgr;
+    SpatialManager *spatialMgr;
 // ------------------------------------------------------------------------------------------------------
 
-    Tex text_weath;
-    Tex text_grenade[17];
-
+    //PhysicsManager* physicsMgr;
 
     Map *map;
+    MapFront *mapFront;
+    MapBack *mapBack;
     Mouse *mouse;
     Arrow* arrow;
     Background *backg;
     WindowExit *window_exit;
     WindowScores *window_scores;
     WindowGuns *window_guns;
-    Console cons, myChat;
+
+	TextOutput *text_output;
+    CommandLine *command_line;
+	ChatLine *chat_line;
+
     bool CHOICE_EXIT;
-    void command_line();
-    void mychat_line();
+//    void command_line();
+//    void mychat_line();
+    void setGL();
+    unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
+    void gunReloading(unsigned int bot_nr);
+    void ThrowFive(unsigned int bot_nr, const TVector2D& src);
+    PhysicsManager *physicsMgr;
 
 private:
 
+    WorldMap& operator=(const WorldMap&) {return *this;}
     void run();
-    GLuint *text_scen;
 
-
-    std::list<Bullet *> bullet_list;
-    std::list<Bonus *> bonus_list;
-    std::list<Grenade *> gren_list;
     int nearestWaypoint(int spawn_nr);
-    bool collisionCircle2Wall(const MovingObject& ob, float dx, float dy, int& triangle, int& line);
-    int collisionPoint2Wall(const MovingObject& ob, float dx, float dy);
-    int collisionPoint2Circle(const MovingObject& ob1, const MovingObject& ob2);
-    int collisionCircle2Circle(const MovingObject& ob1, const MovingObject& ob2);
-
-
-//    float distance(const TVector2D &point, int triangle, int ver1, int ver2);
-//    int nearestLine(const TVector2D &point, int triangle);
-
-
 
     bool FRIENDLY_FIRE;
 
@@ -147,69 +149,28 @@ private:
 
 
 
-    Uint32 getStartGameTime;//, getTimePassed;
+    float getStartGameTime;//, getTimePassed;
 
     int takeScreenshot();
-    void hurt_bot(unsigned int shooted, unsigned int owner, float damage);
+//  void hurt_bot(unsigned int shooted, unsigned int owner, float damage);
     void collisions();
     void game_control();
 
 
-    std::vector<std::vector<int> > bonus;
-
-
-
-    Uint8* keys;
-
-    void addBullet(unsigned int bot_nr, const TVector2D& dest);
-    void addGrenade(unsigned int bot_nr, const TVector2D& dest, Uint32 push_time);
-    unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
-
-    void moveBotLeft(unsigned int bot_nr);
-    void moveBotRight(unsigned int bot_nr);
-    void moveBotUp(unsigned int bot_nr);
-    void moveBotDown(unsigned int bot_nr);
-    void moveBotJet(unsigned int bot_nr);
-    void moveBotJumpLeft(unsigned int bot_nr);
-    void moveBotJumpRight(unsigned int bot_nr);
+    void onKeyDown(sf::Key::Code sym);
+    void onKeyUp(sf::Key::Code sym);
 
     void inputUser();
-    Uint32 prev_time;
-
-
+    int prev_time;
 
     int MAX_RESPAWN_TIME;
     float JET_CHANGE;
 
-
-
-
-    int read_po(OBJECT_TYPE type);
-
     void bots_control();
 
-    void draw_background();
-    //void draw_interface();
-    void draw_infos();
-
-    void insertMe(TEAM team);
-
-    void load_textures();
-    void load_configs();
-    int load_map(const std::string& name);
     void load_spawnpoints();
-    void load_bonuses();
-    int load_bots(unsigned int bots_count, TEAM team);
-
-    void init_gl();
 
     bool do_bots_see(unsigned int first, unsigned int second);
-
-    void gunReloading(unsigned int bot_nr);
-
-
-
-
 
 };
 

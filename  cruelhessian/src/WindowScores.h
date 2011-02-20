@@ -4,7 +4,7 @@
 /*   WindowScores.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,31 +24,29 @@
 
 
 #include <iostream>
+#include <vector>
 
-#include "Tex.h"
-#include "Bot.h"
+#include "TexturesLoader.h"
+#include "Singleton.h"
+
+class Bot;
 
 
-
-class WindowScores
+class WindowScores : public Singleton<WindowScores>
 {
-    const Tex& texture_d;
-    const Tex& texture_s;
     std::vector<std::string> column_names;
     std::vector<float> off;
     float list_long;
-    unsigned int my_bot_nr;
     void draw_help(const Tex& tex, float dx, float dy) const;
 
 public:
 
     std::vector<Bot *> scores;
-    WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int);
+    WindowScores();
     ~WindowScores();
 
-    void draw() const;
-    //void update(const std::vector<Bot *>& bb);
-    void update();
+    void Draw() const;
+    void Update();
 };
 
 

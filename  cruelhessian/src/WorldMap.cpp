@@ -1,7 +1,7 @@
 /*   WorldMap.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,196 +24,116 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
+#include <cstdarg>
 #include "boost/filesystem/fstream.hpp"
 #include "boost/algorithm/string.hpp"
 
 #include "WorldMap.h"
+#include "WindowGuns.h"
+#include "WindowScores.h"
+#include "Background.h"
+#include "Bonus.h"
+#include "Bot.h"
+#include "Body.h"
+#include "Bullet.h"
+#include "textinout/TextOutput.h"
+#include "Weapon.h"
+#include "Grenade.h"
+#include "Cluster.h"
 #include "AudioManager.h"
+#include "BonusManager.h"
+#include "WeaponManager.h"
+#include "WindowExit.h"
+#include "BotManager.h"
+#include "Arrow.h"
+#include "Mouse.h"
+#include "Map.h"
+#include "ParserManager.h"
 #include "FontManager.h"
 #include "InterfaceBaseManager.h"
 #include "InterfaceManager.h"
 #include "Game.h"
+#include "PhysicsManager.h"
+#include "SpatialManager.h"
+#include "RenderManager.h"
 #include "soil/SOIL.h"
 
 
 const float _180overpi = 57.29f;
 
 
-void WorldMap::moveBotRight(unsigned int bot_nr)
-{
-    //int t1, t2;
-    //if (!collisionCircle2Wall(*bot[bot_nr], 1, 0, t1, t2))
-    {
-        bot[bot_nr]->movementType = (bot[bot_nr]->movementDirection == RIGHT) ? BIEGA : BIEGA_TYL;
-        bot[bot_nr]->velocity.x += sWalking;// - bot[bot_nr]->friction;
-        //bot[bot_nr]->a.x += 5.0;
-//        bot[bot_nr]->a.x += 800;
-    }
 
-}
-
-void WorldMap::moveBotLeft(unsigned int bot_nr)
-{
-    //int t1, t2;
-    //if (!collisionCircle2Wall(*bot[bot_nr], -1, 0, t1, t2))
-    {
-        //      bot[bot_nr]->a.x -= 800;
-        bot[bot_nr]->movementType = (bot[bot_nr]->movementDirection == LEFT) ? BIEGA : BIEGA_TYL;
-        bot[bot_nr]->velocity.x -= sWalking;// + bot[bot_nr]->friction;
-        //bot[bot_nr]->a.x -= sWalking;
-    }
-
-}
-
-void WorldMap::moveBotUp(unsigned int bot_nr)
-{
-
-    if (bot[bot_nr]->isAbleToJump)
-    {
-        //    bot[bot_nr]->a.y -= 200;
-        bot[bot_nr]->movementType = SKOK;
-        bot[bot_nr]->velocity.y -= 15*sJumping;
-    }
-
-}
-
-
-void WorldMap::moveBotDown(unsigned int bot_nr)
-{
-    bot[bot_nr]->movementType = KUCA;
-}
-
-
-void WorldMap::moveBotJet(unsigned int bot_nr)
-{
-
-    if (bot[bot_nr]->isAbleToFly)
-    {
-        bot[bot_nr]->movementType = GORA;
-        bot[bot_nr]->velocity.y -= sFlying;
-        //bot[bot_nr]->a.y = -15*sFlying;
-    }
-
-}
-
-void WorldMap::moveBotJumpLeft(unsigned int bot_nr)
-{
-
-    if (bot[bot_nr]->isAbleToJump)
-    {
-        bot[bot_nr]->movementType = SKOK_W_BOK;
-        bot[bot_nr]->velocity.x += sJumping * 0.1f;
-        bot[bot_nr]->velocity.y -= sJumping * 0.5f;
-    }
-}
-
-void WorldMap::moveBotJumpRight(unsigned int bot_nr)
-{
-
-    if (bot[bot_nr]->isAbleToJump)
-    {
-        bot[bot_nr]->movementType = SKOK_W_BOK;
-        bot[bot_nr]->velocity.x -= sJumping * 0.1f;
-        bot[bot_nr]->velocity.y -= sJumping * 0.5f;
-    }
-    //cpBodyApplyForce(bot[bot_nr]->cBody, cpv(1000.0f, -10000.0f), cpvzero);
-}
 
 
 WorldMap::~WorldMap()
 {
 
-    // delete textures
-    /*for (int i = 0; i < map->sceneryCount; i++)
-    {
-        delete text_scen[i];
-    }*/
-//    delete text_scen;
-
-    //cout << "Koniec" << endl;
-//    int i;
-    //for (i = 0; i < p.sceneryCount; i++) free(text_scen_xy[i]);
-    //for (i = 0; i < p.sceneryCount; i++) delete[] text_scen_xy[i];
-    //free(text_scen_xy);
-    //delete[] text_scen_xy;
-
-    //bullet_list.clear();
-    //bonus_list.clear();
-    //gren_list.clear();
-//    chat_list.clear();
-
-    for (size_t i = 0; i < bot.size(); i++)
+    for (unsigned int i = 0; i < bot.size(); ++i)
         delete bot[i];
     bot.clear();
 
+    if (InterfaceManager::GetSingletonPtr() != NULL)
+        delete interfaceMgr;
+
+    delete interfaceBaseMgr;
+
+    delete renderMgr;
+
+    delete spatialMgr;
+    delete mapBack;
+    delete mapFront;
     delete map;
+    delete physicsMgr;
     delete backg;
     delete mouse;
     delete arrow;
-    delete chat;
+
     delete window_scores;
+    if (WindowExit::GetSingletonPtr() != NULL)
+        delete window_exit;
 
-    delete text_scen;
-
-    std::list<Bonus *>::iterator si0 = bonus_list.begin();
-    while (si0 != bonus_list.end())
-    {
-        delete *si0;
-        si0 = bonus_list.erase(si0);
-    }
-
-    std::list<Bullet *>::iterator si1 = bullet_list.begin();
-    while (si1 != bullet_list.end())
-    {
-        delete *si1;
-        si1 = bullet_list.erase(si1);
-    }
-
-    std::list<Grenade *>::iterator si2 = gren_list.begin();
-    while (si2 != gren_list.end())
-    {
-        delete *si2;
-        si2 = gren_list.erase(si2);
-    }
+    delete text_output;
 
 }
 
 
+
 void WorldMap::run()
 {
-    init_gl();
 
-    SDL_WarpMouse(static_cast<Uint16>(Parser.MAX_WIDTH/2), static_cast<Uint16>(Parser.MAX_HEIGHT/2));
+    setGL();
 
+    game.App.SetCursorPosition(static_cast<int>(Parser.MAX_WIDTH/2.0f), static_cast<int>(Parser.MAX_HEIGHT/2.0f));
+    game.App.ShowMouseCursor(false);
 
 // --------------------------------------   start playing audio  --------------------------------------
-    if (Parser.SOUNDS_VOL > 0)
-        Mix_PlayChannel(-1, Audio.sound_spawn, 0);
 
-    if (Parser.SOUNDS_VOL + Parser.MUSIC_VOL > 0)
+    if (Parser.SOUNDS_VOL > 0)
     {
-        if (Parser.MUSIC_VOL > 0 && !Audio.gMusicList.empty())
+        Audio.Play(Audio.sound_spawn);
+        if (Parser.MUSIC_VOL > 0)
         {
             Audio.playMusic(0);
-            Mix_VolumeMusic(static_cast<int>(Parser.MUSIC_VOL*MIX_MAX_VOLUME/100.0f));
+            Audio.music->SetVolume(Parser.MUSIC_VOL);
         }
     }
+
+
 // ------------------------------------------------------------------------------------------------------
 
+    sf::Clock Clock;
 
-    Uint32 firstFrameFPS, firstFrameSYS;
-    Uint32 lastTime = firstFrameFPS = getStartGameTime = firstFrameSYS = SDL_GetTicks();
-    Uint32 frames = 0, dtFPS;
-    //  const Uint32 step = 5;
+    float firstFrameFPS, firstFrameSYS;
+    float lastTime = firstFrameFPS = getStartGameTime = firstFrameSYS = 1000.f*Clock.GetElapsedTime();
+    int frames = 0;
+    float dtFPS;
 
     std::cout << " -- Starting game --" << std::endl << std::endl;
 
     while (!CHOICE_EXIT)
     {
 
-        getCurrentTime = SDL_GetTicks();
-
-        fTimeStep = static_cast<float>(getCurrentTime - lastTime) / 1000.0f;
+        getCurrentTime = 1000*Clock.GetElapsedTime();
 
         lastTime = getCurrentTime;
 
@@ -222,84 +142,44 @@ void WorldMap::run()
         dtFPS = getCurrentTime - firstFrameFPS;
         if (dtFPS >= 1000)
         {
-            currentFPS = 1000 * frames / dtFPS;
+            currentFPS = static_cast<int>(1000 * frames / dtFPS);
             frames = 0;
             firstFrameFPS = getCurrentTime;
         }
 
-        //if (getCurrentTime - firstFrameSYS >= step)
+        if (getCurrentTime - firstFrameSYS >= 17)          // ca. 1000/60
         {
-            //  fTimeStep *= step;
+
             inputUser();
+
             bots_control();
-            collisions();
 
-            //for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->update();
-            for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->AccumulateForces();
-            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->update();
-            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->AccumulateForces();
+            Physics.GameUpdate(0.01667f);   // ca. 1/60
 
-            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->update();
+            arrow->Update(bot[MY_BOT_NR]->GetPosition());
+            mouse->Update();
+            window_scores->Update();
 
-            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->AccumulateForces();
-
-            //for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->update();
-            for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->AccumulateForces();
-
-
-            for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->Verlet();
-            for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->Verlet();
-            for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->Verlet();
-            for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->Verlet();
-
-
-            arrow->update(bot[MY_BOT_NR]->position);
-            mouse->update();
-            window_scores->update();
-            backg->update(mouse->getGlobalPosition(), bot[MY_BOT_NR]->position);
+            backg->Update(mouse->getGlobalPosition(), bot[MY_BOT_NR]->GetPosition());
 
             game_control();   // time, flags, bonuses, kills ...
-            // firstFrameSYS = getCurrentTime;
+
+            firstFrameSYS = getCurrentTime;
         }
+        //Renderer.AddToDraw(backg);
 
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        backg->draw(*map);
-
-        glEnable(GL_TEXTURE_2D);
-
-        map->drawBack();
-        for (std::list<Bullet *>::iterator it = bullet_list.begin(); it != bullet_list.end(); ++it) (*it)->draw();
-        for (std::list<Grenade *>::iterator it = gren_list.begin(); it != gren_list.end(); ++it) (*it)->draw();
-        for (std::vector<Bot *>::iterator it = bot.begin(); it != bot.end(); ++it) (*it)->draw();
-        for (std::list<Bonus *>::iterator it = bonus_list.begin(); it != bonus_list.end(); ++it) (*it)->draw();
-        map->drawFront();
-
-        arrow->draw();
-
-        glDisable(GL_TEXTURE_2D);
-
-        InterfaceBase.Draw();
-
-        if (InterfaceManager::GetSingletonPtr() != NULL)
-            Interface.Draw();
-
-        mouse->draw();
-
-        SDL_GL_SwapBuffers();
+        RendererCH.Draw();
 
     }
 
-    if (InterfaceManager::GetSingletonPtr() != NULL)
-        delete interfaceMgr;
 
-    delete interfaceBaseMgr;
 
 // --------------------------------------   stop playing audio  --------------------------------------
     if (Parser.MUSIC_VOL > 0)
     {
-        Mix_HaltMusic();
-        Mix_FreeMusic(Audio.music);
+        //Mix_HaltMusic();
+        Audio.music->Stop();
+        //Mix_FreeMusic(Audio.music);
     }
 
 // ------------------------------------------------------------------------------------------------------
@@ -307,67 +187,77 @@ void WorldMap::run()
 }
 
 
-void WorldMap::insertMe(TEAM team)
+
+WorldMap::WorldMap(const std::string& mapp) :
+    REST_TIME(""),
+    CHOICE_GUN(false),
+    SHOW_STATS(true),
+    OLD_POS(TVector2D(0, 0)),
+    MY_CURRENT_POS(0),
+    DISTANCE_SCORE(0),
+    currentFPS(0),
+    SHOW_SCORES(false),
+    MY_BOT_NR(0),
+    YOU_KILLED(false),
+    getCurrentTime(0),
+    CHOICE_EXIT(false),
+    FRIENDLY_FIRE(false),
+    getStartGameTime(0),
+    prev_time(0),
+    MAX_RESPAWN_TIME(5),
+    JET_CHANGE(0.005f)
 {
 
-    BotsBase temp;
+    physicsMgr = new PhysicsManager();
+    map = new Map(mapp);
+    mapFront = new MapFront(*map);
+    mapBack = new MapBack(*map);
+    spatialMgr = new SpatialManager();
+    Spatial.AddStatic();
+    renderMgr = new RenderManager();
+}
 
-    temp.name = Parser.PLAYER_NAME;
-    temp.color[SKIN]  = Parser.COLOR_SKIN;
-    temp.color[HAIR]  = Parser.COLOR_HAIR;
-    temp.color[PANTS] = Parser.COLOR_PANTS;
 
-    if (game.CURRENT_GAME_MODE == CTF || game.CURRENT_GAME_MODE == TM)
-    {
-        temp.color[SHIRT] = Fonts.textCol[team];
-    }
+void WorldMap::SetPlayers(int amount, ...)
+{
+    va_list vl;
+    va_start(vl, amount);
+
+
+    // --------------------------------------   loading interface  ------------------------------------------
+    interfaceBaseMgr = new InterfaceBaseManager();
+
+    if (Parser.INTERFACE_NAME != "--None--")
+        interfaceMgr = new InterfaceManager();
     else
-        temp.color[SHIRT] = Parser.COLOR_SHIRT;
+        std::cout << "Load limited interface" << std::endl;
+// ------------------------------------------------------------------------------------------------------
 
+    mouse = new Mouse();
+    text_output = new TextOutput();
+    window_guns = new WindowGuns();
+    arrow = new Arrow();
 
-    int point = static_cast<int>(rand()%spawnpoint[team].size());
-    MY_BOT_NR = addBot(temp, spawnpoint[team][point], team);
-
-    backg = new Background(static_cast<float>(Parser.MAX_WIDTH/2 - map->spawnpoint[spawnpoint[team][point]].x),
-                           static_cast<float>(Parser.MAX_HEIGHT/2 - map->spawnpoint[spawnpoint[team][point]].y), bot[MY_BOT_NR]->position);
-
-    window_scores = new WindowScores(InterfaceBase.text_deaddot, InterfaceBase.text_smalldot, MY_BOT_NR);
-}
-
-
-WorldMap::WorldMap(const std::string& mapp, int alpha_cnt, int bravo_cnt, int charlie_cnt, int delta_cnt)
-{
-
-    load_map(mapp);
-    load_textures();
-    load_configs();
     load_spawnpoints();
-    load_bonuses();
+    Bonuses.LoadBonuses();
 
-    load_bots(alpha_cnt, TEAM_ALPHA);
-    load_bots(bravo_cnt, TEAM_BRAVO);
-    load_bots(charlie_cnt, TEAM_CHARLIE);
-    load_bots(delta_cnt, TEAM_DELTA);
+    if (amount == 1)
+    {
+        Bots.LoadBots(va_arg(vl, int), TEAM_GENERAL);
+        Bots.LoadBots(TEAM_GENERAL);
+    }
+    else if (amount == 4)
+    {
+        Bots.LoadBots(va_arg(vl, int), TEAM_ALPHA);
+        Bots.LoadBots(va_arg(vl, int), TEAM_BRAVO);
+        Bots.LoadBots(va_arg(vl, int), TEAM_CHARLIE);
+        Bots.LoadBots(va_arg(vl, int), TEAM_DELTA);
 
-    insertMe(TEAM_ALPHA);
+        Bots.LoadBots(TEAM_ALPHA);
+    }
+    va_end(vl);
 
-    run();
-
-}
-
-
-WorldMap::WorldMap(const std::string& mapp, int bots_cnt)
-{
-
-    load_map(mapp);
-    load_textures();
-    load_configs();
-    load_spawnpoints();
-    load_bonuses();
-
-    load_bots(bots_cnt, TEAM_GENERAL);
-
-    insertMe(TEAM_GENERAL);
+    window_scores = new WindowScores();
 
     run();
 
@@ -376,7 +266,8 @@ WorldMap::WorldMap(const std::string& mapp, int bots_cnt)
 
 unsigned int WorldMap::addBot(const BotsBase& botss, int spawn_nr, TEAM team)
 {
-    Bot *newbot = new Bot(botss.name, static_cast<float>(map->spawnpoint[spawn_nr].x), static_cast<float>(map->spawnpoint[spawn_nr].y), 0, team, bot.size(), nearestWaypoint(spawn_nr));
+    TVector2D spawn = TVector2D(static_cast<float>(map->spawnpoint[spawn_nr].x), static_cast<float>(map->spawnpoint[spawn_nr].y));
+    Bot *newbot = new Bot(botss.name, spawn, 0, team, bot.size(), nearestWaypoint(spawn_nr));
     newbot->chatDead = botss.chatDead;
     newbot->chatKill = botss.chatKill;
     newbot->chatLowhealth = botss.chatLowhealth;
@@ -396,53 +287,24 @@ unsigned int WorldMap::addBot(const BotsBase& botss, int spawn_nr, TEAM team)
         {
             newbot->color[SHIRT][j] = Fonts.textCol[team][j];
         }
-
     }
 
-    bot.push_back(newbot);
+    bot.resize(bot.size()+1);
+    bot[bot.size()-1] = newbot;
+
+    Physics.m_movingObj.push_back(newbot);
+
+    //std::cout << "DF " << bot[bot.size()] <<
+
+    //bot.push_back(newbot);
 
     return newbot->number;
 }
 
 
-void WorldMap::addGrenade(unsigned int bot_nr, const TVector2D& dest, Uint32 push_time)
-{
-    bot[bot_nr]->movementType = RZUCA;
-    if (Parser.SOUNDS_VOL > 0)
-        Mix_PlayChannel(-1, Audio.grenade_pullout, 0);
-
-    // fix it !!!!!!!!!!!!!!!!!!
-    if (Parser.SOUNDS_VOL > 0)
-        Mix_PlayChannel(-1, Audio.grenade_throw, 0);
-
-//    float tang, sq;
-    // fix it !!!!!!!
-    bot[bot_nr]->shotPoint = bot[bot_nr]->position;
-
-    Grenade *grenade = new Grenade(bot[bot_nr]->shotPoint, dest, bot_nr, push_time, text_grenade);
 
 
-    //Grenade grenade(bot[bot_nr]->shotPointX, bot[bot_nr]->shotPointY, bot[bot_nr]->botNumber);
-    /*   tang = (dest_y - bot[bot_nr]->shotPointY) /
-              (dest_x - bot[bot_nr]->shotPointX);
 
-       sq = 3*power / (float)sqrt(1+tang*tang);
-       if (dest_x - bot[bot_nr]->shotPointX > 0)
-       {
-       //        grenade->velocity.x = -sq;
-           //      grenade->velocity.y = -sq * tang;
-       }
-       else
-       {
-           //    grenade->velocity.x = sq;
-           //  grenade->velocity.y = sq * tang;
-       }*/
-
-    gren_list.push_back(grenade);
-
-    bot[bot_nr]->numGrenades--;
-
-}
 
 
 void WorldMap::gunReloading(unsigned int bot_nr)
@@ -451,7 +313,7 @@ void WorldMap::gunReloading(unsigned int bot_nr)
     if (!bot[bot_nr]->isReloading)
     {
         if (Parser.SOUNDS_VOL > 0)
-            Mix_PlayChannel(-1, Audio.reloadSound[bot[bot_nr]->gunModel], 0);
+            Audio.Play(Audio.reloadSound[bot[bot_nr]->gunModel]);
         bot[bot_nr]->startReloadingTime = getCurrentTime;
         bot[bot_nr]->isReloading = true;
         bot[bot_nr]->leftAmmos = 0;
@@ -471,58 +333,25 @@ void WorldMap::gunReloading(unsigned int bot_nr)
 
 
 
-void WorldMap::addBullet(unsigned int bot_nr, const TVector2D& dest)
+void WorldMap::setGL()
 {
-    // fix it !!!!!!!
-    bot[bot_nr]->shotPoint = TVector2D(bot[bot_nr]->position.x - bot[bot_nr]->w, bot[bot_nr]->position.y - bot[bot_nr]->h);
+    std::cout << "Loading GL context ... " << std::flush;
 
-    if (getCurrentTime - bot[bot_nr]->lastShotTime >= Weapons[bot[bot_nr]->gunModel].fireInterval && !bot[bot_nr]->isReloading && bot[bot_nr]->leftAmmos > 0)
-    {
-        if (Parser.SOUNDS_VOL > 0)
-        {
-            // make noise
-            Sint16 angle = 0;
-            Uint8 dist = 0;
-            if (bot_nr != MY_BOT_NR)
-            {
-                angle = static_cast<Sint16>(_180overpi * atan2((bot[bot_nr]->position.y - bot[MY_BOT_NR]->position.y), (bot[bot_nr]->position.x - bot[MY_BOT_NR]->position.x))) + 90;
-                dist = static_cast<Uint8>(sqrt(pow((bot[bot_nr]->position.x - bot[MY_BOT_NR]->position.x), 2.0f) + pow((bot[bot_nr]->position.y - bot[MY_BOT_NR]->position.y), 2.0f)) / 4);
-            }
-            //std::cout << "KAT " << angle << std::endl;
-            //std::cout << "ODL " << distance << std::endl;
-            Mix_SetPosition(-1, angle, dist);
-            Mix_PlayChannel(-1, Audio.fireSound[bot[bot_nr]->gunModel], 0);
-        }
-        //std::cout << "KAT " << std::endl;
-        Bullet *sbullet = new Bullet(bot[bot_nr]->shotPoint, dest, bot[bot_nr]->gunModel, bot_nr, Weapons[bot[bot_nr]->gunModel].speed, Weapons[bot[bot_nr]->gunModel].textureAmmo);
-        bot[bot_nr]->leftAmmos--;
-        bullet_list.push_back(sbullet);
-        // m_objects.push_back(sbullet);
-        bot[bot_nr]->lastShotTime = getCurrentTime;
-    }
-
-    if (bot[bot_nr]->leftAmmos == 0) gunReloading(bot_nr);
-
-}
-
-
-
-
-void WorldMap::init_gl()
-{
-    std::cout << "Loading GL context" << std::endl;
-
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
-    glViewport(0, 0, static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT));
+    //  glViewport(0, 0, static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT));
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glDisable(GL_DEPTH_TEST);
     glOrtho(0, Parser.MAX_WIDTH, Parser.MAX_HEIGHT, 0, -1.0f, 1.0f);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+
+    std::cout << "DONE" << std::endl;
 }
 
 
@@ -584,7 +413,7 @@ void WorldMap::game_control()
     {
         for (unsigned int i = 0; i < bot.size(); ++i)
         {
-            // jesli jakis zespol osiagnal punktow, pokaz staty i zakoncz
+            // jesli jakis zespol osiagnal limit punktow, pokaz staty i zakoncz
             if (bot[i]->points >= Parser.FIRST_LIMIT)
             {
                 SHOW_SCORES = true;
@@ -631,7 +460,7 @@ void WorldMap::game_control()
     }
 
     // time limit
-    Uint32 time_to_end = Parser.LIMIT_TIME - (getCurrentTime - getStartGameTime) / 1000;    // liczone w sekundach
+    int time_to_end = Parser.LIMIT_TIME - static_cast<int>((getCurrentTime - getStartGameTime) / 1000.f);    // liczone w sekundach
     if (time_to_end > 0)
     {
         if (time_to_end != prev_time)
@@ -641,14 +470,14 @@ void WorldMap::game_control()
             {
                 std::ostringstream oss;
                 oss << time_to_end / 60;
-                chat->addMessage("Time to end : " + oss.str() + " minutes");
+                text_output->AddMessage("Time to end : " + oss.str() + " minutes");
                 prev_time = time_to_end;
             }
             else if (time_to_end == 60 || time_to_end == 50 || time_to_end == 40 || time_to_end == 30 || time_to_end == 20 || time_to_end <= 10)
             {
                 std::ostringstream oss;
                 oss << time_to_end;
-                chat->addMessage("Time to end : " + oss.str() + " seconds");
+                text_output->AddMessage("Time to end : " + oss.str() + " seconds");
                 prev_time = time_to_end;
             }
         }
@@ -712,12 +541,36 @@ int WorldMap::takeScreenshot()
 
     if (SOIL_save_screenshot(filename.c_str(), SOIL_SAVE_TYPE_BMP, 0, 0, static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT)) == 0)
     {
-        chat->addMessage("Cannot save screenshot");
+        text_output->AddMessage("Cannot save screenshot");
         return -1;
     }
     else
     {
-        chat->addMessage("Screenshot saved as 'screen" + oss.str() + ".bmp'");
+        text_output->AddMessage("Screenshot saved as 'screen" + oss.str() + ".bmp'");
         return 0;
     }
+
+}
+
+
+
+
+void WorldMap::load_spawnpoints()
+{
+    std::cout << "Loading spawnpoints ..." << std::endl;
+
+    spawnpoint.resize(5);
+
+    for (int i = 0; i < map->spawnpointCount; ++i)
+    {
+        if (map->spawnpoint[i].active)
+        {
+            if (map->spawnpoint[i].team == map->stGENERAL) spawnpoint[TEAM_GENERAL].push_back(i);
+            else if (map->spawnpoint[i].team == map->stALPHA) spawnpoint[TEAM_ALPHA].push_back(i);
+            else if (map->spawnpoint[i].team == map->stBRAVO) spawnpoint[TEAM_BRAVO].push_back(i);
+            else if (map->spawnpoint[i].team == map->stCHARLIE) spawnpoint[TEAM_CHARLIE].push_back(i);
+            else if (map->spawnpoint[i].team == map->stDELTA) spawnpoint[TEAM_DELTA].push_back(i);
+        }
+    }
+
 }

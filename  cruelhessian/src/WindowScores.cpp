@@ -1,7 +1,7 @@
 /*   WindowScores.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,22 @@
 
 
 #include <algorithm>
-#include <sstream>
+#include <cstdio>
 #include "WindowScores.h"
 #include "WorldMap.h"
+#include "Bot.h"
 #include "Game.h"
 #include "FontManager.h"
+#include "InterfaceBaseManager.h"
+#include "ParserManager.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
-WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int nr) : texture_d(tex_d), texture_s(tex_s), my_bot_nr(nr)
+WindowScores::WindowScores()
 {
 
     column_names.push_back("Player:");
@@ -42,7 +50,7 @@ WindowScores::WindowScores(const Tex& tex_d, const Tex& tex_s, unsigned int nr) 
     column_names.push_back("Deaths:");
     column_names.push_back("Ping:");
 
-        // distance between columns
+    // distance between columns
     off.resize(column_names.size());
 
     float xx = Parser.MAX_WIDTH / static_cast<float>(column_names.size());
@@ -69,7 +77,7 @@ inline bool cmp(const Bot* bot1, const Bot* bot2)
 
 
 //void WindowScores::update(const std::vector<Bot *>& bb)
-void WindowScores::update()
+void WindowScores::Update()
 {
 
     list_long = static_cast<float>(world.bot.size()*15+80);
@@ -83,6 +91,7 @@ void WindowScores::update()
 
 void WindowScores::draw_help(const Tex& texture, float dx, float dy) const
 {
+    glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
 
@@ -92,26 +101,34 @@ void WindowScores::draw_help(const Tex& texture, float dx, float dy) const
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2i(0, 0);
     glTexCoord2i(1, 1);
-    glVertex2f(texture.w, 0.0);
+    glVertex2i(texture.w, 0);
     glTexCoord2i(1, 0);
-    glVertex2f(texture.w, texture.h);
+    glVertex2i(texture.w, texture.h);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture.h);
+    glVertex2i(0, texture.h);
     glEnd();
 
     glPopMatrix();
 
+    glDisable(GL_TEXTURE_2D);
+
 }
 
 
+inline static std::string IntToString(int num)
+{
+    char chars[128];
+    sprintf(chars, "%i", num);
+    return std::string(chars);
+}
 
-void WindowScores::draw() const
+
+void WindowScores::Draw(void) const
 {
 
     float offset = 20;
-    std::ostringstream oss;
 
     glPushMatrix();
     glLoadIdentity();
@@ -130,11 +147,11 @@ void WindowScores::draw() const
     glEnd();
     glPopMatrix();
 
-    glEnable(GL_TEXTURE_2D);
+	glColor3f(1.0f, 1.0f, 1.0f);
 
     // show columns names
     for (unsigned int i = 0; i < column_names.size(); ++i)
-        Fonts.printText(Fonts.font[0][Fonts.FontMenuSize], column_names[i], Fonts.textColorGunOnTouch, off[i], offset+10);
+        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, column_names[i], Fonts.textColorGunOnTouch, off[i], offset+10);
 
     offset += 40;
 
@@ -143,23 +160,17 @@ void WindowScores::draw() const
         for (unsigned int j = 0; j < scores.size(); ++j)
         {
             // is it me ?
-            if (scores[j]->number == my_bot_nr)
-                draw_help(texture_s, off[0]-10, offset+j*15+5);
+            if (scores[j]->number == world.MY_BOT_NR)
+                draw_help(InterfaceBase.text_smalldot, off[0]-10, offset+j*15+5);
 
             // is dead ?
             else if (scores[j]->isKilled)
-                draw_help(texture_d, off[0]-10, offset+j*15+5);
+                draw_help(InterfaceBase.text_deaddot, off[0]-10, offset+j*15+5);
 
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], scores[j]->name, Fonts.textCol[scores[j]->team], off[0], offset+j*15);
-            oss << scores[j]->points;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[1], offset+j*15);
-            oss.str("");
-            oss << scores[j]->deaths;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[2], offset+j*15);
-            oss.str("");
-            oss << scores[j]->ping;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), Fonts.textCol[scores[j]->team], off[3], offset+j*15);
-            oss.str("");
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, scores[j]->name, Fonts.textCol[scores[j]->team], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->points), Fonts.textCol[scores[j]->team], off[1], offset+j*15);
+			Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->deaths), Fonts.textCol[scores[j]->team], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->ping), Fonts.textCol[scores[j]->team], off[3], offset+j*15);
         }
 
     }
@@ -168,26 +179,18 @@ void WindowScores::draw() const
         for (unsigned int j = 0; j < scores.size(); ++j)
         {
             // is it me ?
-            if (scores[j]->number == my_bot_nr)
-                draw_help(texture_s, off[0]-10, offset+j*15+5);
+            if (scores[j]->number == world.MY_BOT_NR)
+                draw_help(InterfaceBase.text_smalldot, off[0]-10, offset+j*15+5);
 
             // is dead ?
             else if (scores[j]->isKilled)
-                draw_help(texture_d, off[0]-10, offset+j*15+5);
+                draw_help(InterfaceBase.text_deaddot, off[0]-10, offset+j*15+5);
 
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
-            oss << scores[j]->killedNr;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[1], offset+j*15);
-            oss.str("");
-            oss << scores[j]->deaths;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[2], offset+j*15);
-            oss.str("");
-            oss << scores[j]->ping;
-            Fonts.printText(Fonts.font[1][Fonts.FontConsoleSize], oss.str(), scores[j]->color[SHIRT], off[3], offset+j*15);
-            oss.str("");
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->killedNr), scores[j]->color[SHIRT], off[1], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->deaths), scores[j]->color[SHIRT], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->ping), scores[j]->color[SHIRT], off[3], offset+j*15);
         }
     }
-
-    glDisable(GL_TEXTURE_2D);
 
 }

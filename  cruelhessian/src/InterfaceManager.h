@@ -25,7 +25,7 @@
 
 
 #include "Singleton.h"
-#include "Tex.h"
+#include "TexturesLoader.h"
 
 
 class InterfaceManager : public Singleton<InterfaceManager>
@@ -33,11 +33,11 @@ class InterfaceManager : public Singleton<InterfaceManager>
 
 public:
 
-    InterfaceManager();
-    virtual ~InterfaceManager();
+    InterfaceManager(void);
+    virtual ~InterfaceManager(void);
 
     void Draw();
-    void ReloadBar();
+    void ReloadBar(void);
 
 private:
 
@@ -47,11 +47,13 @@ private:
     Tex text_healthbar;
     Tex text_ammo;
     Tex text_nade;
+    Tex text_clusternade;
     Tex text_reloadbar;
     Tex text_jet;
     Tex text_jetbar;
     Tex text_firebar;
     Tex text_firebar_r;
+    Tex text_vestbar;
 
 };
 

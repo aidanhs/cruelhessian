@@ -1,7 +1,10 @@
+#ifndef WINDOW_EXIT_H
+#define WINDOW_EXIT_H
+
 /*   WindowExit.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,26 +21,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef WINDOW_EXIT_H
-#define WINDOW_EXIT_H
 
+#include "Singleton.h"
 #include "TVector2D.h"
 
 
-class WindowExit
+class WindowExit : public Singleton<WindowExit>
 {
 
-  TVector2D m_mouse_pos;
-  float x, y, w, h;
-  bool m_number;
+   // TVector2D m_xMousePos;
+    float m_fX, m_fY, m_fWidth, m_fHeight;
+    bool m_bNumber;
 
 public:
 
     WindowExit();
     ~WindowExit() {}
 
-    void draw(const TVector2D& pos);
-    bool select() const;
+    void Draw(const TVector2D& pos);
+    bool Select() const;
 };
 
 

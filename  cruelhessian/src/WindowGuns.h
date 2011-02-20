@@ -1,5 +1,5 @@
-#ifndef HEADER_1D9A3714CC45F2DF
-#define HEADER_1D9A3714CC45F2DF
+#ifndef WINDOW_GUNS_H
+#define WINDOW_GUNS_H
 
 /*   WindowGuns.h
  *
@@ -21,32 +21,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef WINDOW_GUNS_H
-#define WINDOW_GUNS_H
 
-#include "Tex.h"
+#include "Singleton.h"
+#include "TexturesLoader.h"
 #include "TVector2D.h"
 
 
-class WindowGuns
+class WindowGuns : public Singleton<WindowGuns>
 {
 
     TVector2D m_mouse_pos;
     float x, y, w, h;
     int m_number;
     void draw_help(const Tex& texture, float dx, float dy) const;
-
+    //char *m_cChar;
 
 public:
 
     WindowGuns();
-    ~WindowGuns() {}
+    ~WindowGuns();
 
-    void draw(const TVector2D& pos);
+    void Draw();
+    void Update(const TVector2D& pos);
     int select() const;
 };
 
 
 #endif
 
-#endif // header guard

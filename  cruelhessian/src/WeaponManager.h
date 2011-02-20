@@ -5,7 +5,7 @@
 /*   WeaponManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,37 +26,38 @@
 
 
 #include "Singleton.h"
-#include "Tex.h"
-#include "SDL.h"
+#include "TexturesLoader.h"
 #include <iostream>
 
-#define WEAPONS_NUMBER 18
-
-
-class WeaponBase
-{
-public:
-    std::string name;
-    Uint32 fireInterval;
-    Uint32 reloadTime;
-    float damage;
-    unsigned int ammo;
-    float speed;
-    int bulletStyle;
-    float startUpTime;
-    float bink;
-    int movementAcc;
-    int recoil;
-    Tex textureAmmo;
-    Tex textureGun;
-};
 
 
 class WeaponManager : public Singleton<WeaponManager>
 {
+    struct WeaponBase
+    {
+        std::string name;
+        float fireInterval;
+        float reloadTime;
+        float damage;
+        unsigned int ammo;
+        float speed;
+        int bulletStyle;
+        float startUpTime;
+        float bink;
+        int movementAcc;
+        int recoil;
+        Tex textureAmmo;
+        Tex textureGun;
+    };
+
 public:
 
+    static const unsigned int WEAPONS_NUMBER = 18;
+
     WeaponBase element[WEAPONS_NUMBER];
+    Tex text_grenade[17];
+    Tex text_clustergrenade[17];
+    Tex text_cluster;
 
     WeaponManager();
     virtual ~WeaponManager();
