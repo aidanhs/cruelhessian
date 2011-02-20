@@ -20,7 +20,8 @@
 
 #include <iostream>
 
-#include "../GUI.h"
+#include "../ParserManager.h"
+#include "GUI.h"
 #include "../Game.h"
 
 
@@ -57,12 +58,14 @@ bool GUI::onGraphicsChanged(const CEGUI::EventArgs& )
 
     if (mIsFullscreen->isSelected())
     {
-        game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_FULLSCREEN);
+        //game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_FULLSCREEN);
+        game.App.Create(sf::VideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP), "Cruel Hessian", sf::Style::Fullscreen);
         Parser.FULLSCREEN = true;
     }
     else
     {
-        game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_RESIZABLE);
+        //game.screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_RESIZABLE);
+        game.App.Create(sf::VideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP), "Cruel Hessian");
         Parser.FULLSCREEN = false;
     }
 

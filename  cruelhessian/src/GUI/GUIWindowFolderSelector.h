@@ -24,7 +24,10 @@
 #define FSEC_H
 
 #include "CEGUI.h"
-#include "DiskObject.h"
+//#include "DiskObject.h"
+
+//class CEGUI;
+class DiskObject;
 
 
 class GUIWindowFolderSelector
@@ -35,13 +38,13 @@ public:
 
     void show(CEGUI::Window* root);
     void hide();
-    std::string getResult();
+    const std::string getResult();
 
 private:
     virtual bool handleClick(const CEGUI::EventArgs& e);
     virtual void wireEvents();
     void updateFolderList();
-	DiskObject* disk;
+    DiskObject* disk;
     CEGUI::Window* frame;
 };
 

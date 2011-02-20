@@ -21,19 +21,15 @@
 #include <iostream>
 #include "boost/filesystem/fstream.hpp"
 
-#include "../regexp.h"
-#include "../GUI.h"
+#include "../Regex.h"
+#include "GUI.h"
 #include "../Game.h"
 #include "../WorldMap.h"
 #include "../ParserManager.h"
 
 
-void GUI::showMaps(const char* mask)
+void GUI::showMaps(const std::string& mask)
 {
-
-    std::string str, temp;
-    //boost::regex re(SOL_PATH + "Maps/" + mask);
-    std::string re = Parser.SOL_PATH + "Maps/" + mask;
 
     if (!boost::filesystem::exists(Parser.SOL_PATH + "Maps/"))
     {
@@ -44,22 +40,18 @@ void GUI::showMaps(const char* mask)
 
     mMapList->resetList();
 
+    std::string str;
     boost::filesystem::directory_iterator end;
 
     for (boost::filesystem::directory_iterator iter(Parser.SOL_PATH + "Maps/"); iter != end; ++iter)
     {
-        //if (boost::regex_match(iter->path().string(), re))
-        if (regexec(regcomp((char *)re.c_str()), (char *)iter->path().string().c_str()))
+        if (regex_match(iter->leaf(), mask))
         {
             str.assign(iter->path().string().begin() + Parser.SOL_PATH.length() + 5, iter->path().string().end() - 4);
             mMapList->addItem(new MyListItem(str));
         }
     }
 }
-
-
-
-
 
 
 bool GUI::onLeftClickStart(const CEGUI::EventArgs& )
@@ -70,26 +62,28 @@ bool GUI::onLeftClickStart(const CEGUI::EventArgs& )
 
         Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
 
-        //WorldMap *newworld;
         std::string xmap = Parser.SOL_PATH + "Maps/" + mMapPlayList->getListboxItemFromIndex(0)->getText().c_str() + ".PMS";
 
         Parser.FIRST_LIMIT = static_cast<int>(mSpinn1->getCurrentValue());
         Parser.LIMIT_TIME = 60*static_cast<int>(mSpinn2->getCurrentValue());
 
-
+//
         if (game.CURRENT_GAME_MODE == CTF || game.CURRENT_GAME_MODE == HTF || game.CURRENT_GAME_MODE == INF || game.CURRENT_GAME_MODE == TM)
         {
-            game.worldMgr = new WorldMap(xmap, mAlphaSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_1,
-                                    mBravoSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_2,
-                                    mCharlieSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_3,
-                                    mDeltaSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_4);
+
+            game.worldMgr = new WorldMap(xmap);
+            game.worldMgr->SetPlayers(4, mAlphaSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_1,
+                                      mBravoSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_2,
+                                      mCharlieSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_3,
+                                      mDeltaSpinner->isDisabled() ? 0 : Parser.RANDOM_BOTS_4);
         }
         else
         {
-            game.worldMgr = new WorldMap(xmap, Parser.RANDOM_BOTS);
-        }
 
-//        newworld->run();
+            game.worldMgr = new WorldMap(xmap);
+            game.worldMgr->SetPlayers(1, Parser.RANDOM_BOTS);
+
+        }
 
         delete game.worldMgr;
 
@@ -111,7 +105,8 @@ bool GUI::onLeftClickExit(const CEGUI::EventArgs& )
 bool GUI::onMapListClicked(const CEGUI::EventArgs& )
 {
     mMapPlayList->addItem(new MyListItem(mMapList->getFirstSelectedItem()->getText()));
-    mStartGameButton->setEnabled(true);
+    if (mStartGameButton->isDisabled())
+        mStartGameButton->setEnabled(true);
     return true;
 }
 
@@ -138,10 +133,10 @@ void GUI::setBotStates(bool a, bool b, bool c, bool d)
 
 bool GUI::onDeathClick(const CEGUI::EventArgs& )
 {
-    showMaps("[A-Z].+.(PMS|pms)$");
+    showMaps("[^(ctf_|htf_|inf_)].+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Kill everything that moves.")));
     mDesc1->setText((CEGUI::utf8*)(_("Kill limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_DEATHMATCH);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_DEATHMATCH));
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     game.CURRENT_GAME_MODE = DM;
@@ -150,10 +145,10 @@ bool GUI::onDeathClick(const CEGUI::EventArgs& )
 
 bool GUI::onPointClick(const CEGUI::EventArgs& )
 {
-    showMaps("[A-Z].+.(PMS|pms)$");
+    showMaps("[^(ctf_|htf_|inf_)].+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Get 1 point for kill. If you carry the Yellow Flag you get 2 points for kill. Also you get multipoints for multikills.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_POINTMATCH);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_POINTMATCH));
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     game.CURRENT_GAME_MODE = PM;
@@ -162,10 +157,10 @@ bool GUI::onPointClick(const CEGUI::EventArgs& )
 
 bool GUI::onTeamClick(const CEGUI::EventArgs& )
 {
-    showMaps("[A-Z].+.(PMS|pms)$");
+    showMaps("[^(ctf_|htf_|inf_)].+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Up to 4 teams fight against each other.")));
     mDesc1->setText((CEGUI::utf8*)(_("Capture limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_TEAMMATCH);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_TEAMMATCH));
     mCharlieDesc->setEnabled(true);
     mCharlieSpinner->setEnabled(true);
     mDeltaDesc->setEnabled(true);
@@ -179,10 +174,10 @@ bool GUI::onTeamClick(const CEGUI::EventArgs& )
 
 bool GUI::onRamboClick(const CEGUI::EventArgs& )
 {
-    showMaps("[A-Z].+.(PMS|pms)$");
+    showMaps("[^(ctf_|htf_|inf_)].+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("'First Blood' style. Whoever owns the Rambo Bow gains super Rambo powers. Only Rambo gets points for kill.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_RAMBOMATCH);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_RAMBOMATCH));
     mMapPlayList->resetList();
     setBotStates(false, false, false, false);
     game.CURRENT_GAME_MODE = RM;
@@ -191,10 +186,10 @@ bool GUI::onRamboClick(const CEGUI::EventArgs& )
 
 bool GUI::onCTFClick(const CEGUI::EventArgs& )
 {
-    showMaps("ctf_.+.(PMS|pms)$");
+    showMaps("ctf_.+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Capture the enemy flag and bring it to your base to score. 20 points for capture.")));
     mDesc1->setText((CEGUI::utf8*)(_("Capture limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_CAPTURE);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_CAPTURE));
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     game.CURRENT_GAME_MODE = CTF;
@@ -203,10 +198,10 @@ bool GUI::onCTFClick(const CEGUI::EventArgs& )
 
 bool GUI::onHTFClick(const CEGUI::EventArgs& )
 {
-    showMaps("htf_.+.(PMS|pms)$");
+    showMaps("htf_.+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Get the yellow flag and hold it with your team for as long as possible. The team earns 1 point every 5 seconds of holding.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_HOLD);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_HOLD));
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     game.CURRENT_GAME_MODE = HTF;
@@ -215,10 +210,10 @@ bool GUI::onHTFClick(const CEGUI::EventArgs& )
 
 bool GUI::onINFClick(const CEGUI::EventArgs& )
 {
-    showMaps("inf_.+.(PMS|pms)$");
+    showMaps("inf_.+.pms$");
     mDescription->setText((CEGUI::utf8*)(_("Red team gets 30 points for retreiving the black flag. Blue team gets 1 point every 5 seconds if the flag is in base.")));
     mDesc1->setText((CEGUI::utf8*)(_("Point limit")));
-    mSpinn1->setCurrentValue(Parser.LIMIT_INFILTRATION);
+    mSpinn1->setCurrentValue(static_cast<float>(Parser.LIMIT_INFILTRATION));
     mMapPlayList->resetList();
     setBotStates(true, true, false, false);
     game.CURRENT_GAME_MODE = INF;

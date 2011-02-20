@@ -22,21 +22,19 @@
 #include "boost/filesystem/fstream.hpp"
 
 #include "../AudioManager.h"
-#include "../regexp.h"
-#include "../GUI.h"
+#include "../ParserManager.h"
+#include "../Regex.h"
+#include "GUI.h"
 #include "../Game.h"
 
 
 
 int GUI::readM3U()
 {
-    std::string fold_mp3 = Parser.SOL_PATH + "Mp3/", buffer;
-    std::vector<std::string> gM3UFiles;
-    //boost::regex re(SOL_PATH + "Mp3/.+.(m3u|M3U)");
-    std::string re = Parser.SOL_PATH + "Mp3/.+.(m3u|M3U)";
-    boost::filesystem::directory_iterator end;
 
-    Audio.gMusicList.clear();
+    std::string fold_mp3 = Parser.SOL_PATH + "Mp3/", buffer;
+
+    Audio.ClearPlaylist();
 
     if (!boost::filesystem::exists(fold_mp3))
     {
@@ -44,10 +42,13 @@ int GUI::readM3U()
         return 1;
     }
 
+    std::vector<std::string> gM3UFiles;
+    std::string re = Parser.SOL_PATH + "Mp3/.+.(M3U|m3u)$";
+    boost::filesystem::directory_iterator end;
+
     for (boost::filesystem::directory_iterator iter(fold_mp3); iter != end; ++iter)
     {
-        //if (boost::regex_match(iter->path().string(), re))
-        if (regexec(regcomp((char *)re.c_str()), (char *)iter->path().string().c_str()))
+        if (regex_match(iter->path().string(), re))
         {
             // m3u file was found
             gM3UFiles.push_back(iter->path().string());
@@ -83,7 +84,10 @@ int GUI::readM3U()
         {
             getline(file, buffer);
             if (buffer[0] != '#' && buffer[0] != '\n' && buffer != "")
-                Audio.gMusicList.push_back(buffer);
+            {
+                Audio.AddToPlaylist(buffer);
+            }
+
         }
 
         file.close();
@@ -112,9 +116,17 @@ bool GUI::onSoundBoxChanged(const CEGUI::EventArgs& )
     {
         mSoundsSpinner->setEnabled(false);
         mSoundsDesc->setEnabled(false);
-        Parser.SOUNDS_VOL = 0;
+        Parser.SOUNDS_VOL = 0.0f;
         if (!mIsMusic->isSelected())
+        {
+            // nie ma niczego
+            if (AudioManager::GetSingletonPtr() != NULL)
+            {
+                delete game.audioMgr;
+            }
             setMusicStates(false);
+        }
+//std::cout << "SDFDSF" << std::endl;
     }
     else
     {
@@ -124,10 +136,15 @@ bool GUI::onSoundBoxChanged(const CEGUI::EventArgs& )
         setMusicStates(true);
 
         // create (if not exists) AudioManager - not implemented
+        if (AudioManager::GetSingletonPtr() == NULL)
+        {
+            game.audioMgr = new AudioManager;
+        }
         Parser.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
     }
 
-    Audio.setVolume();
+    if (AudioManager::GetSingletonPtr() != NULL)
+        Audio.setVolume();
 
     return true;
 }
@@ -135,12 +152,16 @@ bool GUI::onSoundBoxChanged(const CEGUI::EventArgs& )
 
 bool GUI::onSoundSpinnerChanged(const CEGUI::EventArgs& )
 {
+
     if (mIsSounds->isSelected())
     {
         Parser.SOUNDS_VOL = mSoundsSpinner->getCurrentValue();
     }
 
-    Audio.setVolume();
+    if (AudioManager::GetSingletonPtr() != NULL)
+    {
+        Audio.setVolume();
+    }
 
     return true;
 }
@@ -156,7 +177,15 @@ bool GUI::onMusicBoxChanged(const CEGUI::EventArgs& )
         mMusicSongDesc->setEnabled(false);
         Parser.MUSIC_VOL = 0;
         if (!mIsSounds->isSelected())
+        {
+            // nie ma niczego
+            if (AudioManager::GetSingletonPtr() != NULL)
+            {
+                delete game.audioMgr;
+            }
             setMusicStates(false);
+        }
+
     }
     else
     {
@@ -166,6 +195,10 @@ bool GUI::onMusicBoxChanged(const CEGUI::EventArgs& )
         mMusicSongDesc->setEnabled(true);
 
         // create (if not exists) AudioManager - not implemented
+        if (AudioManager::GetSingletonPtr() == NULL)
+        {
+            game.audioMgr = new AudioManager;
+        }
         Parser.MUSIC_VOL = mMusicSpinner->getCurrentValue();
 
         readM3U();
@@ -182,6 +215,9 @@ bool GUI::onMusicSpinnerChanged(const CEGUI::EventArgs& )
     {
         Parser.MUSIC_VOL = mMusicSpinner->getCurrentValue();
     }
+
+    if (AudioManager::GetSingletonPtr() != NULL)
+        Audio.setVolume();
     return true;
 }
 

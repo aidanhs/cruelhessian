@@ -1,7 +1,11 @@
-/*   disk_object.h
+#ifndef DISK_OBJECT_H
+#define DISK_OBJECT_H
+
+
+/*   DiskObject.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,19 +30,26 @@
 
 class DiskObject
 {
+#ifdef _WIN32
+    std::vector<std::string> WinDisks;
+    void findWinMainDir();
+#endif
 
 public:
-    DiskObject() {}
+    DiskObject();
     ~DiskObject() {}
 
     void upDir();
 
-#ifdef WIN32
+#ifdef _WIN32
     void fillWinMainDir();
 #endif
 
-    void fillDir(const std::string& dir);
+    void fillDir(const std::string& dir1, const std::string& dir2);
 
     std::vector<std::string> dirList;
     std::string mStartPath;
 };
+
+
+#endif

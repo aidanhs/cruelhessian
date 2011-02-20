@@ -24,6 +24,7 @@
 #define WNS_H
 
 #include "CEGUI.h"
+//class CEGUI;
 
 
 class GUIWindowNoSoldat

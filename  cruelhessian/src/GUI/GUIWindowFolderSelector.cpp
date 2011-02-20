@@ -1,7 +1,7 @@
 /*   GUIWindowFolderSelector.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 
 
 #include "GUIWindowFolderSelector.h"
+#include "DiskObject.h"
 
 
 GUIWindowFolderSelector::GUIWindowFolderSelector()
@@ -50,28 +51,31 @@ bool GUIWindowFolderSelector::handleClick(const CEGUI::EventArgs &e)
     {
         CEGUI::Listbox* list = static_cast<CEGUI::Listbox*>(winMgr.getWindow("FolderSelector/Frame/FolderList"));
         CEGUI::ListboxTextItem* item = static_cast<CEGUI::ListboxTextItem*>(list->getFirstSelectedItem());
-        //gui.MyListItem* item = static_cast<gui.MyListItem*>(list->getFirstSelectedItem());
+
         if (item == NULL)
             return 0;
 
         std::string text = disk->dirList[item->getID()];
 
+        // gdy kliknelismy na root
         if (text == "     MAIN")
         {
             // show main directory
-#ifdef WIN32
+#ifdef _WIN32
             disk->fillWinMainDir();
 #else
-            disk->fillDir("/");
+            disk->fillDir("/", "");
 #endif
         }
+        // gdy kliknelismy na dwukropek
         else if (text == "..")
         {
             disk->upDir();
         }
+        // gdy kliknelismy na nazwe katalogu
         else
         {
-            (disk->mStartPath != "/") ? disk->fillDir(disk->mStartPath + "/" + text) : disk->fillDir("/" + text);
+            disk->fillDir(disk->mStartPath, text);
         }
         updateFolderList();
     }
@@ -88,7 +92,7 @@ bool GUIWindowFolderSelector::handleClick(const CEGUI::EventArgs &e)
 
 
 
-std::string GUIWindowFolderSelector::getResult()
+const std::string GUIWindowFolderSelector::getResult()
 {
     return disk->mStartPath;
 }
@@ -113,7 +117,7 @@ void GUIWindowFolderSelector::show(CEGUI::Window* root)
     frame = winMgr.loadWindowLayout("fs.layout");
     root->addChildWindow(frame);
     wireEvents();
-    disk->fillDir(".");
+    disk->fillDir(".", "");
     updateFolderList();
 
 }

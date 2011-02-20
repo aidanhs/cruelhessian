@@ -1,7 +1,7 @@
 /*   GUIOptions.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,9 @@
 
 #include "boost/filesystem/fstream.hpp"
 
-#include "../GUI.h"
+#include "../ParserManager.h"
+#include "../AudioManager.h"
+#include "GUI.h"
 #include "../Game.h"
 
 
@@ -29,17 +31,21 @@
 bool GUI::onSoldatModeClick(const CEGUI::EventArgs& )
 {
 
-    mPlaceSoldatDesc->setEnabled(true);
+    //mPlaceSoldatDesc->setEnabled(true);
     mPlaceSoldat->setEnabled(true);
     mStatusSoldatField->setEnabled(true);
+//    mGroupOpt1->setEnabled(true);
 
-    mPlaceCHDesc->setEnabled(false);
-    mPlaceCH->setEnabled(false);
-    mStatusCHField->setEnabled(false);
+    //mPlaceCHDesc->setEnabled(false);
+    //mPlaceCHDesc->setVisible(false);
+    //mPlaceCH->setEnabled(false);
+    //mStatusCHField->setEnabled(false);
     mUpdateButton->setEnabled(false);
+//    mGroupOpt2->setEnabled(false);
 
     Parser.MODE = 0;
     Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
+	mPlaceSoldat->setText(Parser.SOL_PATH_[0]);
 
     checkSoldat();
 
@@ -51,18 +57,24 @@ bool GUI::onSoldatModeClick(const CEGUI::EventArgs& )
 // wybrano radio button 'cruel hessian mode'
 bool GUI::onCHModeClick(const CEGUI::EventArgs& )
 {
-
-    mPlaceCHDesc->setEnabled(true);
-    mPlaceCH->setEnabled(true);
-    mStatusCHField->setEnabled(true);
+//std::cout << "DHDH\n";
+    //mPlaceCHDesc->setEnabled(true);
+    //mPlaceCHDesc->setVisible(true);
+    //mPlaceCH->setEnabled(true);
+	mPlaceSoldat->setEnabled(true);
+    //mStatusCHField->setEnabled(true);
+	mStatusSoldatField->setEnabled(true);
     mUpdateButton->setEnabled(true);
+ //   mGroupOpt2->setEnabled(true);
 
-    mPlaceSoldatDesc->setEnabled(false);
-    mPlaceSoldat->setEnabled(false);
+    //mPlaceSoldatDesc->setEnabled(false);
+    mPlaceSoldat->setEnabled(true);
     mStatusSoldatField->setEnabled(false);
+   // mGroupOpt1->setEnabled(false);
 
     Parser.MODE = 1;
     Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
+	mPlaceSoldat->setText(Parser.SOL_PATH_[1]);
 
     checkCH();
 
@@ -83,16 +95,28 @@ void GUI::checkSoldat()
         game.CreateManagers();
         showInterfaces();
         selectInterface();
-        readM3U();
+        if (AudioManager::GetSingletonPtr() != NULL)
+            readM3U();
         CEGUI::EventArgs ev;
         onInterfaceListClick(ev);
+        // nie wiadomo, czy DM
         mDeathmatch->setSelected(true);
         onDeathClick(ev);
+//        game.LoadMapsList();
+        for (unsigned int i = 0; i < game.mapsListFromFile.size(); ++i)
+        {
+            //std::cout << " DL " << game.mapsListFromFile[i].c_str() << std::endl;
+            mMapPlayList->addItem(new MyListItem(game.mapsListFromFile[i]));
+            if (mStartGameButton->isDisabled())
+                mStartGameButton->setEnabled(true);
+        }
     }
     else if (Parser.SOL_PATH == "")
     {
         mStatusSoldatField->setText((CEGUI::utf8*)_("Not selected !"));
         mPlaceSoldat->setText("Click to select directory with Soldat files");
+        mMapList->resetList();
+        mMapPlayList->resetList();
 
         if (ONLY_ON_START)
         {
@@ -104,6 +128,13 @@ void GUI::checkSoldat()
     {
         mStatusSoldatField->setText((CEGUI::utf8*)_("Not found !"));
         mMapList->resetList();
+        mMapPlayList->resetList();
+
+        mIsMusic->setSelected(false);
+        mMusicSpinner->setEnabled(false);
+        mIsSounds->setSelected(false);
+        mMusicSpinner->setEnabled(false);
+        setMusicStates(false);
 
         if (ONLY_ON_START)
         {
@@ -125,7 +156,8 @@ void GUI::checkCH()
 
     if (game.checkSoldatStart())
     {
-        mStatusCHField->setText((CEGUI::utf8*)_("Found !"));
+        //mStatusCHField->setText((CEGUI::utf8*)_("Found !"));
+		mStatusSoldatField->setText((CEGUI::utf8*)_("Found !"));
         game.CreateManagers();
         showInterfaces();
         selectInterface();
@@ -134,15 +166,27 @@ void GUI::checkCH()
         onInterfaceListClick(ev);
         mDeathmatch->setSelected(true);
         onDeathClick(ev);
+//        game.LoadMapsList();
+        for (unsigned int i = 0; i < game.mapsListFromFile.size(); ++i)
+        {
+            //std::cout << " DL " << game.mapsListFromFile[i].length() << std::endl;
+            mMapPlayList->addItem(new MyListItem(game.mapsListFromFile[i]));
+            if (mStartGameButton->isDisabled())
+                mStartGameButton->setEnabled(true);
+        }
         mUpdateButton->setEnabled(false);
     }
     else if (Parser.SOL_PATH == "")
     {
 
-        mStatusCHField->setText((CEGUI::utf8*)_("Not selected !"));
-        mPlaceCH->setText("Click to select EMPTY directory for CH files");
+        //mStatusCHField->setText((CEGUI::utf8*)_("Not selected !"));
+		mStatusSoldatField->setText((CEGUI::utf8*)_("Not selected !"));
+        //mPlaceCH->setText("Click to select EMPTY directory for CH files");
+        //mPlaceCH->setText("Doesn't work, select Soldat mode");
+		mPlaceSoldat->setText("Doesn't work, select Soldat mode");
         mUpdateButton->setEnabled(false);
         mMapList->resetList();
+        mMapPlayList->resetList();
 
         if (ONLY_ON_START)
         {
@@ -152,9 +196,17 @@ void GUI::checkCH()
     }
     else
     {
-        mStatusCHField->setText((CEGUI::utf8*)_("Not found !"));
+        //mStatusCHField->setText((CEGUI::utf8*)_("Not found !"));
+		mStatusSoldatField->setText((CEGUI::utf8*)_("Not found !"));
         mMapList->resetList();
+        mMapPlayList->resetList();
         mUpdateButton->setEnabled(true);
+
+        mIsMusic->setSelected(false);
+        mMusicSpinner->setEnabled(false);
+        mIsSounds->setSelected(false);
+        mMusicSpinner->setEnabled(false);
+        setMusicStates(false);
 
         if (ONLY_ON_START)
         {

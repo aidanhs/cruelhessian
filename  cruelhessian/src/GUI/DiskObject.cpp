@@ -1,7 +1,7 @@
-/*   disk_object.cpp
+/*   DiskObject.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,28 +21,53 @@
 
 #include "DiskObject.h"
 #include "boost/filesystem/fstream.hpp"
+#include <iostream>
 
 
+
+DiskObject::DiskObject() :
+    mStartPath("")
+{
+#ifdef _WIN32
+    findWinMainDir();
+#endif
+}
 
 void DiskObject::upDir()
 {
 
     mStartPath = boost::filesystem::path(mStartPath).parent_path().file_string();
-    fillDir(mStartPath);
+    fillDir(mStartPath, "");
 
 }
 
 
-void DiskObject::fillDir(const std::string& dir)
+void DiskObject::fillDir(const std::string& dir1, const std::string& dir2)
 {
 
-    if (dir == ".")
+    if (dir1 == ".")
     {
         mStartPath = boost::filesystem::current_path().file_string();
     }
+    /*else if (dir1 == "..")
+    {
+        mStartPath = boost::filesystem::path(mStartPath).parent_path().file_string();
+    }*/
     else
     {
-        mStartPath = dir;
+        boost::filesystem::path p(dir1);
+        p /= dir2;
+        mStartPath = p.string();
+    }
+
+    try
+    {
+        boost::filesystem::directory_iterator dir_iter(mStartPath);
+    }
+    catch (boost::filesystem::basic_filesystem_error<boost::filesystem::path> e )
+    {
+        mStartPath = boost::filesystem::path(mStartPath).parent_path().file_string();
+        return;
     }
 
     boost::filesystem::directory_iterator dir_iter(mStartPath), dir_end;
@@ -57,13 +82,14 @@ void DiskObject::fillDir(const std::string& dir)
 
     std::sort(dirList.begin(), dirList.end());
 
-#ifdef WIN32
+#ifdef _WIN32
 
-//    if (disk_set.find(mStartPath) == disk_set.end())
+    if (mStartPath != "")
     {
-        dirList.insert(dirList.begin(), std::string(".."));
+        if (std::find(WinDisks.begin(), WinDisks.end(), mStartPath) == WinDisks.end())
+            dirList.insert(dirList.begin(), std::string(".."));
+        dirList.insert(dirList.begin(), std::string("     MAIN"));
     }
-    dirList.insert(dirList.begin(), std::string("     MAIN"));
 
 #else
 
@@ -78,22 +104,47 @@ void DiskObject::fillDir(const std::string& dir)
 }
 
 
-#ifdef WIN32
-void DiskObject::fillWinMainDir()
+#ifdef _WIN32
+void DiskObject::findWinMainDir()
 {
 
     char disk[4];
     disk[1] = ':';
     disk[2] = '/';
     disk[3] = '\0';
+    bool fileExists;
 
-    dirList.clear();
     for (char k = 'C'; k <= 'Z'; k++)
     {
         disk[0] = k;
-        if (boost::filesystem::exists(disk))
-            dirList.push_back(std::string(disk));
+
+        fileExists = false;
+
+        try
+        {
+            fileExists = boost::filesystem::exists(disk);
+        }
+        catch (boost::filesystem::basic_filesystem_error<boost::filesystem::path> e )
+        {
+            fileExists = false;
+        }
+
+        if (fileExists)
+        {
+            WinDisks.push_back(std::string(disk));
+        }
+
     }
 
 }
+
+
+void DiskObject::fillWinMainDir()
+{
+    dirList.clear();
+    dirList = WinDisks;
+
+    mStartPath = "";
+}
+
 #endif

@@ -26,6 +26,8 @@
 #include "CEGUI.h"
 #include <iostream>
 
+//class CEGUI;
+
 
 class GUIWindowUpdater
 {
@@ -35,7 +37,7 @@ public:
 
     void show(CEGUI::Window* root);
     void hide();
-   // double getResult();
+    // double getResult();
 
 private:
     virtual bool handleClick(const CEGUI::EventArgs& e);
