@@ -1,7 +1,7 @@
 /*   Controls.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,140 +22,164 @@
 #include "WorldMap.h"
 #include "Game.h"
 #include "AudioManager.h"
-
+#include "ParserManager.h"
+#include "BotManager.h"
+#include "WeaponManager.h"
+#include "Bot.h"
+#include "Map.h"
+#include "Body.h"
+#include "Mouse.h"
+#include "WindowExit.h"
+#include "WindowGuns.h"
+#include "textinout/CommandLine.h"
+#include "textinout/ChatLine.h"
+#include <SFML/Graphics.hpp>
 
 
 void WorldMap::inputUser()
 {
 
-    SDL_Event event;
-    Uint8* key;
+    sf::Event event;
 
-    key = SDL_GetKeyState(NULL);
-
-    while (SDL_PollEvent(&event))
+    while (game.App.GetEvent(event))
     {
-        if (event.type == SDL_QUIT)
+        if (event.Type == sf::Event::Closed)
         {
+            //    App.Close();
             CHOICE_EXIT = true;
         }
-//        getGLpos();
-        if (event.type == SDL_KEYDOWN)
-        {
-            KEY_PRESSED = event.key.keysym.sym;
 
-            if (KEY_PRESSED == SDLK_ESCAPE)
+        if (event.Type == sf::Event::KeyPressed)
+        {
+
+            onKeyDown(event.Key.Code);
+
+            KEY_PRESSED = event.Key.Code;
+
+            if (KEY_PRESSED == sf::Key::Escape)
             {
-                if (SHOW_ESC)
+                if (window_exit->GetSingletonPtr() != NULL)
                 {
                     delete window_exit;
-                    SHOW_ESC = false;
                 }
                 else
                 {
                     window_exit = new WindowExit();
-                    SHOW_ESC = true;
                 }
             }
-            if (KEY_PRESSED == SDLK_F1)
+            else if (KEY_PRESSED == sf::Key::F1)
             {
                 SHOW_SCORES = !SHOW_SCORES;
             }
-            if (KEY_PRESSED == SDLK_F3)
+            else if (KEY_PRESSED == sf::Key::F3)
             {
                 SHOW_STATS = !SHOW_STATS;
             }
-            if (KEY_PRESSED == SDLK_F4)
+            else if (KEY_PRESSED == sf::Key::F4)
             {
                 takeScreenshot();
             }
-            if (KEY_PRESSED == SDLK_F5 && Parser.MUSIC_VOL > 0 && !Audio.gMusicList.empty())
+            else if (KEY_PRESSED == sf::Key::F5 && Parser.MUSIC_VOL > 0)// && !Audio.gMusicList.empty())
             {
-                if (Mix_PausedMusic() == 0)
-                    Mix_PauseMusic();
+                if (Audio.music->GetStatus() == sf::Music::Paused)
+                    Audio.music->Pause();
                 else
-                    Mix_ResumeMusic();
+                    Audio.music->Play();
             }
-            if (KEY_PRESSED == SDLK_F6)
+            else if (KEY_PRESSED == sf::Key::F6)
             {
                 Audio.playMusic(-1);
             }
-            if (KEY_PRESSED == SDLK_F7)
+            else if (KEY_PRESSED == sf::Key::F7)
             {
                 Audio.playMusic(1);
             }
-            if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT) return;
+
+            if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT) return;
 
             if (KEY_PRESSED == Parser.KEY_GRENADE)
             {
                 if (!CHOICE_GUN && (bot[MY_BOT_NR]->numGrenades >= 1))
                 {
-                    addGrenade(MY_BOT_NR, mouse->getGlobalPosition(), 200);
+                    bot[MY_BOT_NR]->ThrowGrenade(mouse->getGlobalPosition(), 200);
+                }
+                else if (!CHOICE_GUN && (bot[MY_BOT_NR]->numClusters >= 1))
+                {
+                    bot[MY_BOT_NR]->ThrowCluster(mouse->getGlobalPosition(), 200);
                 }
             }
-            if (KEY_PRESSED == SDLK_s)
+            if (KEY_PRESSED == Parser.KEY_DOWN)
             {
                 bot[MY_BOT_NR]->movementType = KUCA;
             }
 
-            if (SHOW_COMMAND_LINE && !SHOW_MYCHAT_LINE)
+            if (command_line->GetSingletonPtr() != NULL && chat_line->GetSingletonPtr() == NULL)
             {
-                cons.Query(KEY_PRESSED);
+                command_line->Query(KEY_PRESSED);
             }
-            if (KEY_PRESSED == '/' && !SHOW_MYCHAT_LINE)
+            if (KEY_PRESSED == sf::Key::Slash && chat_line->GetSingletonPtr() == NULL && command_line->GetSingletonPtr() == NULL)
             {
-                SHOW_COMMAND_LINE = true;
+                command_line = new CommandLine();
             }
 
-            if (SHOW_MYCHAT_LINE && !SHOW_COMMAND_LINE)
+            if (chat_line->GetSingletonPtr() != NULL && command_line->GetSingletonPtr() == NULL)
             {
-                myChat.Query(KEY_PRESSED);
+                chat_line->Query(KEY_PRESSED);
             }
-            if (KEY_PRESSED == Parser.KEY_CHAT && !SHOW_COMMAND_LINE)
+            if (KEY_PRESSED == Parser.KEY_CHAT && command_line->GetSingletonPtr() == NULL && chat_line->GetSingletonPtr() == NULL)
             {
-                SHOW_MYCHAT_LINE = true;
+                chat_line = new ChatLine();
             }
 
         }
-        if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT || SHOW_COMMAND_LINE || SHOW_MYCHAT_LINE) return;
-
-        // single shot
-        // only USSCOM, Dessert Eagles, M79, ...
-        if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
+        else if (event.Type == sf::Event::KeyReleased)
         {
-            if (bot[MY_BOT_NR]->gunModel == 0 || bot[MY_BOT_NR]->gunModel == 1 || bot[MY_BOT_NR]->gunModel == 5 ||
-                    bot[MY_BOT_NR]->gunModel == 6 || bot[MY_BOT_NR]->gunModel == 8)
-            {
-                addBullet(MY_BOT_NR, mouse->getGlobalPosition());
-            }
+            onKeyUp(event.Key.Code);
         }
+
+        if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT || command_line->GetSingletonPtr() != NULL || chat_line->GetSingletonPtr() != NULL) return;
+
+        if (event.Type == sf::Event::MouseButtonPressed)
+        {
+            onMouseButtonDown(event.MouseButton.Button);
+        }
+        else if (event.Type == sf::Event::MouseButtonReleased)
+        {
+            onMouseButtonUp(event.MouseButton.Button);
+        }
+
     }
-    if (SHOW_GUN_MENU || SHOW_ESC || CHOICE_EXIT || bot[MY_BOT_NR]->isKilled) return;
+
+    if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT || bot[MY_BOT_NR]->isKilled) return;
 
 
-    // ************  mouse
+// ************  mouse
 
-    if (mouse->getGlobalX() <= bot[MY_BOT_NR]->position.x)
+    if (mouse->getGlobalX() <= bot[MY_BOT_NR]->GetPosition().x)
     {
+        // std::cout << "LEFT" << std::endl;
         bot[MY_BOT_NR]->movementDirection = LEFT;
-        bot[MY_BOT_NR]->movementType = STOI;
     }
-    else if (mouse->getGlobalX() > bot[MY_BOT_NR]->position.x)
+    else if (mouse->getGlobalX() > bot[MY_BOT_NR]->GetPosition().x)
     {
+        //std::cout << "RIGHT" << std::endl;
         bot[MY_BOT_NR]->movementDirection = RIGHT;
-        bot[MY_BOT_NR]->movementType = STOI;
     }
 
-    // right mouse button
-    if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_RMASK) && (bot[MY_BOT_NR]->procJet >= 0.01))
-    {
-        bot[MY_BOT_NR]->isAbleToFly = true;
+// right mouse button
+    const sf::Input& Input = game.App.GetInput();
 
-        moveBotJet(MY_BOT_NR);
+    //if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_RMASK) && (bot[MY_BOT_NR]->procJet >= 0.01))
+    if (Input.IsMouseButtonDown(sf::Mouse::Right) && (bot[MY_BOT_NR]->procJet >= 0.01))
+    {
 
         //if (SOUNDS_VOL > 0) Mix_PlayChannel(-1, Mix_LoadWAV("Sfx/jump.wav"), 0);
         if (bot[MY_BOT_NR]->procJet >= 2*JET_CHANGE)
+        {
             bot[MY_BOT_NR]->procJet -= JET_CHANGE;
+            bot[MY_BOT_NR]->movementType = GORA;
+        }
+
     }
     else if (bot[MY_BOT_NR]->procJet >= 0.000)
     {
@@ -163,113 +187,94 @@ void WorldMap::inputUser()
         {
             bot[MY_BOT_NR]->procJet += JET_CHANGE;
         }
-        bot[MY_BOT_NR]->isAbleToFly = false;
 
     }
 
-    // left mouse button
-    // don't stop fire
-    if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_LMASK)
+// left mouse button
+// don't stop fire
+    if (Input.IsMouseButtonDown(sf::Mouse::Left))
     {
         if (bot[MY_BOT_NR]->gunModel == 2 || bot[MY_BOT_NR]->gunModel == 3 || bot[MY_BOT_NR]->gunModel == 4 ||
                 bot[MY_BOT_NR]->gunModel == 7 || bot[MY_BOT_NR]->gunModel == 9 || bot[MY_BOT_NR]->gunModel == 10)
         {
-            addBullet(MY_BOT_NR, mouse->getGlobalPosition());
-        }
-    }
-
-    // **********  keyboard
-
-    if (key[Parser.KEY_DOWN])
-    {
-        moveBotDown(MY_BOT_NR);
-    }
-
-    if (key[Parser.KEY_LEFT])
-    {
-        moveBotLeft(MY_BOT_NR);
-        if (key[Parser.KEY_DOWN])
-            bot[MY_BOT_NR]->movementType = (bot[MY_BOT_NR]->movementDirection == LEFT) ? SKOK_DOL_OBROT : SKOK_DOL_OBROT_TYL;
-    }
-
-    if (key[Parser.KEY_RIGHT])
-    {
-        moveBotRight(MY_BOT_NR);
-        if (key[Parser.KEY_DOWN])
-            bot[MY_BOT_NR]->movementType = (bot[MY_BOT_NR]->movementDirection == RIGHT) ? SKOK_DOL_OBROT : SKOK_DOL_OBROT_TYL;
-    }
-
-    if (key[Parser.KEY_UP])
-    {
-        moveBotUp(MY_BOT_NR);
-    }
-
-    if (key[Parser.KEY_LEFT] && key[Parser.KEY_UP])
-    {
-        moveBotJumpLeft(MY_BOT_NR);
-    }
-
-    if (key[Parser.KEY_RIGHT] && key[Parser.KEY_UP])
-    {
-        moveBotJumpRight(MY_BOT_NR);
-    }
-
-    if ((key[Parser.KEY_RELOAD] && bot[MY_BOT_NR]->leftAmmos < Weapons[bot[MY_BOT_NR]->gunModel].ammo) || bot[MY_BOT_NR]->isReloading)
-    {
-        gunReloading(MY_BOT_NR);
-    }
-
-
-    std::ostringstream oss;
-
-    for (unsigned int i = 0; i < world.bot.size(); ++i)
-    {
-        if (world.bot[i]->isKilled)
-        {
-            Uint32 new_time = world.getCurrentTime - world.bot[i]->timerRespawnTime;
-            if (new_time > world.bot[i]->respawnTime)
-            {
-                world.bot[i]->isKilled = false;
-
-                // set start position
-                int point = static_cast<int>(rand()%world.spawnpoint[world.bot[i]->team].size());
-                world.bot[i]->position.x = world.map->spawnpoint[world.spawnpoint[world.bot[i]->team][point]].x - world.bot[i]->w/2;
-                world.bot[i]->position.y = world.map->spawnpoint[world.spawnpoint[world.bot[i]->team][point]].y - world.bot[i]->h/2;
-
-                if (i == world.MY_BOT_NR)
-                {
-                    world.backg->setPosition(world.OLD_POS.x - world.bot[world.MY_BOT_NR]->position.x, world.OLD_POS.y - world.bot[world.MY_BOT_NR]->position.y);
-                    if (Parser.SOUNDS_VOL > 0)
-                        Mix_PlayChannel(-1, Audio.sound_new_life, 0);
-                }
-
-            }
-            else if (i == world.MY_BOT_NR)
-            {
-                oss << static_cast<float>(world.bot[world.MY_BOT_NR]->respawnTime - new_time)/1000;
-                Fonts.printTextMiddle(Fonts.font[1][Fonts.FontMenuSize], "Respawn in " + oss.str(), Fonts.textCol[1], 50.0f);
-                Fonts.printTextMiddle(Fonts.font[1][Fonts.FontMenuSize], "Killed by " + world.bot[world.bot[world.MY_BOT_NR]->killer]->name, Fonts.textCol[1], Parser.MAX_HEIGHT-94.0f);
-                oss.str("");
-
-                // wait half a second after death and then show gun menu
-                if (new_time >= 500 && !world.CHOICE_GUN && !world.SHOW_GUN_MENU)
-                {
-                    world.window_guns = new WindowGuns();
-                    world.SHOW_GUN_MENU = true;
-                }
-            }
+            bot[MY_BOT_NR]->Shot(mouse->getGlobalPosition());
         }
     }
 
 }
 
 
-static inline bool ccw(TVector2D A, float bx, float by, float cx, float cy)
+void WorldMap::onMouseButtonDown(sf::Mouse::Button& butt)
+{
+
+    if (butt == sf::Mouse::Right)
+    {
+        bot[MY_BOT_NR]->isAbleToFly = true;
+    }
+    // single shot
+    // only USSCOM, Dessert Eagles, M79, ...
+    else if (butt == sf::Mouse::Left)
+    {
+        if (bot[MY_BOT_NR]->gunModel == 0 || bot[MY_BOT_NR]->gunModel == 1 || bot[MY_BOT_NR]->gunModel == 5 ||
+                bot[MY_BOT_NR]->gunModel == 6 || bot[MY_BOT_NR]->gunModel == 8)
+        {
+            bot[MY_BOT_NR]->Shot(mouse->getGlobalPosition());
+        }
+
+    }
+}
+
+void WorldMap::onMouseButtonUp(sf::Mouse::Button& butt)
+{
+
+    //std::cout << "W GORE PRAWY" << std::endl;
+    if (butt == sf::Mouse::Right)
+    {
+        bot[MY_BOT_NR]->isAbleToFly = false;
+    }
+
+}
+
+
+
+void WorldMap::onKeyDown(sf::Key::Code sym)
+{
+//std::cout << "donw" << std::endl;
+    if (sym == Parser.KEY_LEFT)
+        bot[MY_BOT_NR]->setMoveLeft(true);
+    else if (sym == Parser.KEY_RIGHT)
+        bot[MY_BOT_NR]->setMoveRight(true);
+    else if (sym == Parser.KEY_UP)
+        bot[MY_BOT_NR]->setMoveUp(true);
+    else if (sym == Parser.KEY_DOWN)
+        bot[MY_BOT_NR]->setMoveDown(true);
+    else if (sym == Parser.KEY_RELOAD && bot[MY_BOT_NR]->leftAmmos < Weapons[bot[MY_BOT_NR]->gunModel].ammo)
+        gunReloading(MY_BOT_NR);
+
+}
+
+
+void WorldMap::onKeyUp(sf::Key::Code sym)
+{
+//std::cout << "up" << std::endl;
+    if (sym == Parser.KEY_LEFT)
+        bot[MY_BOT_NR]->setMoveLeft(false);
+    else if (sym == Parser.KEY_RIGHT)
+        bot[MY_BOT_NR]->setMoveRight(false);
+    else if (sym == Parser.KEY_UP)
+        bot[MY_BOT_NR]->setMoveUp(false);
+    else if (sym == Parser.KEY_DOWN)
+        bot[MY_BOT_NR]->setMoveDown(false);
+
+}
+
+
+static inline bool ccw(const TVector2D& A, float bx, float by, float cx, float cy)
 {
     return ((cy-A.y)*(bx-A.x) > (by-A.y)*(cx-A.x));
 }
 
-static inline bool ccw(TVector2D A, TVector2D B, float cx, float cy)
+static inline bool ccw(const TVector2D& A, const TVector2D& B, float cx, float cy)
 {
     return ((cy-A.y)*(B.x-A.x) > (B.y-A.y)*(cx-A.x));
 }
@@ -286,7 +291,7 @@ bool WorldMap::do_bots_see(unsigned int first, unsigned int second)
     // C - xpoly[i].vertex[k].x, xpoly[i].vertex[k].y
     // D - xpoly[i].vertex[k+1].x, xpoly[i].vertex[k+1].y
 
-    for (unsigned int i = 0; i < static_cast<unsigned int>(map->polygonCount); ++i) // sprawdz kazdy trojkat, czy koliduje z linia
+    /*for (unsigned int i = 0; i < static_cast<unsigned int>(map->polygonCount); ++i) // sprawdz kazdy trojkat, czy koliduje z linia
     {
         if (map->polygon[i].polyType != map->ptONLY_BULLETS_COLLIDE && map->polygon[i].polyType != map->ptNO_COLLIDE)
         {
@@ -305,7 +310,7 @@ bool WorldMap::do_bots_see(unsigned int first, unsigned int second)
                 return false;
 
         }
-    }
+    }*/
     return true;
 
 }
@@ -339,7 +344,7 @@ void WorldMap::bots_control()
             {
                 // j - wylosuj ostrzeliwanego
                 j = ostrz_list[rand() % ostrz_list.size()];
-                if (bot[j]->position.x > bot[i]->position.x)
+                if (bot[j]->GetPosition().x > bot[i]->GetPosition().x)
                 {
                     if (bot[i]->movementDirection == LEFT)
                         bot[i]->movementDirection = RIGHT;
@@ -349,7 +354,7 @@ void WorldMap::bots_control()
                     if (bot[i]->movementDirection == RIGHT)
                         bot[i]->movementDirection = LEFT;
                 }
-                addBullet(i, bot[j]->position);
+                bot[i]->Shot(bot[j]->GetPosition());
                 ostrz_list.clear();
             }
         }
@@ -366,31 +371,42 @@ void WorldMap::bots_control()
                 continue;
             if (map->waypoint[dest].right)
             {
-                moveBotRight(i);
-                bot[i]->movementDirection = RIGHT;
+                //Bots.moveRight(i);
+                //bot[i]->movementDirection = RIGHT;
+                bot[i]->setMoveRight(true);
             }
-            if (map->waypoint[dest].left)
+            else if (map->waypoint[dest].left)
             {
-                moveBotLeft(i);
-                bot[i]->movementDirection = LEFT;
+                //Bots.moveLeft(i);
+                //bot[i]->movementDirection = LEFT;
+                bot[i]->setMoveLeft(true);
             }
-            if (map->waypoint[dest].up) moveBotUp(i);
-            if (map->waypoint[dest].down) moveBotDown(i);
-            if (map->waypoint[dest].jet) moveBotJet(i);
+            if (map->waypoint[dest].up)
+            {
+                //Bots.moveUp(i);
+                bot[i]->setMoveUp(true);
+            }
+            else if (map->waypoint[dest].down)
+            {
+                //   Bots.moveDown(i);
+                bot[i]->setMoveDown(true);
+            }
+            if (map->waypoint[dest].jet)
+            {
+                //   Bots.moveJet(i);
+            }
 
 
             //if (doszedl(i))
-            if (bot[i]->is_inside(map->waypoint[bot[i]->destinationPoint].x, map->waypoint[bot[i]->destinationPoint].y))
-            {
-                //cout << "Doszedl";
-                if (map->waypoint[dest].numConnections == 0)
-                    bot[i]->destinationPoint = map->waypoint[dest].connections[0]-1;
-                else
-                    bot[i]->destinationPoint = map->waypoint[dest].connections[static_cast<int>(rand() % map->waypoint[dest].numConnections)]-1;
-            }
+            /*            if (bot[i]->is_inside(map->waypoint[bot[i]->destinationPoint].x, map->waypoint[bot[i]->destinationPoint].y))
+                        {
+                            //cout << "Doszedl";
+                            if (map->waypoint[dest].numConnections == 0)
+                                bot[i]->destinationPoint = map->waypoint[dest].connections[0]-1;
+                            else
+                                bot[i]->destinationPoint = map->waypoint[dest].connections[static_cast<int>(rand() % map->waypoint[dest].numConnections)]-1;
+                        }*/
         }
     }
 
 }
-
-
