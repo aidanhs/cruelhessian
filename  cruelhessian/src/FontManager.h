@@ -4,7 +4,7 @@
 /*   FontManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,34 +25,25 @@
 #include <iostream>
 
 #include "Singleton.h"
-#include "SDL.h"
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
-#include "Fonts.h"
+#include <SFML/Graphics.hpp>
 
 
 class FontManager : public Singleton<FontManager>
 {
+    std::string m_xFont[2];
+
 public:
 
-    FontManager();
-    virtual ~FontManager();
+    FontManager(void);
+    virtual ~FontManager(void);
 
-    std::string Font[2];
-    freetype::font_data font[2][50];
+    sf::Font font[2];
 
     std::vector<unsigned char> textColorGunOnTouch;
-    //unsigned char textColorGunOnTouch[4];
     std::vector<unsigned char> textColorGunNormal;
-    //unsigned char textColorGunNormal[4];
-    std::vector<std::vector<unsigned char> > textCol;
-    //unsigned char textCol[5][4];
     std::vector<unsigned char> textGunColor;
-    //unsigned char textGunColor[4];
     std::vector<unsigned char> textColor;
+    std::vector<std::vector<unsigned char> > textCol;
 
     int FontMenuSize;
     int FontConsoleSize;
@@ -67,12 +58,8 @@ public:
     int FontConsoleSmallBold;
     int KillConsoleNameSpace;
 
-    //void printText(freetype::font_data& font, const std::string& text, unsigned int* color, float x, float y);
-    //void printText(freetype::font_data& font, const std::string& text, unsigned char* color, float x, float y);
-    void printText(freetype::font_data& font, const std::string& text, std::vector<unsigned char>& color, float x, float y);
-    //void printTextMiddle(freetype::font_data& font, const std::string& text, unsigned int* color, float y);
-    //void printTextMiddle(freetype::font_data& font, const std::string& text, unsigned char* color, float y);
-    void printTextMiddle(freetype::font_data& font, const std::string& text, std::vector<unsigned char>& color, float y);
+    void printText(const sf::Font& font, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const;
+    void printTextMiddle(const sf::Font& font, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float y) const;
 
 };
 

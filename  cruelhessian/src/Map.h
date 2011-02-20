@@ -1,8 +1,5 @@
-#ifndef HEADER_439C342C9BBC7A49
-#define HEADER_439C342C9BBC7A49
-
-#ifndef _PMSMAP_
-#define _PMSMAP_
+#ifndef PMSMAP_H
+#define PMSMAP_H
 
 /*   Map.h
  *
@@ -29,29 +26,41 @@
 #include <vector>
 #include <string>
 
-#include "SDL_opengl.h"
+#include "TexturesLoader.h"
+#include "Drawable.h"
+#include "Body.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
+
 
 typedef unsigned char ubyte;
 typedef unsigned short word;
 
 
-class Map
+//class Body;
+
+class Map : public Body
 {
-    GLuint* text_scen;
-    GLuint text_poly;
+//protected:
+
 
 public:
-	void drawBack();
-	void drawFront();
-    /**
-     *
-     * Constructor
-     *
-     * @param  mname Name of map file
-     */
+    GLuint* text_scen;
+    GLuint text_poly;
+    Tex text_weath;
+ //   Body *body;
+
+  //  void drawBack(void) const;
+  //  void drawFront(void) const;
+    //void draw(void) const;
+
+
     Map(const std::string& mname);
 
-	~Map();
+    ~Map();
 
     typedef enum
     {
@@ -252,6 +261,7 @@ word year :
 
 
 public:
+    std::vector<Body *>bod;
     long version;
     std::string name;
     std::string texture;
@@ -283,16 +293,30 @@ public:
     float topoffs;
     float bottomoffs;
 
-	std::string getTextPoly() const;
-	std::vector<std::string> getTextScen() const;
+};
 
-	void setPoly(GLuint text);
-	void setScen(GLuint *text);
-	//void setScen(GLuint &text);
+
+class MapBack : public Drawable
+{
+    const Map& map;
+public:
+    MapBack(const Map& _map) : map(_map) {};
+	MapBack& operator=(const MapBack&) {}
+
+    void Draw() const;
+};
+
+
+class MapFront : public Drawable
+{
+    const Map& map;
+public:
+    MapFront(const Map& _map) : map(_map) {};
+	MapFront& operator=(const MapFront&) {}
+
+    void Draw() const;
 };
 
 
 #endif
 
-
-#endif // header guard 

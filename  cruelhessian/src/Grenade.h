@@ -4,7 +4,7 @@
 /*   Grenade.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,23 +22,27 @@
  */
 
 
-#include "Tex.h"
-#include "SDL.h"
-#include "TVector2D.h"
-#include "MovingObject.h"
+#include "Drawable.h"
+#include "Body.h"
 
 
-class Grenade : public MovingObject
+class Tex;
+class TVector2D;
+
+class Grenade : public Drawable, public Body
 {
 
-    const Tex* texture[17];
+    const Tex* m_axTexture[17];
+	int m_iCurrentFrame;           ///< Counter of the current frame
+    float m_fTimerChangeFrame;  ///< Time when the previous frame was changed
+    float m_fTimerThrow;         ///< Time when the grenade was thrown
+	int m_iOwner;
+	Tex *m_xTexture;
+	float m_fHalfWidth;
+	float m_fHalfHeight;
 
 public:
 
-    int currentFrame;           ///< Counter of the current frame
-    Uint32 timer_change_frame;  ///< Time when the previous frame was changed
-    Uint32 timer_throw;         ///< Time when the grenade was thrown
-    //float r;
     bool killMyself;
 
     /**
@@ -50,10 +54,11 @@ public:
      * @param  owner owner of the grenade
      * @param  push_time time when grenade was pushed
      */
-    Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, const Tex* text);
+    Grenade(const TVector2D& src, const TVector2D& velocity, unsigned int _owner);
+    ~Grenade() {}
 
-    void draw() const;
-    void update();
+    void Draw() const;
+    void Update();
 
 };
 

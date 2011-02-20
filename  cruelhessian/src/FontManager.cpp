@@ -1,7 +1,7 @@
 /*   FontManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,11 +20,12 @@
 
 
 #include "FontManager.h"
+#include "Game.h"
 #include "ParserManager.h"
 #include "parser/SimpleIni.h"
 
 
-FontManager::FontManager()
+FontManager::FontManager(void)
 {
     std::cout << "Starting FontManager ... " << std::endl;
 
@@ -106,111 +107,96 @@ FontManager::FontManager()
 
     if (tmp_str == "Verdana")
     {
-        Font[0] = "lucon.ttf";
+        m_xFont[0] = "lucon.ttf";
     }
     else if (tmp_str == "Lucida Console")
     {
-        Font[0] = "lucon.ttf";
+        m_xFont[0] = "lucon.ttf";
     }
     else if (tmp_str == "BankGothic Lt BT")
     {
-        Font[0] = "bgothl.ttf";
+        m_xFont[0] = "bgothl.ttf";
     }
     else if (tmp_str == "Arial")
     {
-        Font[0] = "arial.ttf";
+        m_xFont[0] = "arial.ttf";
     }
     else if (tmp_str == "FreeSans")
     {
-        Font[0] = "FreeSans.ttf";
+        m_xFont[0] = "FreeSans.ttf";
     }
 
     tmp_str = ini.GetValue("FONTS", "Font2");
     if (tmp_str == "Verdana")
     {
-        Font[1] = "lucon.ttf";
+        m_xFont[1] = "lucon.ttf";
     }
     else if (tmp_str == "Lucida Console")
     {
-        Font[1] = "lucon.ttf";
+        m_xFont[1] = "lucon.ttf";
     }
     else if (tmp_str == "BankGothic Lt BT")
     {
-        Font[1] = "bgothl.ttf";
+        m_xFont[1] = "bgothl.ttf";
     }
     else if (tmp_str == "Arial")
     {
-        Font[1] = "arial.ttf";
+        m_xFont[1] = "arial.ttf";
     }
     else if (tmp_str == "FreeSans")
     {
-        Font[1] = "FreeSans.ttf";
+        m_xFont[1] = "FreeSans.ttf";
     }
 
-    FontMenuSize = ini.GetLongValue("FONTS", "FontMenuSize");
-    FontConsoleSize = ini.GetLongValue("FONTS", "FontConsoleSize");
-    FontBigSize = ini.GetLongValue("FONTS", "FontBigSize");
-    FontWeaponMenuSize = ini.GetLongValue("FONTS", "FontWeaponMenuSize");
+    FontMenuSize         = ini.GetLongValue("FONTS", "FontMenuSize");
+    FontConsoleSize      = ini.GetLongValue("FONTS", "FontConsoleSize");
+    FontBigSize          = ini.GetLongValue("FONTS", "FontBigSize");
+    FontWeaponMenuSize   = ini.GetLongValue("FONTS", "FontWeaponMenuSize");
     FontConsoleSmallSize = ini.GetLongValue("FONTS", "FontConsoleSmallSize");
-    FontHeightScale = ini.GetLongValue("FONTS", "FontHeightScale");
-    FontMenuBold = ini.GetLongValue("FONTS", "FontMenuBold");
-    FontConsoleBold = ini.GetLongValue("FONTS", "FontConsoleBold");
-    FontBigBold = ini.GetLongValue("FONTS", "FontBigBold");
-    FontWeaponMenuBold = ini.GetLongValue("FONTS", "FontWeaponMenuBold");
+    FontHeightScale      = ini.GetLongValue("FONTS", "FontHeightScale");
+    FontMenuBold         = ini.GetLongValue("FONTS", "FontMenuBold");
+    FontConsoleBold      = ini.GetLongValue("FONTS", "FontConsoleBold");
+    FontBigBold          = ini.GetLongValue("FONTS", "FontBigBold");
+    FontWeaponMenuBold   = ini.GetLongValue("FONTS", "FontWeaponMenuBold");
     FontConsoleSmallBold = ini.GetLongValue("FONTS", "FontConsoleSmallBold");
     KillConsoleNameSpace = ini.GetLongValue("FONTS", "KillConsoleNameSpace");
 
-    for (int i = 0; i < 2; ++i)
-    {
-        font[i][FontMenuSize].init((Parser.SOL_PATH + Font[i]).c_str(), FontMenuSize);
-        font[i][FontConsoleSize].init((Parser.SOL_PATH + Font[i]).c_str(), FontConsoleSize);
-        font[i][FontBigSize].init((Parser.SOL_PATH + Font[i]).c_str(), FontBigSize);
-        font[i][FontWeaponMenuSize].init((Parser.SOL_PATH + Font[i]).c_str(), FontWeaponMenuSize);
-        font[i][FontConsoleSmallSize].init((Parser.SOL_PATH + Font[i]).c_str(), FontConsoleSmallSize);
-    }
+    font[0].LoadFromFile(Parser.SOL_PATH + m_xFont[0]);
+    font[1].LoadFromFile(Parser.SOL_PATH + m_xFont[1]);
 
-
-    // font1_16.init((Parser.SOL_PATH + Font1).c_str(), 12);
-    // font2_12.init((Parser.SOL_PATH + Font2).c_str(), 10);
-    // font2_28.init((Parser.SOL_PATH + Font2).c_str(), 26);
-
-//    font1_16 = new OGLFT::Monochrome((Parser.SOL_PATH + Font1).c_str(), 14);
-//    font2_12 = new OGLFT::Monochrome((Parser.SOL_PATH + Font2).c_str(), 10);
-//    font2_28 = new OGLFT::Monochrome((Parser.SOL_PATH + Font2).c_str(), 28);
 }
 
-FontManager::~FontManager()
+FontManager::~FontManager(void)
 {
 
     std::cout << "Removing FontManager ..." << std::endl;
 
-    for (int i = 0; i < 2; ++i)
-    {
-        font[i][FontMenuSize].clean();
-        font[i][FontConsoleSize].clean();
-        font[i][FontBigSize].clean();
-        font[i][FontWeaponMenuSize].clean();
-        font[i][FontConsoleSmallSize].clean();
-    }
-
-}
-
-//void FontManager::printTextMiddle(freetype::font_data& fontx, const std::string& text, unsigned int* color, float y)
-//void FontManager::printTextMiddle(freetype::font_data& fontx, const std::string& text, unsigned char* color, float y)
-void FontManager::printTextMiddle(freetype::font_data& fontx, const std::string& text, std::vector<unsigned char>& color, float y)
-{
-    printText(fontx, text, color, Parser.MAX_WIDTH/2 - text.length() / 2 - 50, y);
 }
 
 
-//void FontManager::printText(freetype::font_data& fontx, const std::string& text, unsigned int* color, float x, float y)
-//void FontManager::printText(freetype::font_data& fontx, const std::string& text, unsigned char* color, float x, float y)
-void FontManager::printText(freetype::font_data& fontx, const std::string& text, std::vector<unsigned char>& color, float x, float y)
+void FontManager::printTextMiddle(const sf::Font& fontx, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float y) const
 {
-    glPushMatrix();
-    glColor3ub(color[0], color[1], color[2]);
-    glLoadIdentity();
-    freetype::print(fontx, x, Parser.MAX_HEIGHT-y-12.0f, text.c_str());
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glPopMatrix();
+	printText(fontx, size, text, color, 100, y);
+}
+
+
+void FontManager::printText(const sf::Font& fontx, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const
+{
+	sf::String xtext(text, fontx, static_cast<float>(size));
+	xtext.SetColor(sf::Color(color[0], color[1], color[2]));
+    xtext.SetPosition(x, y);
+	xtext.SetStyle(sf::String::Bold);
+
+    game.App.Draw(xtext);
+
+    /*sf::Text xtext(text);
+    xtext.SetFont(fontx);
+    xtext.SetCharacterSize(size);
+    xtext.SetColor(sf::Color(color[0], color[1], color[2]));
+    xtext.SetPosition(x, y);
+
+    game.App.SaveGLStates();
+    game.App.Draw(xtext);
+    game.App.RestoreGLStates();
+*/
 }

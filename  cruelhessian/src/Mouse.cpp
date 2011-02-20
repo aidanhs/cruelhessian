@@ -1,7 +1,7 @@
 /*   Mouse.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,18 +21,27 @@
 
 #include "Mouse.h"
 #include "ParserManager.h"
-#include "SDL.h"
+#include "Game.h"
 #include "InterfaceBaseManager.h"
+#include <SFML/Graphics.hpp>
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
+#include <GL/glu.h>
 
 
-Mouse::Mouse()
-    : texture(InterfaceBase.text_mouse), mGlobalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2)), mLocalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2))
+Mouse::Mouse() :
+    texture(InterfaceBase.text_mouse),
+    mGlobalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2)),
+    mLocalPos(TVector2D(Parser.MAX_WIDTH/2, Parser.MAX_HEIGHT/2))
 {
 
 }
 
 
-void Mouse::draw() const
+void Mouse::Draw() const
 {
 
     glEnable(GL_TEXTURE_2D);
@@ -45,33 +54,34 @@ void Mouse::draw() const
 
     glBegin(GL_QUADS);
     glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
+    glVertex2i(0, 0);
     glTexCoord2i(1, 1);
-    glVertex2f(texture.w, 0.0);
+    glVertex2i(texture.w, 0);
     glTexCoord2i(1, 0);
-    glVertex2f(texture.w, texture.h);
+    glVertex2i(texture.w, texture.h);
     glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture.h);
+    glVertex2i(0, texture.h);
     glEnd();
 
     glPopMatrix();
+
     glDisable(GL_TEXTURE_2D);
 
 }
 
 
-TVector2D Mouse::getGlobalPosition() const
+TVector2D Mouse::getGlobalPosition(void) const
 {
     return mGlobalPos;
 }
 
-TVector2D Mouse::getLocalPosition() const
+TVector2D Mouse::getLocalPosition(void) const
 {
     return mLocalPos;
 }
 
 
-float Mouse::getGlobalX() const
+float Mouse::getGlobalX(void) const
 {
     return mGlobalPos.x;
 }
@@ -82,18 +92,27 @@ float Mouse::getGlobalY() const
 }
 */
 
-float Mouse::getLocalX() const
+float Mouse::getLocalX(void) const
 {
     return mLocalPos.x;
 }
 
-float Mouse::getLocalY() const
+float Mouse::getLocalY(void) const
 {
     return mLocalPos.y;
 }
 
-void Mouse::update()
+void Mouse::Update()
 {
+
+    const sf::Input& Input = game.App.GetInput();
+
+    mRelative.x = mLocalPos.x - Input.GetMouseX();
+    mRelative.y = mLocalPos.y - Input.GetMouseY();
+
+    mLocalPos.x = static_cast<float>(Input.GetMouseX());
+    mLocalPos.y = static_cast<float>(Input.GetMouseY());
+
 
     GLint viewport[4];
     GLdouble modelview[16];
@@ -103,11 +122,7 @@ void Mouse::update()
     GLdouble posZ = 0;
     GLdouble tempx = 0.0f;
     GLdouble tempy = 0.0f;
-    int tx, ty;
-
-    SDL_GetMouseState(&tx, &ty);
-
-    mLocalPos = TVector2D(static_cast<float>(tx), static_cast<float>(ty));
+//    int tx, ty;
 
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
     glGetDoublev(GL_PROJECTION_MATRIX, projection);
@@ -118,6 +133,9 @@ void Mouse::update()
     glReadPixels(static_cast<GLint>(mLocalPos.x), static_cast<GLint>(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
     gluUnProject(winX, winY, winZ, modelview, projection, viewport, &tempx, &tempy, &posZ);
 
-    mGlobalPos = TVector2D(static_cast<float>(tempx), static_cast<float>(tempy));
+    mGlobalPos.x = static_cast<float>(tempx);
+    mGlobalPos.y = static_cast<float>(tempy);
+
+  //  std::cout << "GLOBAL " << mGlobalPos.x << ", " << mGlobalPos.y << std::endl;
 
 }

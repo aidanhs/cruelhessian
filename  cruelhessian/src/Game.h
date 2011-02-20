@@ -4,7 +4,7 @@
 /*   Game.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,25 +22,27 @@
  */
 
 
-#include "GUI.h"
-#include "WorldMap.h"
+#include <iostream>
+#include <vector>
 #include "Singleton.h"
-#include "WeaponManager.h"
-#include "BotManager.h"
-#include "FontManager.h"
-#include "AudioManager.h"
-#include "ParserManager.h"
-#include "BonusManager.h"
+#include "Enums.h"
+#include <SFML/Graphics.hpp>
 
 
-
-
+class GUI;
+class WorldMap;
+class WeaponManager;
+class BotManager;
+class FontManager;
+class AudioManager;
+class ParserManager;
+class BonusManager;
+class PhysicsManager;
 
 
 class Game : public Singleton<Game>
 {
     GUI *guiMgr;
-    void run(int argc, char *argv[]);
 
     // 0 - nothing, wrong args
     // 1 - tiny mode, worldmap
@@ -51,8 +53,18 @@ class Game : public Singleton<Game>
 
     void RemoveManagers();
 
+    typedef struct
+    {
+        std::string name;
+        std::vector<unsigned char> rgb;
+    } cl_colors;
+
 public:
 
+    sf::RenderWindow App;
+
+    std::vector<cl_colors> CL_COLOR;
+    std::vector<std::string> mapsListFromFile;
     std::vector<std::string> SOLDAT_FOLDER;
     WorldMap *worldMgr;
     WeaponManager *weaponMgr;
@@ -62,7 +74,9 @@ public:
     AudioManager *audioMgr;
     ParserManager *parserMgr;
 
+
     void CreateManagers();
+    int LoadMapsList();
 
     Game(int argc, char *argv[]);
     virtual ~Game();
@@ -71,9 +85,7 @@ public:
 
     std::vector<unsigned char> tcolor2rgb(const std::string& hex);
     std::string rgb2tcolor(const std::vector<unsigned char>& col);
-    int setSDL();
-
-    SDL_Surface *screen;
+    int setSFML();
 
     int CONFIG_VERSION;
 

@@ -122,9 +122,24 @@ typedef enum
     SHIRT = 0,
     HAIR,
     SKIN,
-    PANTS
+    PANTS,
+    NONE
 } BODY_COLOR;
 
+typedef enum
+{
+    TYPE_BULLET = 0,
+    TYPE_BONUS,
+    TYPE_GRENADE,
+    TYPE_CLUSTER,
+    TYPE_CLUSTERGRENADE,
+    TYPE_POLYGON,
+    TYPE_CRATE,
+    TYPE_COLLIDER,
+    TYPE_WEAPON,
+    TYPE_PLAYER,
+    TYPE_DEADMEAT
+} BODY_TYPE;
 
 #endif
 

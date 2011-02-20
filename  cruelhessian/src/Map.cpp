@@ -25,13 +25,15 @@
 
 #include <fstream>
 #include <vector>
-#include <string>
 #include <iostream>
-
-
+#include "boost/filesystem/fstream.hpp"
 #include "Map.h"
-#include "WorldMap.h"
-#include "parser/SimpleIni.h"
+#include "TVector2D.h"
+#include "Body.h"
+#include "ParserManager.h"
+#include "TexturesLoader.h"
+#include "PhysicsManager.h"
+#include "physics/ContactListener.h"
 
 
 const float _180overpi = 57.29f;
@@ -52,41 +54,19 @@ static std::string read_string(std::istream& is, int full_length)
 }
 
 
-std::string Map::getTextPoly() const
-{
-    return texture;
-}
-
-
-std::vector<std::string> Map::getTextScen() const
-{
-    std::vector<std::string> text_name(sceneryCount);
-
-    for (int i = 0; i < sceneryCount; ++i)
-        text_name[i] = scenery[i].name;
-    return text_name;
-}
-
-
-void Map::setPoly(GLuint text)
-{
-    text_poly = text;
-}
-
-
-void Map::setScen(GLuint *text)
-//void Map::setScen(GLuint &text)
-{
-    text_scen = new GLuint[sceneryCount];
-    //GLuint text_scen[sceneryCount];// = new GLuint[sceneryCount];
-
-    for (int i = 0; i < sceneryCount; ++i)
-        text_scen[i] = text[i];
-}
-
-
 Map::Map(const std::string& mname)
 {
+
+    std::cout << "Loading map ... " << std::endl;
+
+
+    if (!boost::filesystem::exists(mname))
+    {
+        std::cerr << "Cannot find map file : " << mname << std::endl;
+        exit(1);
+    }
+
+    std::cout << "   loading map file ... " << std::endl;
 
     std::ifstream is(mname.c_str(), std::ios::binary);
     version = read_bin<int>(is);
@@ -112,11 +92,34 @@ Map::Map(const std::string& mname)
         temp.perpendicular[1] = read_bin<PMS_VECTOR>(is);
         temp.perpendicular[2] = read_bin<PMS_VECTOR>(is);
         temp.polyType = PMS_POLYTYPE(read_bin<ubyte>(is));
+
+        //if (temp.polyType != ptNO_COLLIDE)
+        {
+            //TVector2D* axVertices = new TVector2D[3];
+            std::vector<TVector2D> axVertices;
+            axVertices.resize(3);
+
+            axVertices[0] = TVector2D(0, 0);
+            axVertices[1] = TVector2D(temp.vertex[1].x - temp.vertex[0].x, temp.vertex[1].y - temp.vertex[0].y);
+            axVertices[2] = TVector2D(temp.vertex[2].x - temp.vertex[0].x, temp.vertex[2].y - temp.vertex[0].y);
+
+            Body *body = new Body();
+            body->Set(TVector2D(temp.vertex[0].x, temp.vertex[0].y), TVector2D(0,0), axVertices, 0.0);
+            body->SetCollisionCallback(HandleContact);
+            body->type = TYPE_POLYGON;
+       //     body->number = i;
+            //bod.push_back(bodd);
+            Physics.m_staticObj.push_back(body);
+            //world.addBody(bodd);
+        }
+
         polygon.push_back(temp);
 
     }
+
     sectorDivisions = read_bin<int>(is);
     numSectors = read_bin<int>(is);
+    //std::cout << "SECT " << sectorDivisions << " num " << numSectors << std::endl;
 
     topoffs = static_cast<float>(sectorDivisions * -numSectors);
     bottomoffs = static_cast<float>(sectorDivisions * numSectors);
@@ -166,6 +169,22 @@ Map::Map(const std::string& mname)
         //temp.nameLen = read_bin<ubyte>( is );
         temp.name = read_string(is, 50);
         temp.timestamp = read_bin<PMS_TIMESTAMP>(is);
+
+
+       // std::cout << "DATE " << (temp.timestamp.date.year - 1980) << 9 | temp.timestamp.date.month << 5 | temp.timestamp.date.day << std::endl;;
+       // std::cout << " TIME " << temp.timestamp.time.hour << 11 | temp.timestamp.time.minute << 5 | temp.timestamp.time.second / 2 << std::endl;
+/*
+       int wYear = (temp.timestamp.date.year >> 9) + 1980;
+       int wMonth = (temp.timestamp.date.month >> 5) & 0xf;
+       int wDay = temp.timestamp.date.day & 0x1f;
+       std::cout << "YERDS " << wYear << " MON " << wMonth << " day " << wDay << std::endl;
+
+       int wHour = temp.timestamp.time.hour >> 11;
+       int wMinute = (temp.timestamp.time.minute >> 5) & 0x3f;
+       int wSecond = (temp.timestamp.time.second & 0x1f) << 1;
+
+       std::cout << "hour " << wHour << " Min " << wMinute << " sec " << wSecond << std::endl;
+*/
         scenery.push_back(temp);
     }
     colliderCount = read_bin<int>(is);
@@ -235,75 +254,104 @@ Map::Map(const std::string& mname)
     }
     is.close();
 
+
+    std::cout << "   loading scenery textures ... " << std::flush;
+
+    text_scen = new GLuint[sceneryCount];
+
+    for (unsigned int i = 0; i < scenery.size(); ++i)
+    {
+        text_scen[i] = Texture::Load(Parser.SOL_PATH + "Scenery-gfx/", scenery[i].name);
+    }
+
+    std::cout << "   DONE ... " << std::endl;
+
+    std::cout << "   loading triangles texture ... " << std::endl;
+    text_poly = Texture::Load(Parser.SOL_PATH + "Textures/", texture);
+
+
+    std::cout << "   loading weather textures ... " << std::endl;
+    if (weather != wtNONE)
+    {
+        if (weather == wtRAIN)
+            text_weath = Texture::LoadExt(Parser.SOL_PATH + "Sparks-gfx/", "rain");
+        else if (weather == wtSANDSTORM)
+            text_weath = Texture::LoadExt(Parser.SOL_PATH + "Sparks-gfx/", "sand");
+        else if (weather == wtSNOW)
+            text_weath = Texture::LoadExt(Parser.SOL_PATH + "Sparks-gfx/", "snow");
+    }
+
+
 }
 
 
-void Map::drawBack()
+void MapBack::Draw() const
 {
-    // glEnable(GL_TEXTURE_2D);
+
+    glEnable(GL_TEXTURE_2D);
 
     // draw scenery on the back
-    for (size_t i = 0; i < prop.size(); ++i)
+    for (unsigned int i = 0; i < map.prop.size(); ++i)
     {
-        if (prop[i].level == dbBEHIND_ALL)
+        if (map.prop[i].level == map.dbBEHIND_ALL)
         {
             glPushMatrix();
-            glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+            glTranslatef(map.prop[i].x, map.prop[i].y, 0.0);
+            glRotatef(-map.prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(map.prop[i].scaleX, map.prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, map.text_scen[map.prop[i].style-1]);
 
-            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+            glColor4ub(map.prop[i].color.red, map.prop[i].color.green, map.prop[i].color.blue, map.prop[i].alpha);
 
             glBegin(GL_QUADS);
-            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
             glTexCoord2i(0, 1);
-            glVertex2f(0.0, 0.0);
+            glVertex2i(0, 0);
             glTexCoord2i(1, 1);
-            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glVertex2i(map.prop[i].width, 0);
             glTexCoord2i(1, 0);
-            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glVertex2i(map.prop[i].width, map.prop[i].height);
             glTexCoord2i(0, 0);
-            glVertex2f(0.0, static_cast<float>(prop[i].height));
+            glVertex2i(0, map.prop[i].height);
 
             glEnd();
 
             glPopMatrix();
         }
     }
+
+	glDisable(GL_TEXTURE_2D);
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
 }
 
 
-void Map::drawFront()
+void MapFront::Draw() const
 {
-    // glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
 
     // draw scenery on the back
-    for (size_t i = 0; i < prop.size(); ++i)
+    for (unsigned int i = 0; i < map.prop.size(); ++i)
     {
-        if (prop[i].level == dbBEHIND_MAP)
+        if (map.prop[i].level == map.dbBEHIND_MAP)
         {
             glPushMatrix();
-            glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+            glTranslatef(map.prop[i].x, map.prop[i].y, 0.0);
+            glRotatef(-map.prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(map.prop[i].scaleX, map.prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, map.text_scen[map.prop[i].style-1]);
 
-            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+            glColor4ub(map.prop[i].color.red, map.prop[i].color.green, map.prop[i].color.blue, map.prop[i].alpha);
 
             glBegin(GL_QUADS);
-            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
             glTexCoord2i(0, 1);
-            glVertex2f(0.0, 0.0);
+            glVertex2i(0, 0);
             glTexCoord2i(1, 1);
-            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glVertex2i(map.prop[i].width, 0);
             glTexCoord2i(1, 0);
-            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glVertex2i(map.prop[i].width, map.prop[i].height);
             glTexCoord2i(0, 0);
-            glVertex2f(0.0, static_cast<float>(prop[i].height));
+            glVertex2i(0, map.prop[i].height);
 
             glEnd();
 
@@ -311,33 +359,31 @@ void Map::drawFront()
         }
     }
 
-    glBindTexture(GL_TEXTURE_2D, text_poly);
+    glBindTexture(GL_TEXTURE_2D, map.text_poly);
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < polygonCount; ++i)
+    for (long i = 0; i < map.polygonCount; ++i)
     {
-        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[0].color));
-        glColor4ub(polygon[i].vertex[0].color.red,
-                   polygon[i].vertex[0].color.green,
-                   polygon[i].vertex[0].color.blue,
-                   polygon[i].vertex[0].color.alpha);
-        glTexCoord3f(polygon[i].vertex[0].tu, -polygon[i].vertex[0].tv, 1.0f / polygon[i].vertex[0].rhw);
-        glVertex3f(polygon[i].vertex[0].x, polygon[i].vertex[0].y, polygon[i].vertex[0].z);
 
-        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[1].color));
-        glColor4ub(polygon[i].vertex[1].color.red,
-                   polygon[i].vertex[1].color.green,
-                   polygon[i].vertex[1].color.blue,
-                   polygon[i].vertex[1].color.alpha);
-        glTexCoord3f(polygon[i].vertex[1].tu, -polygon[i].vertex[1].tv, 1.0f / polygon[i].vertex[1].rhw);
-        glVertex3f(polygon[i].vertex[1].x, polygon[i].vertex[1].y, polygon[i].vertex[1].z);
+        glColor4ub(map.polygon[i].vertex[0].color.red,
+                   map.polygon[i].vertex[0].color.green,
+                   map.polygon[i].vertex[0].color.blue,
+                   map.polygon[i].vertex[0].color.alpha);
+        glTexCoord3f(map.polygon[i].vertex[0].tu, -map.polygon[i].vertex[0].tv, 1.0f / map.polygon[i].vertex[0].rhw);
+        glVertex3f(map.polygon[i].vertex[0].x, map.polygon[i].vertex[0].y, map.polygon[i].vertex[0].z);
 
-        //glColor4ubv(reinterpret_cast<GLubyte*>(&polygon[i].vertex[2].color));
-        glColor4ub(polygon[i].vertex[2].color.red,
-                   polygon[i].vertex[2].color.green,
-                   polygon[i].vertex[2].color.blue,
-                   polygon[i].vertex[2].color.alpha);
-        glTexCoord3f(polygon[i].vertex[2].tu, -polygon[i].vertex[2].tv, 1.0f / polygon[i].vertex[2].rhw);
-        glVertex3f(polygon[i].vertex[2].x, polygon[i].vertex[2].y, polygon[i].vertex[2].z);
+        glColor4ub(map.polygon[i].vertex[1].color.red,
+                   map.polygon[i].vertex[1].color.green,
+                   map.polygon[i].vertex[1].color.blue,
+                   map.polygon[i].vertex[1].color.alpha);
+        glTexCoord3f(map.polygon[i].vertex[1].tu, -map.polygon[i].vertex[1].tv, 1.0f / map.polygon[i].vertex[1].rhw);
+        glVertex3f(map.polygon[i].vertex[1].x, map.polygon[i].vertex[1].y, map.polygon[i].vertex[1].z);
+
+        glColor4ub(map.polygon[i].vertex[2].color.red,
+                   map.polygon[i].vertex[2].color.green,
+                   map.polygon[i].vertex[2].color.blue,
+                   map.polygon[i].vertex[2].color.alpha);
+        glTexCoord3f(map.polygon[i].vertex[2].tu, -map.polygon[i].vertex[2].tv, 1.0f / map.polygon[i].vertex[2].rhw);
+        glVertex3f(map.polygon[i].vertex[2].x, map.polygon[i].vertex[2].y, map.polygon[i].vertex[2].z);
     }
     glEnd();
 
@@ -345,39 +391,39 @@ void Map::drawFront()
 
 
     // draw scenery on the front
-    for (size_t i = 0; i < prop.size(); ++i)
+    for (unsigned int i = 0; i < map.prop.size(); ++i)
     {
-        if (prop[i].level == dbBEHIND_NONE)
+        if (map.prop[i].level == map.dbBEHIND_NONE)
         {
             glPushMatrix();
-            glTranslatef(prop[i].x, prop[i].y, 0.0);
-            glRotatef(-prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
-            glScalef(prop[i].scaleX, prop[i].scaleY, 0.0);
-            glBindTexture(GL_TEXTURE_2D, text_scen[prop[i].style-1]);
+            glTranslatef(map.prop[i].x, map.prop[i].y, 0.0);
+            glRotatef(-map.prop[i].rotation * _180overpi, 0.0, 0.0, 1.0);
+            glScalef(map.prop[i].scaleX, map.prop[i].scaleY, 0.0);
+            glBindTexture(GL_TEXTURE_2D, map.text_scen[map.prop[i].style-1]);
 
-            glColor4ub(prop[i].color.red, prop[i].color.green, prop[i].color.blue, prop[i].alpha);
+            glColor4ub(map.prop[i].color.red, map.prop[i].color.green, map.prop[i].color.blue, map.prop[i].alpha);
 
             glBegin(GL_QUADS);
 
-            //glColor4ubv(reinterpret_cast<GLubyte*>(&prop[i].color));
             glTexCoord2i(0, 1);
-            glVertex2f(0.0, 0.0);
+            glVertex2i(0, 0);
             glTexCoord2i(1, 1);
-            glVertex2f(static_cast<float>(prop[i].width), 0.0);
+            glVertex2i(map.prop[i].width, 0);
             glTexCoord2i(1, 0);
-            glVertex2f(static_cast<float>(prop[i].width), static_cast<float>(prop[i].height));
+            glVertex2i(map.prop[i].width, map.prop[i].height);
             glTexCoord2i(0, 0);
-            glVertex2f(0.0, static_cast<float>(prop[i].height));
+            glVertex2i(0, map.prop[i].height);
             glEnd();
 
             glPopMatrix();
         }
     }
+
+	glDisable(GL_TEXTURE_2D);
+
     glColor3f(1.0f, 1.0f, 1.0f);
 
 }
-
-
 
 
 Map::~Map()

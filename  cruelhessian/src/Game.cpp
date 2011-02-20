@@ -1,7 +1,7 @@
 /*   Game.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,16 +22,146 @@
 #include "boost/filesystem/operations.hpp"
 
 #include "Game.h"
-#include "regexp.h"
+#include "GUI/GUI.h"
+#include "Regex.h"
+#include "WorldMap.h"
+#include "Singleton.h"
+#include "WeaponManager.h"
+#include "BotManager.h"
+#include "FontManager.h"
+#include "AudioManager.h"
+#include "ParserManager.h"
+#include "BonusManager.h"
 
+//#include "SDL.h"
+/*
+extern "C" {
+#include <lua50/lua.h>
+#include <lua50/lualib.h>
+#include <lua50/lauxlib.h>
+}
+*/
 
 Game::Game(int argc, char *argv[])
 {
 
+    // directories name
     std::string folders[] = {"Anims", "Bots", "Gostek-gfx", "Interface-gfx", "Maps", "Rest", "Scenery-gfx", "Sfx", "Sparks-gfx", "Textures", "Txt", "Weapons-gfx"};
     SOLDAT_FOLDER.assign(folders, folders + sizeof(folders) / sizeof(std::string) );
 
+    // colors name
+    std::string colors[] = {"clAqua", "clBlack", "clBlue", "clCream", "clFuchsia", "clGray", "clGreen", "clLime", "clMaroon", "clMedGray",
+                            "clMoneyGreen", "clNavy", "clOlive", "clPurple", "clRed", "clSilver", "clSkyBlue", "clTeal", "clWhite", "clYellow"
+                           };
+
+    unsigned int size_col = sizeof(colors) / sizeof(std::string);
+    CL_COLOR.resize(size_col);
+
+    for (unsigned int i = 0; i < size_col; ++i)
+    {
+        CL_COLOR[i].name = colors[i];
+        CL_COLOR[i].rgb.resize(3);
+    }
+
+    // aqua
+    CL_COLOR[0].rgb[0] = 0;
+    CL_COLOR[0].rgb[1] = 255;
+    CL_COLOR[0].rgb[2] = 255;
+
+    // black
+    CL_COLOR[1].rgb[0] =  CL_COLOR[1].rgb[1] = CL_COLOR[1].rgb[2] = 0;
+
+    // blue
+    CL_COLOR[2].rgb[0] = 0;
+    CL_COLOR[2].rgb[1] = 0;
+    CL_COLOR[2].rgb[2] = 255;
+
+    // cream
+    CL_COLOR[3].rgb[0] = 255;
+    CL_COLOR[3].rgb[1] = 251;
+    CL_COLOR[3].rgb[2] = 240;
+
+    // fuchsia
+    CL_COLOR[4].rgb[0] = 255;
+    CL_COLOR[4].rgb[1] = 0;
+    CL_COLOR[4].rgb[2] = 255;
+
+    // gray
+    CL_COLOR[5].rgb[0] = CL_COLOR[5].rgb[1] = CL_COLOR[5].rgb[2] = 128;
+
+    // green
+    CL_COLOR[6].rgb[0] = 0;
+    CL_COLOR[6].rgb[1] = 255;
+    CL_COLOR[6].rgb[2] = 0;
+
+    // lime
+    CL_COLOR[7].rgb[0] = 0;
+    CL_COLOR[7].rgb[1] = 255;
+    CL_COLOR[7].rgb[2] = 0;
+
+    // maroon
+    CL_COLOR[8].rgb[0] = 128;
+    CL_COLOR[8].rgb[1] = 0;
+    CL_COLOR[8].rgb[2] = 0;
+
+    // medgray
+    CL_COLOR[9].rgb[0] = 160;
+    CL_COLOR[9].rgb[1] = 160;
+    CL_COLOR[9].rgb[2] = 164;
+
+    // money green
+    CL_COLOR[10].rgb[0] = 192;
+    CL_COLOR[10].rgb[1] = 220;
+    CL_COLOR[10].rgb[2] = 192;
+
+    // navy
+    CL_COLOR[11].rgb[0] = 0;
+    CL_COLOR[11].rgb[1] = 0;
+    CL_COLOR[11].rgb[2] = 128;
+
+    // olive
+    CL_COLOR[12].rgb[0] = 128;
+    CL_COLOR[12].rgb[1] = 128;
+    CL_COLOR[12].rgb[2] = 0;
+
+    // purple
+    CL_COLOR[13].rgb[0] = 128;
+    CL_COLOR[13].rgb[1] = 0;
+    CL_COLOR[13].rgb[2] = 128;
+
+    // red
+    CL_COLOR[14].rgb[0] = 255;
+    CL_COLOR[14].rgb[1] = 0;
+    CL_COLOR[14].rgb[2] = 0;
+
+    // silver
+    CL_COLOR[15].rgb[0] =  CL_COLOR[15].rgb[1] = CL_COLOR[15].rgb[2] = 192;
+
+    // sky blue
+    CL_COLOR[16].rgb[0] = 166;
+    CL_COLOR[16].rgb[1] = 202;
+    CL_COLOR[16].rgb[2] = 240;
+
+    // teal
+    CL_COLOR[17].rgb[0] = 0;
+    CL_COLOR[17].rgb[1] = 128;
+    CL_COLOR[17].rgb[2] = 128;
+
+    // white
+    CL_COLOR[18].rgb[0] = CL_COLOR[18].rgb[1] = CL_COLOR[18].rgb[2] = 255;
+
+    // yellow
+    CL_COLOR[19].rgb[0] = 255;
+    CL_COLOR[19].rgb[1] = 255;
+    CL_COLOR[19].rgb[2] = 0;
+
+
+    // parser loading
+
     parserMgr = new ParserManager;
+
+    //std::cout << (int)tcolor2rgb("$00DDCB21")[0] << " " << (int)tcolor2rgb("$00DDCB21")[1] << " " << (int)tcolor2rgb("$00DDCB21")[2] << std::endl;
+    //std::cout << (int)tcolor2rgb("$00796938")[0] << " " << (int)tcolor2rgb("$00796938")[1] << " " << (int)tcolor2rgb("$00796938")[2] << std::endl;
 
     CH_HOME_DIRECTORY = "";
     CH_DATA_DIRECTORY = "data/";
@@ -39,7 +169,7 @@ Game::Game(int argc, char *argv[])
     START_MODE = 0;
     CONFIG_VERSION = 4;
 
-#ifndef WIN32
+#ifndef _WIN32
     CH_DATA_DIRECTORY = "/usr/share/cruelhessian/data/";
     //CH_DATA_DIRECTORY = "../data/";
     CH_HOME_DIRECTORY = getenv("HOME");
@@ -49,41 +179,20 @@ Game::Game(int argc, char *argv[])
 
     CH_CONFIG_FILE = CH_HOME_DIRECTORY + "options.ini";
 
-    run(argc, argv);
-}
 
-
-Game::~Game()
-{
-
-    if (START_MODE == 1)
-    {
-        if (WorldMap::GetSingletonPtr() != NULL)
-            delete worldMgr;
-    }
-    else if (START_MODE == 2)
-        delete guiMgr;
-
-    RemoveManagers();
-
-    if (ParserManager::GetSingletonPtr() != NULL)
-        delete parserMgr;
-}
-
-
-void Game::run(int argc, char *argv[])
-{
+    int parsing = Parser.ReadConfigs();
 
     if (argc == 1)
     {
         START_MODE = 2;
+		setSFML();
         guiMgr = new GUI;
     }
     else
     {
         if (strcmp(argv[1], "-start") == 0)
         {
-            if (Parser.ReadConfigs() == 1)
+            if (parsing == 1)
             {
                 START_MODE = 0;
                 Parser.SaveConfigs();
@@ -92,7 +201,7 @@ void Game::run(int argc, char *argv[])
                 return;
             }
 
-            setSDL();
+
             if (!checkSoldatStart())
             {
                 std::cerr << "Cannot find Soldat" << std::endl;
@@ -104,12 +213,12 @@ void Game::run(int argc, char *argv[])
             // select the first CTF map
 
             std::string firstMap = "";
-            std::string re = Parser.SOL_PATH + "Maps/ctf_.*";
+            std::string re = "ctf_.+.pms$";
             boost::filesystem::directory_iterator end;
 
             for (boost::filesystem::directory_iterator iter(Parser.SOL_PATH + "Maps/"); iter != end; ++iter)
             {
-                if (regexec(regcomp((char *)re.c_str()), (char *)iter->path().string().c_str()))
+                if (regex_match(iter->leaf(), re))
                 {
                     firstMap = iter->path().string();
                     break;
@@ -121,11 +230,17 @@ void Game::run(int argc, char *argv[])
                 START_MODE = 1;
                 Parser.FIRST_LIMIT = 5;
                 CURRENT_GAME_MODE = CTF;
-                worldMgr = new WorldMap(firstMap, Parser.RANDOM_BOTS_1, Parser.RANDOM_BOTS_2, 0, 0);
+
+                setSFML();
+
+                worldMgr = new WorldMap(firstMap);
+                //worldMgr = new WorldMap(Parser.SOL_PATH + "Maps/ctf_Cobra.PMS");
+                worldMgr->SetPlayers(4, Parser.RANDOM_BOTS_1, Parser.RANDOM_BOTS_2, 0, 0);
+
             }
             else
             {
-                std::cout << "At least one CTF map required !" << std::endl;
+                std::cout << "At least one CTF map is required !" << std::endl;
             }
 
         }
@@ -138,11 +253,43 @@ void Game::run(int argc, char *argv[])
 }
 
 
+Game::~Game()
+{
+
+    if (START_MODE == 1)
+    {
+        if (WorldMap::GetSingletonPtr() != NULL)
+        {
+            delete worldMgr;
+//            SDL_FreeSurface(screen);
+ //           SDL_Quit();
+        }
+
+    }
+    else if (START_MODE == 2)
+    {
+        delete guiMgr;
+   //     SDL_FreeSurface(screen);
+     //   SDL_Quit();
+    }
+
+
+    RemoveManagers();
+
+    if (ParserManager::GetSingletonPtr() != NULL)
+        delete parserMgr;
+
+
+}
+
+
+
 bool Game::checkSoldatStart()
 {
 
     if (!boost::filesystem::exists(Parser.SOL_PATH))
     {
+        std::cerr << "Cannot find Soldat directory : " << Parser.SOL_PATH << std::endl;
         RemoveManagers();
         return false;
     }
@@ -215,6 +362,9 @@ bool Game::checkSoldatStart()
 void Game::RemoveManagers()
 {
 
+  //  if (PhysicsManager::GetSingletonPtr() != NULL)
+    //    delete physicsMgr;
+
     if (BotManager::GetSingletonPtr() != NULL)
         delete botMgr;
 
@@ -224,24 +374,27 @@ void Game::RemoveManagers()
     if (BonusManager::GetSingletonPtr() != NULL)
         delete bonusMgr;
 
-    if (AudioManager::GetSingletonPtr() != NULL)
-        delete audioMgr;
+//    if (AudioManager::GetSingletonPtr() != NULL)
+  //      delete audioMgr;
 
     if (FontManager::GetSingletonPtr() != NULL)
         delete fontMgr;
+
+
 }
 
 
 void Game::CreateManagers()
 {
-
+//std::cout << "CRE" << std::endl;
     RemoveManagers();
 
     fontMgr = new FontManager;
-    audioMgr = new AudioManager;
+    //audioMgr = new AudioManager;
     bonusMgr = new BonusManager;
     weaponMgr = new WeaponManager;
     botMgr = new BotManager;
+//    physicsMgr = new PhysicsManager;
 
 }
 
@@ -311,151 +464,18 @@ unsigned char Game::convertFromHex(const std::string& hex)
 std::vector<unsigned char> Game::tcolor2rgb(const std::string& hex)
 {
 
-    std::vector<unsigned char> rgb(3);
+    for (unsigned int i = 0; i < CL_COLOR.size(); ++i)
+    {
+        if (hex == CL_COLOR[i].name)
+            return CL_COLOR[i].rgb;
+    }
 
-    if (hex == "clAqua")
-    {
-        rgb[0] = 0;
-        rgb[1] = 255;
-        rgb[2] = 255;
-        return rgb;
-    }
-    else if (hex == "clBlack")
-    {
-        rgb[0] = rgb[1] = rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clBlue")
-    {
-        rgb[0] = 0;
-        rgb[1] = 0;
-        rgb[2] = 255;
-        return rgb;
-    }
-    else if (hex == "clCream")
-    {
-        rgb[0] = 255;
-        rgb[1] = 251;
-        rgb[2] = 240;
-        return rgb;
-    }
-    else if (hex == "clFuchsia")
-    {
-        rgb[0] = 255;
-        rgb[1] = 0;
-        rgb[2] = 255;
-        return rgb;
-    }
-    else if (hex == "clGray")
-    {
-        rgb[0] = 128;
-        rgb[1] = 128;
-        rgb[2] = 128;
-        return rgb;
-    }
-    else if (hex == "clGreen")
-    {
-        rgb[0] = 0;
-        rgb[1] = 255;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clLime")
-    {
-        rgb[0] = 0;
-        rgb[1] = 255;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clMaroon")
-    {
-        rgb[0] = 128;
-        rgb[1] = 0;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clMedGray" || hex == "clMediumGray")
-    {
-        rgb[0] = 160;
-        rgb[1] = 160;
-        rgb[2] = 164;
-        return rgb;
-    }
-    else if (hex == "clMoneyGreen")
-    {
-        rgb[0] = 192;
-        rgb[1] = 220;
-        rgb[2] = 192;
-        return rgb;
-    }
-    else if (hex == "clNavy")
-    {
-        rgb[0] = 0;
-        rgb[1] = 0;
-        rgb[2] = 128;
-        return rgb;
-    }
-    else if (hex == "clOlive")
-    {
-        rgb[0] = 128;
-        rgb[1] = 128;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clPurple")
-    {
-        rgb[0] = 128;
-        rgb[1] = 0;
-        rgb[2] = 128;
-        return rgb;
-    }
-    else if (hex == "clRed")
-    {
-        rgb[0] = 255;
-        rgb[1] = 0;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else if (hex == "clSilver")
-    {
-        rgb[0] = 192;
-        rgb[1] = 192;
-        rgb[2] = 192;
-        return rgb;
-    }
-    else if (hex == "clSkyBlue")
-    {
-        rgb[0] = 166;
-        rgb[1] = 202;
-        rgb[2] = 240;
-        return rgb;
-    }
-    else if (hex == "clTeal")
-    {
-        rgb[0] = 0;
-        rgb[1] = 128;
-        rgb[2] = 128;
-        return rgb;
-    }
-    else if (hex == "clWhite")
-    {
-        rgb[0] = rgb[1] = rgb[2] = 255;
-        return rgb;
-    }
-    else if (hex == "clYellow")
-    {
-        rgb[0] = 255;
-        rgb[1] = 255;
-        rgb[2] = 0;
-        return rgb;
-    }
-    else
-    {
-        rgb[0] = convertFromHex(hex.substr(7, 2));
-        rgb[1] = convertFromHex(hex.substr(5, 2));
-        rgb[2] = convertFromHex(hex.substr(3, 2));
-        return rgb;
-    }
+    std::vector<unsigned char> rgb(3);
+    rgb[0] = convertFromHex(hex.substr(7, 2));
+    rgb[1] = convertFromHex(hex.substr(5, 2));
+    rgb[2] = convertFromHex(hex.substr(3, 2));
+
+    return rgb;
 
 }
 
@@ -481,41 +501,65 @@ std::string Game::rgb2tcolor(const std::vector<unsigned char>& col)
 }
 
 
-
-int Game::setSDL()
+int Game::setSFML()
 {
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    atexit(SDL_Quit);
-
-    if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) != 0)
-    {
-        std::cerr << "Unable to set attributes SDL: " << SDL_GetError() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    if (Parser.FULLSCREEN)
-        screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_FULLSCREEN);
-    else
-        screen = SDL_SetVideoMode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP, SDL_OPENGL|SDL_RESIZABLE);
-
-    if (!screen)
-    {
-        std::cerr << "Unable to set video mode: " << SDL_GetError() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    SDL_WM_SetCaption("Cruel Hessian", "");
-
-    SDL_ShowCursor(SDL_DISABLE);
-    SDL_EnableUNICODE(1);
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-
-    return 0;
-
+	sf::VideoMode Mode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP);
+	App.Create(Mode, "Cruel Hessian", sf::Style::Close);
+	App.PreserveOpenGLStates(true);
+	return 0;
 }
 
+
+
+int Game::LoadMapsList()
+{
+
+    std::cout << "   loading maps list from 'mapslist.txt' (UTF-16LE with BOM encoding) ..." << std::endl;
+
+    std::ifstream file((Parser.SOL_PATH + "mapslist.txt").c_str());
+
+    mapsListFromFile.clear();
+
+    if (file.is_open())
+    {
+        std::string newbuffer;
+        std::string buffer;
+        std::string newword;
+        file.seekg(2, std::ios::beg);
+
+        while (getline(file, buffer))
+        {
+            mapsListFromFile.push_back(buffer);
+        }
+        //if (game.mapsList.back().empty())
+        //std::cout << "JEA" << game.mapsList.back() << "POI"<<std::endl;
+
+        // last line has to be empty
+        mapsListFromFile.pop_back();
+
+        for (unsigned int i = 0; i < mapsListFromFile.size(); ++i)
+        {
+            /*for(size_t j = 0; j < mapsListFromFile[j].length(); ++j)
+            {
+                std::cout << " " << static_cast<unsigned int>(static_cast<unsigned short>(mapsListFromFile[i][j]));
+            }
+            */
+            //for(int j = 0; j < mapsListFromFile[i].length(); j++)
+            //  newword[j] = mapsListFromFile[i][j];
+
+            std::cout << "   " << mapsListFromFile[i] << std::endl;
+            //std::cout << "   " << newword << std::endl;
+        }
+
+        file.close();
+
+        return 0;
+    }
+    else
+    {
+        std::cout << "ERROR opening file 'mapslist.txt'" << std::endl;
+        return -1;
+    }
+
+}

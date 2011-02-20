@@ -32,8 +32,13 @@
 
 class ParserManager : public Singleton<ParserManager>
 {
+
+//private:
+
+
 public:
 
+    std::string RepairPath(const std::string& path);
     ParserManager();
     virtual ~ParserManager();
 
@@ -49,6 +54,7 @@ public:
     float MAX_WIDTH, MAX_HEIGHT;
 
     std::vector<unsigned char> COLOR_SHIRT, COLOR_SKIN, COLOR_HAIR, COLOR_PANTS, COLOR_JET;
+    std::string COLOR_SHIRT_NAME, COLOR_SKIN_NAME, COLOR_HAIR_NAME, COLOR_PANTS_NAME, COLOR_JET_NAME;
 
     unsigned int FIRST_LIMIT;
     unsigned int LIMIT_TEAMMATCH;

@@ -1,7 +1,7 @@
 /*   Grenade.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,84 +22,60 @@
 #include "ParserManager.h"
 #include "WorldMap.h"
 #include "AudioManager.h"
+#include "WeaponManager.h"
+#include "TVector2D.h"
+#include "TexturesLoader.h"
 #include <cmath>
+#include "physics/ContactListener.h"
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
+#endif
 
 
 
-Grenade::Grenade(const TVector2D& src, const TVector2D& dest, unsigned int _owner, Uint32 push_time, const Tex* tex)
+Grenade::Grenade(const TVector2D& src, const TVector2D& velocity, unsigned int _owner) :
+    m_iOwner(_owner),
+    m_iCurrentFrame(0),
+    m_fTimerChangeFrame(0.0f),
+    m_fTimerThrow(world.getCurrentTime),
+    killMyself(false)
 {
-    type = CIRCLE;
-    position = src;
-    owner = _owner;
-    timer_change_frame = 0;
-    currentFrame = 0;
-    mass = 5;
-    massInv = 1 / mass;
-    maxSpeed = TVector2D(100, 100);
 
-    float tang = (dest.y - src.y) / (dest.x - src.x);
-    float sq = 3*push_time / -sqrt(1+tang*tang);
-    velocity = (dest.x - src.x > 0) ? TVector2D(-sq, -sq * tang) : TVector2D(sq, sq * tang);
+    m_xTexture = &WeaponManager::GetSingleton().text_grenade[0];
+    m_fHalfHeight = m_xTexture->h/2.0f;
+    m_fHalfWidth = m_xTexture->w/2.0f;
 
-    for (int i = 0; i < 17; ++i)
-    {
-        texture[i] = &tex[i];
-    }
-    //w = texture[0]->w;
-    //h = texture[0]->h;
-    w = h = 4;
-    r = texture[0]->w / 2;
-    //std::cout << "WER " << r << std::endl;
-    killMyself = false;
+    Set(src, velocity, 8, m_fHalfHeight, m_fHalfWidth, 0.01f);
+    SetCollisionCallback(HandleContact);
+    GetInvInertia() = 0.0f;
+    GetInertia() = 0.0f;
+    GetAngVelocity() = 0.0f;
+    SetOrientation(0.0f);
+    type = TYPE_GRENADE;
 
-    timer_throw = world.getCurrentTime;
-
-    //   velocity = TVector2D(0.0f, 0.0f);
-    //a = TVector2D(0, -20);
-//old_position = position;
-    old_a = TVector2D(0.0f, world.sGravity);
 }
 
 
-void Grenade::draw() const
-{
-    glPushMatrix();
-
-    glTranslatef(position.x - texture[currentFrame]->w/2,
-                 position.y - texture[currentFrame]->h/2, 0.0);
-
-    glBindTexture(GL_TEXTURE_2D, texture[currentFrame]->tex);
-
-    glBegin(GL_QUADS);
-    glTexCoord2i(0, 1);
-    glVertex2f(0.0, 0.0);
-    glTexCoord2i(1, 1);
-    glVertex2f(texture[currentFrame]->w, 0.0);
-    glTexCoord2i(1, 0);
-    glVertex2f(texture[currentFrame]->w, texture[currentFrame]->h);
-    glTexCoord2i(0, 0);
-    glVertex2f(0.0, texture[currentFrame]->h);
-    glEnd();
-
-    glPopMatrix();
-}
-
-
-void Grenade::update()
+void Grenade::Update()
 {
 
-    if (world.getCurrentTime - timer_throw > 4000)
+    if (world.getCurrentTime - m_fTimerThrow > 4000)
     {
         // explode after 4 second
         if (Parser.SOUNDS_VOL > 0)
-            Mix_PlayChannel(-1, Audio.grenade_explosion, 0);
+            Audio.Play(Audio.grenade_explosion);
 
-        if (world.getCurrentTime - timer_change_frame >= 20)
+        if (world.getCurrentTime - m_fTimerChangeFrame >= 20)
         {
-            timer_change_frame = world.getCurrentTime;
-            if (currentFrame < 16)
+            m_fTimerChangeFrame = world.getCurrentTime;
+            if (m_iCurrentFrame < 16)
             {
-                ++currentFrame;
+                ++m_iCurrentFrame;
+                m_xTexture = &WeaponManager::GetSingleton().text_grenade[m_iCurrentFrame];
+                m_fHalfHeight = m_xTexture->h/2.0f;
+                m_fHalfWidth = m_xTexture->w/2.0f;
             }
             // remove grenade from the list
             else
@@ -110,6 +86,31 @@ void Grenade::update()
 
     }
 
+//    m_translateX = GetPosition().x - texture[currentFrame]->w/2;
+//    m_translateY = GetPosition().y - texture[currentFrame]->h/2;
+//    m_currentTexture = *texture[currentFrame];
 }
 
+void Grenade::Draw() const
+{
+
+    glPushMatrix();
+
+    glTranslatef(GetPosition().x, GetPosition().y, 0.0f);
+    glRotatef(RadiansToDegrees(GetAngle()), 0, 0, 1);
+    glBindTexture(GL_TEXTURE_2D, m_xTexture->tex);
+
+    glBegin(GL_QUADS);
+    glTexCoord2i(0, 1);
+    glVertex2f(-m_fHalfWidth, -m_fHalfHeight);
+    glTexCoord2i(1, 1);
+    glVertex2f(m_fHalfWidth, -m_fHalfHeight);
+    glTexCoord2i(1, 0);
+    glVertex2f(m_fHalfWidth, m_fHalfHeight);
+    glTexCoord2i(0, 0);
+    glVertex2f(-m_fHalfWidth, m_fHalfHeight);
+    glEnd();
+
+    glPopMatrix();
+}
 

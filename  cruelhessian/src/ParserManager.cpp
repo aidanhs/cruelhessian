@@ -1,7 +1,7 @@
 /*   ParserManager.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,63 +19,69 @@
  */
 
 
+#include <fstream>
 #include "ParserManager.h"
 #include "Game.h"
 #include "parser/SimpleIni.h"
 
 
-ParserManager::ParserManager()
+ParserManager::ParserManager() :
+    MODE(1),
+    FULLSCREEN(0),
+    MAX_WIDTH(640.0f),
+    MAX_HEIGHT(480.0f),
+    MAX_BPP(16),
+    SOUNDS_VOL(0.0f),
+    MUSIC_VOL( 0.0f),
+    AUDIO_QUAL(44100),
+    PLAYER_NAME( "Player"),
+    COLOR_SHIRT_NAME("$00EBEBFF"),
+    COLOR_SKIN_NAME( "$00EBEBFF"),
+    COLOR_HAIR_NAME( "$00EBEBFF"),
+    COLOR_PANTS_NAME("$00EBEBFF"),
+    COLOR_JET_NAME( "$00EBEBFF"),
+
+    KEY_LEFT(97),
+    KEY_RIGHT(100),
+    KEY_DOWN( 115),
+    KEY_UP( 119),
+    KEY_RELOAD(114),
+    KEY_GRENADE( 277),
+    KEY_CHAT( 116),
+    KEY_TEAMCHAT( 121),
+
+    LIMIT_TEAMMATCH(60),
+    LIMIT_DEATHMATCH(30),
+    LIMIT_POINTMATCH(30),
+    LIMIT_RAMBOMATCH( 30),
+    LIMIT_INFILTRATION( 90),
+    LIMIT_HOLD( 80),
+    LIMIT_CAPTURE( 5),
+    LIMIT_TIME(15*60),
+
+    CONSOLE_SHOW( true),
+
+    RANDOM_BOTS( 5),
+    RANDOM_BOTS_1( 1),
+    RANDOM_BOTS_2( 1),
+    RANDOM_BOTS_3( 1),
+    RANDOM_BOTS_4( 1)
 {
 
-    std::cout << "Starting ParserManager ..." << std::endl;
+    std::cout << "Starting ParserManager ..." << std::flush;
 
-    MODE               = 1;
     SOL_PATH_[0]       = "";
-    INTERFACE_NAME_[0] = "Default";
-    INTERFACE_PATH_[0] = "";
     SOL_PATH_[1]       = "";
+    INTERFACE_NAME_[0] = "Default";
     INTERFACE_NAME_[1] = "Default";
+    INTERFACE_PATH_[0] = "";
     INTERFACE_PATH_[1] = "";
-    FULLSCREEN         = 0;
-    MAX_WIDTH          = 640.0f;
-    MAX_HEIGHT         = 480.0f;
-    MAX_BPP            = 16;
-    SOUNDS_VOL         = 20.0f;
-    MUSIC_VOL          = 0.0f;
-    AUDIO_QUAL         = 44100;
 
-    PLAYER_NAME = "Player";
-    COLOR_SHIRT = game.tcolor2rgb("$00EBEBFF");
-    COLOR_SKIN  = game.tcolor2rgb("$00EBEBFF");
-    COLOR_HAIR  = game.tcolor2rgb("$00EBEBFF");
-    COLOR_PANTS = game.tcolor2rgb("$00EBEBFF");
-    COLOR_JET   = game.tcolor2rgb("$00EBEBFF");
-
-    KEY_LEFT     = 97;
-    KEY_RIGHT    = 100;
-    KEY_DOWN     = 115;
-    KEY_UP       = 119;
-    KEY_RELOAD   = 114;
-    KEY_GRENADE  = 32;
-    KEY_CHAT     = 116;
-    KEY_TEAMCHAT = 121;
-
-    LIMIT_TEAMMATCH    = 60;
-    LIMIT_DEATHMATCH   = 30;
-    LIMIT_POINTMATCH   = 30;
-    LIMIT_RAMBOMATCH   = 30;
-    LIMIT_INFILTRATION = 90;
-    LIMIT_HOLD         = 80;
-    LIMIT_CAPTURE      = 5;
-    LIMIT_TIME         = 15*60;
-
-    CONSOLE_SHOW = true;
-
-    RANDOM_BOTS   = 5;
-    RANDOM_BOTS_1 = 1;
-    RANDOM_BOTS_2 = 1;
-    RANDOM_BOTS_3 = 1;
-    RANDOM_BOTS_4 = 1;
+    COLOR_SHIRT = game.tcolor2rgb(COLOR_SHIRT_NAME);
+    COLOR_SKIN = game.tcolor2rgb(COLOR_SKIN_NAME);
+    COLOR_HAIR = game.tcolor2rgb(COLOR_HAIR_NAME);
+    COLOR_PANTS = game.tcolor2rgb(COLOR_PANTS_NAME);
+    COLOR_JET = game.tcolor2rgb(COLOR_JET_NAME);
 
     for (int i = 0; i < 14; ++i)
         WEAPON[i]  = true;
@@ -83,7 +89,10 @@ ParserManager::ParserManager()
     for (int i = 0; i < 7; ++i)
         BONUSES[i]  = true;
 
+    std::cout << " DONE" << std::endl;
+
 }
+
 
 ParserManager::~ParserManager()
 {
@@ -100,7 +109,7 @@ int ParserManager::ReadConfigs()
 
     if (ini.LoadFile(game.CH_CONFIG_FILE.c_str()) < 0)
     {
-        std::cout << "   cannot read config file" << std::endl;
+        std::cout << "   cannot read config file, using defaults" << std::endl;
         return 1;
     }
 
@@ -112,18 +121,18 @@ int ParserManager::ReadConfigs()
         return 1;
     }
 
-    MODE             = static_cast<int>(ini.GetLongValue("global", "Mode"));
-    SOL_PATH_[0]       = ini.GetValue("global", "SoldatPath");
-    SOL_PATH_[1]       = ini.GetValue("global", "CruelHessianPath");
+    MODE               = static_cast<int>(ini.GetLongValue("global", "Mode"));
+    SOL_PATH_[0]       = RepairPath(ini.GetValue("global", "SoldatPath"));
+    SOL_PATH_[1]       = RepairPath(ini.GetValue("global", "CruelHessianPath"));
     INTERFACE_NAME_[0] = ini.GetValue("global", "SoldatInterface");
     INTERFACE_NAME_[1] = ini.GetValue("global", "CruelHessianInterface");
-    FULLSCREEN       = ini.GetBoolValue("global", "Fullscreen");
-    MAX_WIDTH        = static_cast<float>(ini.GetLongValue("global", "MaxWidth"));
-    MAX_HEIGHT       = static_cast<float>(ini.GetLongValue("global", "MaxHeight"));
-    MAX_BPP          = ini.GetLongValue("global", "MaxDeep");
-    SOUNDS_VOL            = static_cast<float>(ini.GetLongValue("global", "SoundVolume"));
-    MUSIC_VOL             = static_cast<float>(ini.GetLongValue("global", "MusicVolume"));
-    AUDIO_QUAL            = static_cast<int>(ini.GetLongValue("global", "AudioQuality"));
+    FULLSCREEN         = ini.GetBoolValue("global", "Fullscreen");
+    MAX_WIDTH          = static_cast<float>(ini.GetLongValue("global", "MaxWidth"));
+    MAX_HEIGHT         = static_cast<float>(ini.GetLongValue("global", "MaxHeight"));
+    MAX_BPP            = ini.GetLongValue("global", "MaxDeep");
+    SOUNDS_VOL         = static_cast<float>(ini.GetLongValue("global", "SoundVolume"));
+    MUSIC_VOL          = static_cast<float>(ini.GetLongValue("global", "MusicVolume"));
+    AUDIO_QUAL         = static_cast<int>(ini.GetLongValue("global", "AudioQuality"));
 
     LIMIT_TEAMMATCH    = ini.GetLongValue("game", "TeammatchLimit");
     LIMIT_DEATHMATCH   = ini.GetLongValue("game", "DeathmatchLimit");
@@ -142,12 +151,17 @@ int ParserManager::ReadConfigs()
     RANDOM_BOTS_3 = ini.GetLongValue("game", "RandomBots3");
     RANDOM_BOTS_4 = ini.GetLongValue("game", "RandomBots4");
 
-    PLAYER_NAME = ini.GetValue("player", "Name");
-    COLOR_SHIRT = game.tcolor2rgb(ini.GetValue("player", "ShirtColor"));
-    COLOR_SKIN  = game.tcolor2rgb(ini.GetValue("player", "SkinColor"));
-    COLOR_HAIR  = game.tcolor2rgb(ini.GetValue("player", "HairColor"));
-    COLOR_PANTS = game.tcolor2rgb(ini.GetValue("player", "PantsColor"));
-    COLOR_JET   = game.tcolor2rgb(ini.GetValue("player", "JetColor"));
+    PLAYER_NAME      = ini.GetValue("player", "Name");
+    COLOR_SHIRT_NAME = ini.GetValue("player", "ShirtColor");
+    COLOR_SKIN_NAME  = ini.GetValue("player", "SkinColor");
+    COLOR_HAIR_NAME  = ini.GetValue("player", "HairColor");
+    COLOR_PANTS_NAME = ini.GetValue("player", "PantsColor");
+    COLOR_JET_NAME   = ini.GetValue("player", "JetColor");
+    COLOR_SHIRT = game.tcolor2rgb(COLOR_SHIRT_NAME);
+    COLOR_SKIN  = game.tcolor2rgb(COLOR_SKIN_NAME);
+    COLOR_HAIR  = game.tcolor2rgb(COLOR_HAIR_NAME);
+    COLOR_PANTS = game.tcolor2rgb(COLOR_PANTS_NAME);
+    COLOR_JET   = game.tcolor2rgb(COLOR_JET_NAME);
 
     KEY_LEFT     = ini.GetLongValue("controls", "Left");
     KEY_RIGHT    = ini.GetLongValue("controls", "Right");
@@ -181,7 +195,6 @@ int ParserManager::ReadConfigs()
     BONUSES[5] = ini.GetBoolValue("game", "BonusPredator");
     BONUSES[6] = ini.GetBoolValue("game", "BonusVest");
 
-
     for (unsigned int i = 0; i < 2; ++i)
     {
         if (INTERFACE_NAME_[i] == "Default" || INTERFACE_NAME_[i] == "--None--")
@@ -199,76 +212,26 @@ int ParserManager::ReadConfigs()
     INTERFACE_NAME = INTERFACE_NAME_[MODE];
     INTERFACE_PATH = INTERFACE_PATH_[MODE];
 
-
-    if (!SOL_PATH.empty())
-    {
-        if (SOL_PATH[SOL_PATH.length()-1] == '\\')
-        {
-            //std::cout << "JEA" << std::endl;
-            //SOL_PATH[SOL_PATH.length()-1] = '/';
-        }
-        else if (SOL_PATH[SOL_PATH.length()-1] != '/')
-        {
-            SOL_PATH += '/';
-        }
-        //game.INTERFACE_PATH = SOL_PATH + "Interface-gfx/";
-    }
-//	std::cout << "JEA" << INTERFACE_PATH << std::endl;
-    /*
-    //std::locale loc("");
-        std::cout << "Loading maps list from 'mapslist.txt' ..." << std::endl;
-        //std::wifstream file((SOL_PATH + "mapslist.txt").c_str(), std::ios_base::binary);
-        std::ifstream file((SOL_PATH + "mapslist.txt").c_str());
-        //std::locale loc(file.getloc(), new boost::archive::codecvt_null<wchar_t>);
-
-    //    file.imbue(loc);
-
-        if (file.is_open())
-        {
-            std::string newbuffer;
-            std::string buffer;
-    int k = 0;
-            file.seekg(2, std::ios::beg);
-            while (getline(file, buffer))
-            //while (file >> buffer)
-            {
-                //std::cout << buffer[0]<<std::endl;
-                //if (buffer[0] != '\n' && buffer[0] != '\r' && buffer != "")
-                //if (buffer[0] >= 'a' && buffer[0] <= 'Z')
-                {
-                              //  newbuffer = buffer;
-                //std::cout << "ONE" << std::endl;
-                //newbuffer.assign(buffer.begin(), buffer.end());
-              //  newbuffer += ".PMS";
-                //if (boost::filesystem::exists(newbuffer))
-                    mapsList.push_back(buffer);
-                //std::cout << buffer << std::endl;
-                }
-
-            }
-            for (unsigned int i = 0; i < mapsList.size(); ++i)
-            {
-                std::cout << mapsList[i] << std::endl;
-                //if (mapsList[i][0] == ' ') std::cout << "KURE\n";
-            }
-
-            file.close();
-        }
-        else
-        {
-            std::cout << "ERROR opening file 'mapslist.txt'" << std::endl;
-            return -1;
-        }
-    */
     return 0;
 }
 
 
+std::string ParserManager::RepairPath(const std::string& pathx)
+{
+
+    if (!pathx.empty())
+    {
+		if (pathx[pathx.length()-1] != '/')
+			return pathx + '/';
+    }
+
+    return pathx;
+}
 
 
 int ParserManager::SaveConfigs()
 {
-    std::cout << "Saving configs to 'options.ini' ..." << std::endl;
+    std::cout << "Saving configs to 'options.ini' ..." << std::flush;
 
     CSimpleIni ini(false, false, false);
 
@@ -283,9 +246,9 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("info", "Version", game.CONFIG_VERSION, NULL);
 
     ini.SetLongValue("global", "Mode",                  static_cast<int>(MODE),   NULL);
-    ini.SetValue(    "global", "SoldatPath",            SOL_PATH_[0].c_str(),       NULL);
+    ini.SetValue(    "global", "SoldatPath",            RepairPath(SOL_PATH_[0]).c_str(),       NULL);
     ini.SetValue(    "global", "SoldatInterface",       INTERFACE_NAME_[0].c_str(), NULL);
-    ini.SetValue(    "global", "CruelHessianPath",      SOL_PATH_[1].c_str(),       NULL);
+    ini.SetValue(    "global", "CruelHessianPath",      RepairPath(SOL_PATH_[1]).c_str(),       NULL);
     ini.SetValue(    "global", "CruelHessianInterface", INTERFACE_NAME_[1].c_str(), NULL);
     ini.SetBoolValue("global", "Fullscreen",       FULLSCREEN,                   NULL);
     ini.SetLongValue("global", "MaxWidth",         static_cast<int>(MAX_WIDTH),  NULL);
@@ -296,11 +259,13 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("global", "AudioQuality",     AUDIO_QUAL,                   NULL);
 
     ini.SetValue("player", "Name",       PLAYER_NAME.c_str(),                  NULL);
-    ini.SetValue("player", "ShirtColor", game.rgb2tcolor(COLOR_SHIRT).c_str(), NULL);
-    ini.SetValue("player", "SkinColor",  game.rgb2tcolor(COLOR_SKIN).c_str(),  NULL);
-    ini.SetValue("player", "HairColor",  game.rgb2tcolor(COLOR_HAIR).c_str(),  NULL);
-    ini.SetValue("player", "PantsColor", game.rgb2tcolor(COLOR_PANTS).c_str(), NULL);
-    ini.SetValue("player", "JetColor",   game.rgb2tcolor(COLOR_JET).c_str(),   NULL);
+    // fix SkinColor !!!!!!
+    //ini.SetValue("player", "SkinColor",  game.rgb2tcolor(COLOR_SKIN).c_str(),  NULL);
+    ini.SetValue("player", "SkinColor",  COLOR_SKIN_NAME.c_str(),  NULL);
+    ini.SetValue("player", "ShirtColor", COLOR_SHIRT_NAME.c_str(), NULL);
+    ini.SetValue("player", "HairColor",  COLOR_HAIR_NAME.c_str(),  NULL);
+    ini.SetValue("player", "PantsColor", COLOR_PANTS_NAME.c_str(), NULL);
+    ini.SetValue("player", "JetColor",   COLOR_JET_NAME.c_str(),   NULL);
 
     ini.SetLongValue("game", "TeammatchLimit",    LIMIT_TEAMMATCH,                 NULL);
     ini.SetLongValue("game", "DeathmatchLimit",   LIMIT_DEATHMATCH,                NULL);
@@ -349,6 +314,8 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("controls", "TeamChat", KEY_TEAMCHAT, NULL);
 
     ini.SaveFile(game.CH_CONFIG_FILE.c_str());
+
+    std::cout << " DONE" << std::endl;
 
     return 0;
 }
