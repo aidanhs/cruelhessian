@@ -1,5 +1,40 @@
-0.1.4
+0.1.6.
  - 
+
+0.1.6-beta3
+ - added vest bar
+ - some fixes in text diplaying
+ - improvements in Window Folder Selector
+ - improvements in GUI Options tab
+
+0.1.6-beta2
+ - put all command's and chat's stuff into separate classes
+ - made new Cluster and ClusterGrenade classes
+ - AudioManager is loaded only when it's needed
+ - fixed some regressions
+ - many other improvements and fixes
+
+0.1.6-beta
+ - switched from SDL to SFML
+ - removed unnecessary #include files; much faster compilation
+ - new physics engine based on Polycolly (all objects are now polygons)
+ - use spatial hashing and SAT for collision detection
+ - handle different types of collisions
+ - added ClusterNade and Weapon objects
+ - many other improvements
+ - updating module doesn't work (temporarily)
+
+0.1.5
+ - some improvements in folder selector classes
+ - updating module should work again in Windows
+ - other fixes
+
+0.1.4
+ - improved gostek's drawing
+ - new regular expression library; the new one bases on PCRE provided with CEGUI
+ - extended 'Player' tab in GUI
+ - many minor fixes and improvements
+ - this is the first release provided parallelly with windows binaries
 
 0.1.3
  - separate Fonts, Audio, Interface from WorldMap class and create 

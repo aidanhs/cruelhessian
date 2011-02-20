@@ -1,5 +1,7 @@
 
-0. Prologue
+------------------------------------------------------------------------
+----------------------        0. Prologue        -----------------------
+------------------------------------------------------------------------
 
 This game has not been playable yet. That means, that you can go 
 wherever you want on the map, shot at everything you see and hope 
@@ -18,42 +20,69 @@ clicking 'Check for update' button in Options tab in CH - remember, that
 in this case you need to select EMPTY directory for the files). 
 At this moment almost all originally Soldat files have been replaced,
 except Anims directory.
-    
+
 I'm not sure about license of these mods, so I don't provide them 
 with this sources.
 
 Information about creators of mods can be found on :
 http://temporary09.eu5.org/files/OWNERS.txt
 
+Updating Module is currently broken.
 
-1. Prerequisites
+
+------------------------------------------------------------------------
+--------------------        1. Prerequisites        --------------------
+------------------------------------------------------------------------
+
+
 
 You'll need to have these libraries to build Cruel Hessian:
 
  cmake >= 2.6.0              (www.cmake.org)
  cegui = 0.6.0 - 0.6.2       (www.cegui.org.uk)
- libsdl >= 1.2.13            (www.libsdl.org)
- libsdl_mixer >= 1.2.8       (www.libsdl.org/projects/SDL_mixer)
+ libsfml = 1.6               (www.sfml-dev.org)
  boost_filesystem >= 1.38.0
  boost_system >= 1.38.0
- pthreads
- libcurl
 
     and Soldat ( >= 1.4.2) from http://www.soldat.pl if you want to run 
     Soldat compatibility mode in Cruel Hessian. 
 
 If you are using Ubuntu, you can type:
 
-sudo apt-get install libcegui-mk2-dev libsdl1.2-dev libsdl-mixer1.2-dev
-  cmake libboost-filesystem-dev libboost-system-dev libcurl4-gnutls-dev g++
+sudo apt-get install libcegui-mk2-dev libsfml-dev cmake 
+  libboost-filesystem-dev libboost-system-dev g++
 
 
-2. Installation
 
-Check INSTALL.txt file
+------------------------------------------------------------------------
+--------------------        2. Installation        ---------------------
+------------------------------------------------------------------------
+
+2.1. Compilation under Linux
+
+Config file will be placed in ~/.config/cruelhessian/ directory.
 
 
-3. Default controls
+Building Cruel Hessian with CMake
+------------------------
+
+Type :
+
+   * cmake .
+   * make
+   
+   	and (as root)
+   	
+   * make install
+
+in the main directory.
+
+
+------------------------------------------------------------------------
+------------------        3. Default controls        -------------------
+------------------------------------------------------------------------
+
+
 
 A - move left
 D - move right
@@ -73,7 +102,10 @@ F6 - previous music track
 F7 - next music track
 
 
-4. Running
+------------------------------------------------------------------------
+-----------------------        4. Running        -----------------------
+------------------------------------------------------------------------
+
 
 You can simply run 'cruelhessian' from the console after install, then 
 you'll be able to see some info when something goes wrong.
@@ -87,7 +119,10 @@ If you want to hear a music during the game, just put the m3u file(s)
 into Mp3 folder in Soldat/CH directory. 
 
 
-5. Uninstall
+------------------------------------------------------------------------
+----------------------        5. Uninstall        ----------------------
+------------------------------------------------------------------------
+
 
 If you want, for some reason, to remove Cruel Hessian, just log as root
 and type make uninstall in source dir.
