@@ -1,5 +1,34 @@
-0.1.6.
- - 
+0.1.6-rc4
+ - fixed displaying interface in higher resolutions
+ - made JetBar, FireBar as separate classes
+ - ability to use two guns
+
+0.1.6-rc3
+ - fixed diplaying backgrounds of maps
+ - fixed selecting gun by the key
+ - used all font's variables from font.ini file
+ - improved interface's alignment (based on SyavX work) ; still
+    needs some fixes in higher resolutions
+
+0.1.6-rc2
+ - some changes in GUI's Options tab
+ - fixed slowdowns while showing guns window, exit window, chat line, command line
+ - change 'int' to 'long' in Singleton.h to avoid compilation error 
+    on 64-bit linux systems
+ - hide mouse cursor on main GUI menu
+ - new config file version - addded MaxGrenades variable and removed
+    CruelHessianPath
+
+0.1.6-rc1
+ - fixed some errors while stopping Audio Manager
+ - making use of colliders and different types of collisions
+ - added next few sounds
+ - made new Shell class
+ - fixed some sound issues while grenade and cluster exploding
+ - starting to use new types of polygons introduced in Soldat 1.5.1
+ - updating module works again (in less informative mode - you don't
+    see the progress bar); new downloaded files will be automatically
+    placed into the same folder where options.ini is
 
 0.1.6-beta3
  - added vest bar

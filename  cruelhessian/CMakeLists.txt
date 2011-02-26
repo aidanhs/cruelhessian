@@ -24,7 +24,6 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -pipe -fomit-frame-pointer")
 FIND_PACKAGE(SFML REQUIRED)
 FIND_PACKAGE(CEGUI 0.6 REQUIRED)
 FIND_PACKAGE(Boost 1.38 REQUIRED COMPONENTS filesystem system)
-FIND_LIBRARY(CURL_LIBRARY NAMES curl)
 
 INCLUDE_DIRECTORIES( ${SFML_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${CEGUI_INCLUDE_DIRS} )
@@ -44,8 +43,8 @@ SET(src_executable
 	src/Bullet.cpp
 	src/Cluster.cpp
 	src/ClusterGrenade.cpp
+	src/ContactListener.cpp
 	src/Controls.cpp
-	src/Events.cpp
 	src/FontManager.cpp
 	src/decompress/UnLZMA.cpp
 	src/decompress/UnTar.cpp
@@ -67,18 +66,21 @@ SET(src_executable
 	src/GUI/GUIWindowNoSoldat.cpp
 	src/GUI/GUIWindowUpdater.cpp
     src/InterfaceBaseManager.cpp
+    src/InterfaceElement.cpp
     src/InterfaceManager.cpp
     src/Main.cpp
     src/Map.cpp
+    src/MapElementPolygon.cpp
+    src/MapElementProp.cpp
     src/Mouse.cpp
     src/parser/ConvertUTF.c
 	src/ParserManager.cpp
 	src/PhysicsManager.cpp
 	src/physics/Contact.cpp
-	src/physics/ContactListener.cpp
 	src/physics/Polygon.cpp
 	src/Regex.cpp
 	src/RenderManager.cpp
+	src/Shell.cpp
 	src/SoundBufferManager.cpp
 	src/SpatialManager.cpp
 	src/soil/SOIL.c
@@ -106,6 +108,7 @@ LINK_LIBRARIES(sfml-graphics)
 LINK_LIBRARIES(sfml-window)
 LINK_LIBRARIES(sfml-system)
 LINK_LIBRARIES(sfml-audio)
+LINK_LIBRARIES(sfml-network)
 LINK_LIBRARIES(boost_filesystem-mt)
 LINK_LIBRARIES(boost_system-mt)
 LINK_LIBRARIES(pcre)

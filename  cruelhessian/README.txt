@@ -9,25 +9,20 @@ that someone will shot you, but don't expect some thrilling contest.
 
 You have been warned ;)
 
-Project's site : http://code.google.com/p/cruelhessian/
+Project's site : http://cruelhessian.konp.eu
 
 From 0.1.2 version, Cruel Hessian has started not to use the current
 installation of Soldat. So now you can choose one of two modes: 
 Soldat compatibility mode (still using Soldat files) or 
 Cruel Hessian mode (using files based on mods created by Soldat users - 
 these ones can be automatically downloaded from temporary server by 
-clicking 'Check for update' button in Options tab in CH - remember, that
-in this case you need to select EMPTY directory for the files). 
+clicking 'Check for update' button in Options tab in CH). 
 At this moment almost all originally Soldat files have been replaced,
 except Anims directory.
 
 I'm not sure about license of these mods, so I don't provide them 
 with this sources.
 
-Information about creators of mods can be found on :
-http://temporary09.eu5.org/files/OWNERS.txt
-
-Updating Module is currently broken.
 
 
 ------------------------------------------------------------------------
@@ -51,6 +46,10 @@ If you are using Ubuntu, you can type:
 
 sudo apt-get install libcegui-mk2-dev libsfml-dev cmake 
   libboost-filesystem-dev libboost-system-dev g++
+  
+On ArchLinux type:
+
+yaourt -S cmake sfml boost cegui-0.6
 
 
 
