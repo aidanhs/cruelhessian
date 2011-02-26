@@ -155,8 +155,8 @@ void initializeMaps();
 
     bool setKeysState(bool state);
 
-    void checkSoldat();
-    void checkCH();
+    void checkSoldat(int mode);
+   // void checkCH();
 
 
     CEGUI::Window *myRoot;

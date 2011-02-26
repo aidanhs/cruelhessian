@@ -32,7 +32,7 @@
 int GUI::readM3U()
 {
 
-    std::string fold_mp3 = Parser.SOL_PATH + "Mp3/", buffer;
+    std::string fold_mp3 = Parser.GAME_PATH + "Mp3/", buffer;
 
     Audio.ClearPlaylist();
 
@@ -43,7 +43,7 @@ int GUI::readM3U()
     }
 
     std::vector<std::string> gM3UFiles;
-    std::string re = Parser.SOL_PATH + "Mp3/.+.(M3U|m3u)$";
+    std::string re = Parser.GAME_PATH + "Mp3/.+.(M3U|m3u)$";
     boost::filesystem::directory_iterator end;
 
     for (boost::filesystem::directory_iterator iter(fold_mp3); iter != end; ++iter)

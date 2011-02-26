@@ -38,7 +38,7 @@ ChatLine::ChatLine()
 void ChatLine::Draw()
 {
 
-    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Say : " + GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
+    Fonts.printText(Fonts.font[1], Fonts.FontConsole, "Say : " + GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
 
     if (GetInputEntered() != "")
     {

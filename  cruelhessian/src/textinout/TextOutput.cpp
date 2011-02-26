@@ -25,7 +25,7 @@
 #include "../ParserManager.h"
 
 
-TextOutput::TextOutput() : 
+TextOutput::TextOutput() :
 	m_fLastOutChatEntity(world.getCurrentTime)
 {
 
@@ -59,9 +59,9 @@ void TextOutput::Draw()
     for (std::list<m_xStringPair>::iterator i = m_sChatList.begin(); i != m_sChatList.end(); ++i)
     {
         if ((*i).first != "")
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "[" + (*i).first + "] " + (*i).second, Fonts.textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, "[" + (*i).first + "] " + (*i).second, Fonts.textColorGunOnTouch, 10.0f, (j++)*15.0f + 15.0f);
         else
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, (*i).second, Fonts.textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, (*i).second, Fonts.textColorGunNormal, 10.0f, (j++)*15.0f + 15.0f);
     }
 }
 

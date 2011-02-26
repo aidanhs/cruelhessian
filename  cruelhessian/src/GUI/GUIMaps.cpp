@@ -31,7 +31,7 @@
 void GUI::showMaps(const std::string& mask)
 {
 
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Maps/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Maps/"))
     {
         std::cout << "'Maps' directory doesn't exist !" << std::endl;
         mStartGameButton->setEnabled(false);
@@ -43,11 +43,11 @@ void GUI::showMaps(const std::string& mask)
     std::string str;
     boost::filesystem::directory_iterator end;
 
-    for (boost::filesystem::directory_iterator iter(Parser.SOL_PATH + "Maps/"); iter != end; ++iter)
+    for (boost::filesystem::directory_iterator iter(Parser.GAME_PATH + "Maps/"); iter != end; ++iter)
     {
         if (regex_match(iter->leaf(), mask))
         {
-            str.assign(iter->path().string().begin() + Parser.SOL_PATH.length() + 5, iter->path().string().end() - 4);
+            str.assign(iter->path().string().begin() + Parser.GAME_PATH.length() + 5, iter->path().string().end() - 4);
             mMapList->addItem(new MyListItem(str));
         }
     }
@@ -60,9 +60,7 @@ bool GUI::onLeftClickStart(const CEGUI::EventArgs& )
     if (mMapPlayList->getItemCount() > 0)
     {
 
-        Parser.SOL_PATH = Parser.SOL_PATH_[Parser.MODE];
-
-        std::string xmap = Parser.SOL_PATH + "Maps/" + mMapPlayList->getListboxItemFromIndex(0)->getText().c_str() + ".PMS";
+        std::string xmap = Parser.GAME_PATH + "Maps/" + mMapPlayList->getListboxItemFromIndex(0)->getText().c_str() + ".PMS";
 
         Parser.FIRST_LIMIT = static_cast<int>(mSpinn1->getCurrentValue());
         Parser.LIMIT_TIME = 60*static_cast<int>(mSpinn2->getCurrentValue());

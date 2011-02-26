@@ -28,6 +28,7 @@
 
 bool GUI::onGraphicsChanged(const CEGUI::EventArgs& )
 {
+
     if (mDeep16->isSelected())
         Parser.MAX_BPP = 16;
     else if (mDeep32->isSelected())

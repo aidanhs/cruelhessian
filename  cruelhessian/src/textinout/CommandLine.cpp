@@ -37,7 +37,7 @@ CommandLine::CommandLine()
 void CommandLine::Draw()
 {
 
-    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Cmd : " + GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
+    Fonts.printText(Fonts.font[1], Fonts.FontConsole, "Cmd : " + GetInput(), Fonts.textCol[3], 15.0f, 0.8f*Parser.MAX_HEIGHT);
 
     if (GetInputEntered() == "kill" || GetInputEntered() == "KILL")
     {

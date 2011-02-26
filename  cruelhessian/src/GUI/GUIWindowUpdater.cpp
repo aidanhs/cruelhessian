@@ -21,8 +21,9 @@
 
 #include "GUIWindowUpdater.h"
 #include <sstream>
+#include <vector>
 #include <fstream>
-#include <SFML/System.hpp>
+#include <iostream>
 #include <SFML/Network.hpp>
 #include "boost/filesystem/operations.hpp"
 
@@ -30,41 +31,44 @@
 #include "../ParserManager.h"
 #include "../decompress/UnLZMA.h"
 #include "../decompress/UnTar.h"
+#include "../parser/SimpleIni.h"
 
 
 
 //const std::string SITE = "http://cdimage.ubuntu.com/daily/current/";
-const std::string SITE = "http://sourceforge.net/";
-const std::string SITE_PRE = "projects/cruelhessian/files/cruelhessian-data/";
-const std::string SITE_POST = "/download/";
+//const std::string SITE = "http://sourceforge.net/";
+//const std::string SITE_PRE = "projects/cruelhessian/files/cruelhessian-data/";
+//const std::string SITE_POST = "/download/";
 CEGUI::ProgressBar* prog_bar;
 CEGUI::Editbox* mess;
 double progress;// = 0.0;
 CEGUI::PushButton* cancel_butt;
 bool DOWN_ON, NO_CONNECTION;
 
-void func_down(void *args);
-void func_progress(void *args);
-void func_down_list(void *args);
-void func_extract_delete(void *args);
+//void func_down(void *args);
+//void func_progress(void *args);
+//void func_down_list(void *args);
+//void func_extract_delete(void *args);
 
-int sDownload(const std::string& filein, const std::string& placeout, const std::string& message);
-int sExtractDelete(const std::string& filein, const std::string& placeout, const std::string& message);
+//int sDownload(const std::string& filein, const std::string& placeout, const std::string& message);
+//int sExtractDelete(const std::string& filein, const std::string& placeout, const std::string& message);
 
-
+/*
 typedef struct
 {
+    std::string site1;
+    std::string site2;
     std::string file_in;
     std::string place_out;
-} thread_data_down;
-
-
+} thread_data;
+*/
+/*
 typedef struct
 {
     std::string file_in;
     std::string place_out;
 } thread_data_extr;
-
+*/
 
 
 GUIWindowUpdater::GUIWindowUpdater()
@@ -77,7 +81,7 @@ GUIWindowUpdater::~GUIWindowUpdater()
 {
     hide();
 }
-
+/*
 static int progress_callback(double *client, double t, double d, double utotal, double ulnow)
 {
 
@@ -90,59 +94,43 @@ static int progress_callback(double *client, double t, double d, double utotal, 
 }
 
 
+*/
 
-
-void func_down(void *args)
+void sDownload(const std::string& site_pre, const std::string& site_post, const std::string& place_out, int mode)
 {
 // tu ssprawdz modyfikacje mod..txt
 
-    thread_data_down *pom = (thread_data_down *)args;
-
+    std::cout << " W " << site_pre << " " << site_post << " " << place_out << "\n";
     sf::Http Http;
-    Http.SetHost(SITE);
+    Http.SetHost(site_pre);
 
     sf::Http::Request Request;
     Request.SetMethod(sf::Http::Request::Get);
-    Request.SetURI(SITE_PRE + pom->file_in + SITE_POST);
+    Request.SetURI(site_post);
 
     sf::Http::Response Page = Http.SendRequest(Request);
 
     if (Page.GetStatus() == sf::Http::Response::Ok)
     {
-        std::cout<< "OK\n";
-        std::ofstream outFile(pom->place_out, std::ios::binary);
-        outFile << Page.GetBody();
+//        std::cout<< "OK\n";
+        std::ofstream outFile;
+
+        if (mode == 1)
+            outFile.open(place_out.c_str(), std::ofstream::out | std::ofstream::binary);
+        else if (mode == 0)
+            outFile.open(place_out.c_str(), std::ofstream::out);
+        outFile.write((char *)Page.GetBody().c_str(), Page.GetBody().size());
+        outFile.close();
     }
     else
         std::cout << "FAIL\n";
 }
 
-
-void func_progress(void *args)
-{
-//std::cout << "START" << std::endl;
-    //while (DOWN_ON)
-    CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
-    CEGUI::ProgressBar* pb = static_cast<CEGUI::ProgressBar*>(winMgr.getWindow("WindowUpdater/Frame/ProgressBar"));
-    while (DOWN_ON)
-    {
-        std::cout << "PROS " << progress << std::endl;
-        //prog_bar->setProgress(static_cast<float>(progress));
-        pb->setProgress(static_cast<float>(progress));
-//        winMgr.getWindow("WindowUpdater/Frame/ProgressBar")->setProperty(
-        //  "CurrentProgress", CEGUI::PropertyHelper::floatToString(progress));
-    }
-
-    //pthread_exit((void *)args);
-
-    //  return 0;
-}
-
-
+/*
 void func_extract_delete(void *args)
 {
 
-    thread_data_extr *pom = (thread_data_extr *)args;
+    thread_data *pom = (thread_data *)args;
     char out[10000], out2[10000];
     std::string dst_file(pom->file_in.begin(), pom->file_in.end()-5);
     UnLZMA un1;
@@ -170,9 +158,9 @@ void func_extract_delete(void *args)
 
     //  return 0;
 }
+*/
 
-
-
+/*
 int sDownload(const std::string& filein, const std::string& placeout, const std::string& message)
 {
 
@@ -181,7 +169,7 @@ int sDownload(const std::string& filein, const std::string& placeout, const std:
         mess->setText(message);
 
         //pthread_t thread_down;
-        thread_data_down str;
+        thread_data str;
 
         str.file_in = filein;
         str.place_out = placeout;
@@ -195,30 +183,65 @@ int sDownload(const std::string& filein, const std::string& placeout, const std:
     }
     return 0;
 }
+*/
+/*
+int sDownloadLinks(const std::string& sit1, const std::string& sit2, const std::string& message)
+{
 
+    //if (DOWN_ON)
+    {
+        mess->setText(message);
 
-int sExtractDelete(const std::string& filein, const std::string& placeout, const std::string& message)
+        //pthread_t thread_down;
+        //thread_data str;
+
+        //str.file_in = filein;
+        //str.place_out = placeout;
+
+//        pthread_create(&thread_down, NULL, func_down, &str);
+        sf::Thread thread_down(&func_down, &str);
+        thread_down.Launch();
+        //pthread_join(thread_down, NULL);
+
+        //pthread_exit(NULL);
+    }
+    return 0;
+}
+*/
+
+int sExtractDelete(const std::string& filein, const std::string& placeout)
 {
 
     if (DOWN_ON)
     {
-        mess->setText(message);
+        //mess->setText(message);
         progress += 1.0/static_cast<double>(game.SOLDAT_FOLDER.size());
 
-        thread_data_extr str;
-        //pthread_t thread_extract_delete;
 
-        str.file_in = filein;
-        str.place_out = placeout;
 
-        //pthread_create(&thread_extract_delete, NULL, func_extract_delete, &str);
+        char out[10000], out2[10000];
+        std::string dst_file(filein.begin(), filein.end()-5);
+        UnLZMA un1;
+        UnTar un2;
 
-        //pthread_join(thread_extract_delete, NULL);
+        std::cout << " Extracting " << filein << " (1st stage)" << std::endl;
 
-        //   sf::Thread thread_extract_delete(&func_extract_delete, &str);
-        //   thread_extract_delete.Launch();
+        un1.Extract(filein.c_str(), dst_file.c_str());
 
-        //pthread_exit(NULL);
+        remove(filein.c_str());
+
+
+        std::cout << " Extracting " << dst_file << " (2nd stage)" << std::endl;
+
+        strcpy(out, dst_file.c_str());
+        strcpy(out2, placeout.c_str());
+
+        un2.Extract(out, out2);
+
+        remove(dst_file.c_str());
+
+        std::cout << "Extracted into: " << placeout << std::endl << std::endl;
+
     }
 
     return 0;
@@ -229,66 +252,46 @@ int sExtractDelete(const std::string& filein, const std::string& placeout, const
 
 void func_down_list(void *args)
 {
-    std::ostringstream oss, siz;
-
-    //pthread_t thread_progress;
 
     progress = 0.0;
-    siz << game.SOLDAT_FOLDER.size();
+    // siz << game.SOLDAT_FOLDER.size();
     DOWN_ON = true;
 
+/*
+    // download links
+    sDownload("cruelhessian.konp.eu", "cruelhessian-links.txt", Parser.GAME_PATH + "cruelhessian-links.txt", 0);
+
+    CSimpleIni ini(false, false, false);
+
+    if (ini.LoadFile((Parser.GAME_PATH + "cruelhessian-links.txt").c_str()) < 0)
+    {
+        std::cout << "cannot read 'links.txt' file" << std::endl;
+        return;
+    }
+
+    std::vector<std::string> Link(game.SOLDAT_FOLDER.size());
+
+    std::string Server = ini.GetValue("main", "Server");
 
 
+    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
+    {
+        Link[i] = ini.GetValue(game.SOLDAT_FOLDER[i].c_str(), "Path");
+    }
 
-    //sDownload("natty-alternate-amd64+mac.iso",
-   /* sDownload("linux-image-2.6.20-cdlinux_15_i386.deb",
-              //Parser.SOL_PATH + "natty-alternate-amd64+mac.iso",
-              Parser.SOL_PATH + "linux-image-2.6.20-cdlinux_15_i386.deb",
-              "Downloading information file ...");
+    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
+    {
+        sDownload(Server, Link[i], Parser.GAME_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma", 1);
+    }
+
+    // progress = 0.0;
 */
-
-    sDownload("modifications_server.ini",
-              Parser.SOL_PATH + "modifications_server.ini",
-              "Downloading information file ...");
-
-
-    /*
-        int n = ParseModif(Parser.SOL_PATH + "modifications_server.ini");
-        if (n == 1)
-        {
-            cancel_butt->setText("Done");
-            mess->setText("Nothing to update");
-            return 0;
-        }
-      */
-    // std::cout << "STARTwww" << std::endl;
-    /*  for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
-      {
-
-          oss << i+1;
-          sDownload(game.SOLDAT_FOLDER[i] + ".tar.lzma",
-                    Parser.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
-                    "Downloading " + game.SOLDAT_FOLDER[i] + " ... (" + oss.str() + "/" + siz.str() + ")");
-          oss.str("");
-      }
+    for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
+    {
+        sExtractDelete(Parser.GAME_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma", Parser.GAME_PATH);
+    }
 
 
-      progress = 0.0;
-
-      for (unsigned int i = 0; i < game.SOLDAT_FOLDER.size(); ++i)
-      {
-          oss << i+1;
-          sExtractDelete(Parser.SOL_PATH + game.SOLDAT_FOLDER[i] + ".tar.lzma",
-                         Parser.SOL_PATH,
-                         "Unpacking " + game.SOLDAT_FOLDER[i] + " ... (" + oss.str() + "/" + siz.str() + ")");
-          oss.str("");
-      }
-
-
-      // creating Mp3 and Mods directories, if they were not existed
-      boost::filesystem::create_directory(Parser.SOL_PATH + "Mods");
-      boost::filesystem::create_directory(Parser.SOL_PATH + "Mp3");
-    */
     if (!NO_CONNECTION)
     {
         cancel_butt->setText("Done");
@@ -297,9 +300,6 @@ void func_down_list(void *args)
 
     DOWN_ON = false;
 
-    //pthread_exit((void *)args);
-
-//    return 0;
 }
 
 
@@ -308,31 +308,14 @@ bool GUIWindowUpdater::handleClick(const CEGUI::EventArgs &e)
 
     CEGUI::String buttonName = static_cast<const CEGUI::WindowEventArgs&>(e).window->getName();
 
-    //pthread_t thread_down_list;
-
     if (buttonName == "WindowUpdater/Frame/Start")
     {
         NO_CONNECTION = false;
         start_butt->setEnabled(false);
 
-        //  pthread_create(&thread_down_list, NULL, func_down_list, NULL);
         sf::Thread thread_down_list(&func_down_list);
         thread_down_list.Launch();
-
-
-        // DOWN_ON = true;
-        //   sf::Thread thread_progress(&func_progress);
-        //  thread_progress.Launch();
-
-        /* while (DOWN_ON)
-         {
-             std::cout << "PROS " << progress << std::endl;
-             //   prog_bar->setProgress(static_cast<float>(progress));
-         }
-        */
-        //  func_down_list();
-        // std::cout << "DALE " << std::endl;
-        //pthread_join(thread_down_list, NULL);
+        std::cout << "KAKA\n";
 
     }
     else if (buttonName == "WindowUpdater/Frame/Cancel")

@@ -183,26 +183,19 @@ bool GUI::FolderSelectorClick(const CEGUI::EventArgs &)
 {
 
     const unsigned int max_string = 25;
-    std::string temp = Parser.SOL_PATH = Parser.RepairPath(fs.getResult());
+    std::string temp = Parser.GAME_PATH = Parser.RepairPath(fs.getResult());
 
     if (temp.length() > max_string)
     {
         temp.replace(max_string, temp.length() - max_string, "...");
     }
 
-    if (Parser.MODE == 0)
-    {
-        Parser.SOL_PATH_[0] = Parser.SOL_PATH;
+    //if (Parser.MODE == 0)
+    //{
+        Parser.SOLDAT_PATH = Parser.GAME_PATH;
         mPlaceSoldat->setText(temp);
-        checkSoldat();
-    }
-    else
-    {
-        Parser.SOL_PATH_[1] = Parser.SOL_PATH;
-        //mPlaceCH->setText(temp);
-		mPlaceSoldat->setText(temp);
-        checkCH();
-    }
+        checkSoldat(0);
+    //}
 
     return true;
 
@@ -212,7 +205,7 @@ bool GUI::FolderSelectorClick(const CEGUI::EventArgs &)
 // when pressed Cancel button in Window Updater
 bool GUI::WindowUpdaterClick(const CEGUI::EventArgs &)
 {
-    checkCH();
+    checkSoldat(1);
 
     return true;
 }
@@ -231,7 +224,7 @@ int GUI::ApplyConfigs()
 {
 
     WINDOW_NO_SOLDAT = false;
-    mPlaceSoldat->setText(Parser.SOL_PATH_[Parser.MODE]);
+    mPlaceSoldat->setText(Parser.SOLDAT_PATH);
 
     CEGUI::EventArgs ev;
 
@@ -406,6 +399,8 @@ void GUI::run()
 
     sf::Event Event;
 
+	game.App.ShowMouseCursor(false);
+
     while (!must_quit)
     {
         while (game.App.GetEvent(Event))
@@ -517,12 +512,10 @@ GUI::GUI()
     CEGUI::WindowManager::setDefaultResourceGroup("layouts");
     //CEGUI::ScriptModule::setDefaultResourceGroup("scripts");
 
-    //CEGUI::MouseCursor::getSingleton().hide();
     try
     {
-  //      mWindowManager = CEGUI::WindowManager::getSingletonPtr();
+
         CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
-        //m = CEGUI::WindowManager::getSingleton();
 
         CEGUI::SchemeManager::getSingleton().loadScheme("TaharezLook.scheme");
         CEGUI::System::getSingleton().setDefaultMouseCursor("TaharezLook", "MouseArrow");
