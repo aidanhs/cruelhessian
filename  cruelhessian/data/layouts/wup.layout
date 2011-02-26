@@ -16,6 +16,7 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.180365,0},{0.744005,0},{0.455144,0},{0.905968,0}}" />
             </Window>
             <Window Type="TaharezLook/StaticText" Name="WindowUpdater/Frame/Message" >
+				<Property Name="Text" Value="Press Start and be patient while downloading 10MB" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.0718836,0},{0.183922,0},{0.926711,0},{0.335593,0}}" />
             </Window>

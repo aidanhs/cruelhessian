@@ -200,7 +200,7 @@
             <Window Type="DefaultWindow" Name="root/player" >
                 <Property Name="Visible" Value="False" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.000613676,0},{-1.39698e-008,0},{1.00062,0},{0.999999,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.000613676,0},{-1.39698e-08,0},{1.00062,0},{0.999999,0}}" />
                 <Window Type="TaharezLook/GroupBox" Name="root/player/keys" >
                     <Property Name="Text" Value="Select keys:" />
                     <Property Name="RiseOnClick" Value="False" />
@@ -351,7 +351,7 @@
                     <Property Name="ReadOnly" Value="True" />
                     <Property Name="MaxTextLength" Value="1073741823" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.716653,0},{0.269768,0},{0.886457,0},{0.368318,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.719722,0},{0.208521,0},{0.889526,0},{0.307071,0}}" />
                 </Window>
                 <Window Type="TaharezLook/Combobox" Name="root/options/InterfacesBox" >
                     <Property Name="ReadOnly" Value="True" />
@@ -362,7 +362,7 @@
                 <Window Type="TaharezLook/StaticText" Name="root/options/placeSoldatDesc" >
                     <Property Name="FrameEnabled" Value="False" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.0271276,0},{0.274054,0},{0.30986,0},{0.35284,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0240589,0},{0.211415,0},{0.306791,0},{0.290201,0}}" />
                 </Window>
                 <Window Type="TaharezLook/StaticText" Name="root/options/interfacesDesc" >
                     <Property Name="FrameEnabled" Value="False" />
@@ -371,12 +371,12 @@
                 </Window>
                 <Window Type="TaharezLook/Button" Name="root/options/placeSoldat" >
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.301391,0},{0.273331,0},{0.693987,0},{0.356295,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.302414,0},{0.213476,0},{0.69501,0},{0.29644,0}}" />
                 </Window>
                 <Window Type="TaharezLook/RadioButton" Name="root/options/cruelRadio" >
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                     <Property Name="ClippedByParent" Value="False" />
-                    <Property Name="UnifiedAreaRect" Value="{{0.582076,0},{0.106292,0},{0.912887,0},{0.200392,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0256172,0},{0.436192,0},{0.356429,0},{0.530291,0}}" />
                 </Window>
                 <Window Type="TaharezLook/StaticText" Name="root/options/placeCHDesc" >
                     <Property Name="FrameEnabled" Value="False" />
@@ -446,7 +446,7 @@
             <Window Type="DefaultWindow" Name="root/music" >
                 <Property Name="Visible" Value="False" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.00204582,0},{1.28078e-005,0},{1.00204,0},{1.00001,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.00204582,0},{1.28078e-05,0},{1.00204,0},{1.00001,0}}" />
                 <Window Type="TaharezLook/Checkbox" Name="root/music/IsSounds" >
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                     <Property Name="UnifiedAreaRect" Value="{{0.023404,0},{0.037194,0},{0.132651,0},{0.10902,0}}" />
