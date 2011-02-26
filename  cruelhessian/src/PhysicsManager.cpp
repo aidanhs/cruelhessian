@@ -32,6 +32,7 @@
 #include "Bullet.h"
 #include "Grenade.h"
 #include "Cluster.h"
+#include "Shell.h"
 #include "ClusterGrenade.h"
 #include "WorldMap.h"
 #include "TVector2D.h"
@@ -85,6 +86,8 @@ void PhysicsManager::CreateCollisionTable()
         for (unsigned int j = 0; j < 11; ++j)
             m_bShouldCollide[i][j] = true;
 
+    // okresl miedzy ktorymi elementami nigdy nie powinno byc kolizji
+
     m_bShouldCollide[TYPE_PLAYER][TYPE_PLAYER] = false;
     m_bShouldCollide[TYPE_BULLET][TYPE_BULLET] = false;
     m_bShouldCollide[TYPE_BULLET][TYPE_GRENADE] = m_bShouldCollide[TYPE_GRENADE][TYPE_BULLET] = false;
@@ -94,40 +97,9 @@ void PhysicsManager::CreateCollisionTable()
     m_bShouldCollide[TYPE_GRENADE][TYPE_CLUSTER] = m_bShouldCollide[TYPE_CLUSTER][TYPE_GRENADE] = false;
     m_bShouldCollide[TYPE_GRENADE][TYPE_CLUSTERGRENADE] = m_bShouldCollide[TYPE_CLUSTERGRENADE][TYPE_GRENADE] = false;
     m_bShouldCollide[TYPE_POLYGON][TYPE_POLYGON] = false;
+    m_bShouldCollide[TYPE_COLLIDER][TYPE_COLLIDER] = false;
 
 }
-
-
-
-void PhysicsManager::UpdatePlayerMovement(float dt)
-{
-    fPlayerAirbornTimer -= dt;
-
-    if (fPlayerAirbornTimer < 0.0f)
-        fPlayerAirbornTimer = 0.0f;
-
-    TVector2D xPlayerImpulse(0,0);
-
-    if (world.bot[world.MY_BOT_NR]->moveLeft)
-        xPlayerImpulse.x += -200.0f * world.bot[world.MY_BOT_NR]->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-
-    if (world.bot[world.MY_BOT_NR]->moveRight)
-        xPlayerImpulse.x += 200.0f * world.bot[world.MY_BOT_NR]->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-
-    if (world.bot[world.MY_BOT_NR]->moveUp && world.bot[world.MY_BOT_NR]->isAbleToJump)
-        xPlayerImpulse.y += -200.0f * world.bot[world.MY_BOT_NR]->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-
-    if (world.bot[world.MY_BOT_NR]->isAbleToFly)
-        xPlayerImpulse.y += -200.0f * world.bot[world.MY_BOT_NR]->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-
-    //xPlayerImpulse.x = (KeyVal(VK_RIGHT)  - KeyVal(VK_LEFT)) * 20.0f * m_pxPlayer->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-    //xPlayerImpulse.x = (Parser.KEY_RIGHT - Parser.KEY_LEFT) * 10.0f * m_pxPlayer->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-    //xPlayerImpulse.y = (KeyVal(VK_UP   ) * 30.0f - KeyVal(VK_DOWN) * 10.0f) * m_pxPlayer->GetMass() * (fPlayerAirbornTimer * 0.4f + 0.6f);
-    //xPlayerImpulse  -= m_pxPlayer->GetLinVelocity() * 0.2f / dt;
-    //m_pxPlayer->AddForce(xPlayerImpulse);
-    world.bot[world.MY_BOT_NR]->AddForce(xPlayerImpulse);
-}
-
 
 
 
@@ -143,6 +115,7 @@ void PhysicsManager::GameUpdate(float dt)
                 ((*it)->type == TYPE_BULLET && static_cast<Bullet*>((*it))->killMyself) ||
                 ((*it)->type == TYPE_GRENADE && static_cast<Grenade*>((*it))->killMyself) ||
                 ((*it)->type == TYPE_CLUSTER && static_cast<Cluster*>((*it))->killMyself) ||
+				((*it)->type == TYPE_SHELL && static_cast<Shell*>((*it))->killMyself) ||
                 ((*it)->type == TYPE_CLUSTERGRENADE && static_cast<ClusterGrenade*>((*it))->killMyself))
         {
             //delete (*it);
@@ -168,24 +141,17 @@ void PhysicsManager::GameUpdate(float dt)
             static_cast<Cluster*>(*it)->Update();
         else if ((*it)->type == TYPE_CLUSTERGRENADE)
             static_cast<ClusterGrenade*>(*it)->Update();
+        else if ((*it)->type == TYPE_SHELL)
+            static_cast<Shell*>(*it)->Update();
     }
-/*
-    for (it = m_movingObj.begin(); it != m_movingObj.end(); ++it)
-    {
-        if ((*it)->type == TYPE_BONUS)
-            static_cast<Bonus*>((*it)->pointer)->update();
-        else if ((*it)->type == TYPE_PLAYER)
-            static_cast<Bot*>((*it)->pointer)->update();
-        else if ((*it)->type == TYPE_BULLET)
-            static_cast<Bullet*>((*it)->pointer)->update();
-        else if ((*it)->type == TYPE_GRENADE)
-            static_cast<Grenade*>((*it)->pointer)->update();
-        else if ((*it)->type == TYPE_CLUSTERNADE)
-            static_cast<ClusterNade*>((*it)->pointer)->update();
-    }
-*/
 
-    UpdatePlayerMovement(dt);
+
+    //UpdatePlayerMovement(dt);
+
+    fPlayerAirbornTimer -= dt;
+
+    if (fPlayerAirbornTimer < 0.0f)
+        fPlayerAirbornTimer = 0.0f;
 
     //-------------------------------------------------------
     // add forces
@@ -200,6 +166,10 @@ void PhysicsManager::GameUpdate(float dt)
     //-------------------------------------------------------
     // test collisions, we don't check collisions between static objects
     //-------------------------------------------------------
+
+    // na poczatku wszystkie boty nei koliduja z polygonami
+
+
 
     Spatial.ReAddMovable();
 

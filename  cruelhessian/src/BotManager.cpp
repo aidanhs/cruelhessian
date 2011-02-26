@@ -49,33 +49,37 @@ const std::string BotManager::anim_type(MT name) const
     switch (name)
     {
     case BIEGA:
-        return Parser.SOL_PATH + "Anims/biega.poa";
+        return Parser.GAME_PATH + "Anims/biega.poa";
     case BIEGA_TYL:
-        return Parser.SOL_PATH + "Anims/biegatyl.poa";
+        return Parser.GAME_PATH + "Anims/biegatyl.poa";
     case CELUJE:
-        return Parser.SOL_PATH + "Anims/celuje.poa";
+        return Parser.GAME_PATH + "Anims/celuje.poa";
+    case CHANGE:
+        return Parser.GAME_PATH + "Anims/change.poa";
     case CIESZY:
-        return Parser.SOL_PATH + "Anims/cieszy.poa";
+        return Parser.GAME_PATH + "Anims/cieszy.poa";
     case GORA:
-        return Parser.SOL_PATH + "Anims/gora.poa";
+        return Parser.GAME_PATH + "Anims/gora.poa";
     case KUCA:
-        return Parser.SOL_PATH + "Anims/kuca.poa";
+        return Parser.GAME_PATH + "Anims/kuca.poa";
     case RZUCA:
-        return Parser.SOL_PATH + "Anims/rzuca.poa";
+        return Parser.GAME_PATH + "Anims/rzuca.poa";
     case SKOK:
-        return Parser.SOL_PATH + "Anims/skok.poa";
+        return Parser.GAME_PATH + "Anims/skok.poa";
     case SKOK_DOL_OBROT:
-        return Parser.SOL_PATH + "Anims/skokdolobrot.poa";
+        return Parser.GAME_PATH + "Anims/skokdolobrot.poa";
     case SKOK_DOL_OBROT_TYL:
-        return Parser.SOL_PATH + "Anims/skokdolobrottyl.poa";
+        return Parser.GAME_PATH + "Anims/skokdolobrottyl.poa";
     case SKOK_W_BOK:
-        return Parser.SOL_PATH + "Anims/skokwbok.poa";
+        return Parser.GAME_PATH + "Anims/skokwbok.poa";
     case SPADA:
-        return Parser.SOL_PATH + "Anims/spada.poa";
+        return Parser.GAME_PATH + "Anims/spada.poa";
     case STOI:
-        return Parser.SOL_PATH + "Anims/stoi.poa";
+        return Parser.GAME_PATH + "Anims/stoi.poa";
+    case WYRZUCA:
+        return Parser.GAME_PATH + "Anims/wyrzuca.poa";
     case ZMIEN_BRON:
-        return Parser.SOL_PATH + "Anims/zmienbron.poa";
+        return Parser.GAME_PATH + "Anims/zmienbron.poa";
         //case
     default:
         break;
@@ -187,7 +191,7 @@ BotManager::BotManager(void)
     fullLife = 495.0f;
 
 
-    std::string fold = Parser.SOL_PATH + "Bots/";
+    std::string fold = Parser.GAME_PATH + "Bots/";
     CSimpleIni ini(false, false, false);
 
     srand(static_cast<unsigned int>(time(0)));
@@ -243,6 +247,7 @@ BotManager::BotManager(void)
     read_poa(BIEGA);
     read_poa(BIEGA_TYL);
     read_poa(CELUJE);
+    read_poa(CHANGE);
     read_poa(CIESZY);
     read_poa(GORA);
     read_poa(KUCA);
@@ -339,24 +344,24 @@ BotManager::BotManager(void)
 
     std::cout << "   loading bots' textures ... " << std::endl;
 
-    gostek[STOPA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "stopa");
-    gostek[STOPA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "stopa2");
-    gostek[KLATA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "klata");
-    gostek[KLATA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "klata2");
-    gostek[RAMIE][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "ramie");
-    gostek[RAMIE][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "ramie2");
-    gostek[MORDA][0]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "morda");
-    gostek[MORDA][1]  = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "morda2");
-    gostek[REKA][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "reka");
-    gostek[REKA][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "reka2");
-    gostek[DLON][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "dlon");
-    gostek[DLON][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "dlon2");
-    gostek[BIODRO][0] = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "biodro");
-    gostek[BIODRO][1] = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "biodro2");
-    gostek[UDO][0]    = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "udo");
-    gostek[UDO][1]    = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "udo2");
-    gostek[NOGA][0]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "noga");
-    gostek[NOGA][1]   = Texture::LoadExt(Parser.SOL_PATH + "Gostek-gfx/", "noga2");
+    gostek[STOPA][0]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "stopa");
+    gostek[STOPA][1]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "stopa2");
+    gostek[KLATA][0]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "klata");
+    gostek[KLATA][1]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "klata2");
+    gostek[RAMIE][0]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "ramie");
+    gostek[RAMIE][1]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "ramie2");
+    gostek[MORDA][0]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "morda");
+    gostek[MORDA][1]  = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "morda2");
+    gostek[REKA][0]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "reka");
+    gostek[REKA][1]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "reka2");
+    gostek[DLON][0]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "dlon");
+    gostek[DLON][1]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "dlon2");
+    gostek[BIODRO][0] = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "biodro");
+    gostek[BIODRO][1] = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "biodro2");
+    gostek[UDO][0]    = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "udo");
+    gostek[UDO][1]    = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "udo2");
+    gostek[NOGA][0]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "noga");
+    gostek[NOGA][1]   = Texture::LoadExt(Parser.GAME_PATH + "Gostek-gfx/", "noga2");
 
 
 
@@ -417,7 +422,7 @@ BotManager::BotManager(void)
 
 BotManager::~BotManager(void)
 {
-    std::cout << "Removing BotManager ..." << std::endl;
+    std::cout << "Removing BotManager ... DONE" << std::endl;
     element.clear();
 }
 

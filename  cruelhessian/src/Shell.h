@@ -1,10 +1,10 @@
-#ifndef CLUSTERGRENADE_H
-#define CLUSTERGRENADE_H
+#ifndef SHELL_H
+#define SHELL_H
 
-/*   ClusterGrenade.h
+/*   Shell.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,22 +29,24 @@
 class Tex;
 class TVector2D;
 
-class ClusterGrenade : public Drawable, public Body
+class Shell : public Drawable, public Body
 {
 
-    const Tex* m_axTexture[17];
-    Tex *m_xTexture;
-    int m_iCurrentFrame;           ///< Counter of the current frame
-    float m_fTimerChangeFrame;  ///< Time when the previous frame was changed
-    float m_fTimerThrow;         ///< Time when the grenade was thrown
-    float m_fHalfWidth;
+    //const Tex* m_axTexture[17];
+	//int m_iCurrentFrame;           ///< Counter of the current frame
+    //float m_fTimerChangeFrame;  ///< Time when the previous frame was changed
+    //float m_fTimerThrow;         ///< Time when the grenade was thrown
+	//int m_iOwner;
+
+	const Tex& m_xTexture;
+	float m_fHalfWidth;
 	float m_fHalfHeight;
-	bool m_bPlayOnlyOnce;
+	Shell& operator=(const Shell&) {return *this;}
 
 public:
-    int m_iOwner;
+
+	unsigned int m_iBouncingCount;
     bool killMyself;
-    unsigned int m_iBouncingCount;
 
     /**
      *
@@ -55,8 +57,8 @@ public:
      * @param  owner owner of the grenade
      * @param  push_time time when grenade was pushed
      */
-    ClusterGrenade(const TVector2D& src, const TVector2D& velocity, unsigned int _owner);
-    ~ClusterGrenade() {}
+    Shell(const TVector2D& src, const TVector2D& velocity, unsigned int gunmodel);
+    ~Shell() {}
 
     void Draw() const;
     void Update();

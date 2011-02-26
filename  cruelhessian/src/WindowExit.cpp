@@ -20,8 +20,10 @@
 
 
 #include "WindowExit.h"
+#include "Mouse.h"
 #include "ParserManager.h"
 #include "FontManager.h"
+#include "WorldMap.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else
@@ -32,7 +34,7 @@
 WindowExit::WindowExit() :
     m_fX(Parser.MAX_WIDTH/4),
     m_fY(Parser.MAX_HEIGHT/7),
-    m_fWidth(200),
+    m_fWidth(300),
     m_fHeight(80),
     m_bNumber(false)
 {
@@ -40,8 +42,10 @@ WindowExit::WindowExit() :
 }
 
 
-void WindowExit::Draw(const TVector2D& m_xMousePos)
+void WindowExit::Draw()
 {
+
+    const TVector2D& m_xMousePos = world.mouse->getLocalPosition();
 
     bool stan1 = false;
 
@@ -51,12 +55,12 @@ void WindowExit::Draw(const TVector2D& m_xMousePos)
     glPushMatrix();
     glLoadIdentity();
 
-    // obramowanie
-    glColor4ub(85, 85, 85, 200);
+    // wewnetrzny prostokat
+    glColor4ub(85, 85, 85, 170);
     glRectf(m_fX, m_fY, m_fX + m_fWidth, m_fY + m_fHeight);
 
-    // inner rectangle
-    glColor4ub(100, 100, 100, 200);
+    // obramowanie
+    glColor4ub(100, 100, 100, 0);
     glBegin(GL_QUADS);
     glVertex2f(m_fX - 1, m_fY - 1);
     glVertex2f(m_fX + m_fWidth + 1, m_fY - 1);
@@ -74,16 +78,16 @@ void WindowExit::Draw(const TVector2D& m_xMousePos)
     // opcja jest zaznaczona
     if (stan1 && m_xMousePos.y > start.y-7 && m_xMousePos.y < start.y+7)
     {
-        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, "Exit", Fonts.textColorGunOnTouch, start.x, start.y);
+        Fonts.printText(Fonts.font[0], Fonts.FontMenu, "Exit to menu", Fonts.textColorGunOnTouch, start.x, start.y);
         m_bNumber = true;
     }
     else
     {
-        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, "Exit", Fonts.textColorGunNormal, start.x, start.y);
+        Fonts.printText(Fonts.font[0], Fonts.FontMenu, "Exit to menu", Fonts.textColorGunNormal, start.x, start.y);
     }
 
-    start.y += 25;
-    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Esc - back to game", Fonts.textColorGunNormal, start.x, start.y);
+    start.y += 35;
+    Fonts.printText(Fonts.font[1], Fonts.FontConsole, "Esc - back to game", Fonts.textColorGunNormal, start.x, start.y);
 
 }
 

@@ -1,10 +1,10 @@
-#ifndef INTERFACE_BASE_MANAGER_H
-#define INTERFACE_BASE_MANAGER_H
+#ifndef MAP_ELEMENT_PROP_H
+#define MAP_ELEMENT_PROP_H
 
-/*   InterfaceBaseManager.h
+/*   MapElementProp.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,30 +21,43 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
-
-#include "TexturesLoader.h"
-#include "Singleton.h"
+#include "MapElement.h"
 
 
 
-class InterfaceBaseManager : public Singleton<InterfaceBaseManager>
+class MapElementProp : public MapElement
 {
-
 public:
+    typedef enum
+    {
+        dbBEHIND_ALL = 0,
+        dbBEHIND_MAP,
+        dbBEHIND_NONE
+    } PMS_DRAWBEHIND;
 
-    InterfaceBaseManager();
-    virtual ~InterfaceBaseManager();
+    // typedef struct
+//    {
 
-    void Draw();
+    bool active;
+    ubyte filler1;
+    word style;
+    long width;
+    long height;
+    float x;
+    float y;
+    float rotation;
+    float scaleX;
+    float scaleY;
+    ubyte alpha;
+    ubyte filler2[3];
+    PMS_COLOR color;
+    PMS_DRAWBEHIND level;
+    ubyte filler3[3];
 
-    Tex text_arrow;
-    Tex text_mouse;
-    Tex text_deaddot;
-    Tex text_smalldot;
-
+    MapElementProp() {};
+    void Draw() const;
 };
 
-#define InterfaceBase InterfaceBaseManager::GetSingleton()
+
 
 #endif

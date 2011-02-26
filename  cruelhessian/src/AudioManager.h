@@ -45,7 +45,7 @@ private:
     sf::SoundBuffer* LoadSoundExt(const std::string& src_dir, const std::string& file) const;
     int m_iCurrentSongNumber;
     std::vector<std::string> m_musicList;
-    AudioManager(const AudioManager&) {}
+    //AudioManager(const AudioManager&) {}
     AudioManager& operator=(const AudioManager&) {return *this;}
 
 public:
@@ -61,8 +61,8 @@ public:
 
     sf::Music *music;
     sf::Sound grenade_throw, grenade_bounce, grenade_explosion, grenade_pullout, cluster, cluster_explosion, sound_new_life, sound_heaven, sound_death[3], sound_kitfall[2], sound_spawn, menu_click;
-    sf::Sound take_medikit, take_vestkit, take_berserker, take_predator, take_grenades, take_flamer;
-    sf::Sound fireSound[20], reloadSound[20];
+    sf::Sound take_medikit, take_vestkit, take_berserker, take_predator, take_grenades, take_flamer, regenerate;
+    sf::Sound fireSound[20], reloadSound[20], step[9], shell[2];
 
 
 };

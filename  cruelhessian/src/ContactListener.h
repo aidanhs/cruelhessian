@@ -1,10 +1,10 @@
-#ifndef INTERFACE_BASE_MANAGER_H
-#define INTERFACE_BASE_MANAGER_H
+#ifndef HANDLE_CONTACTS_H
+#define HANDLE_CONTACTS_H
 
-/*   InterfaceBaseManager.h
+/*   ContactListener.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,30 +21,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+//#include "../Body.h"
+//#include <iostream>
 
+class Body;
+class TVector2D;
 
-#include "TexturesLoader.h"
-#include "Singleton.h"
-
-
-
-class InterfaceBaseManager : public Singleton<InterfaceBaseManager>
-{
-
-public:
-
-    InterfaceBaseManager();
-    virtual ~InterfaceBaseManager();
-
-    void Draw();
-
-    Tex text_arrow;
-    Tex text_mouse;
-    Tex text_deaddot;
-    Tex text_smalldot;
-
-};
-
-#define InterfaceBase InterfaceBaseManager::GetSingleton()
+extern bool HandleContact(const TVector2D& N, float& t, Body* pxPlayerBody, Body* pxOtherBody);
 
 #endif

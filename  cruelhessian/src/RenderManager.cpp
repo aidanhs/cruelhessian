@@ -31,13 +31,14 @@
 #include "Bullet.h"
 #include "Grenade.h"
 #include "Cluster.h"
+#include "Shell.h"
 #include "ClusterGrenade.h"
 #include "Arrow.h"
 #include "InterfaceBaseManager.h"
 #include "InterfaceManager.h"
 #include "PhysicsManager.h"
 #include "Weapon.h"
-//#include "WindowExit.h"
+
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else
@@ -47,13 +48,13 @@
 
 RenderManager::RenderManager()
 {
-    std::cout << "Starting RenderManager ..." << std::endl;
+    std::cout << "Starting RenderManager ... DONE" << std::endl;
 }
 
 
 RenderManager::~RenderManager()
 {
-    std::cout << "Removing RenderManager ..." << std::endl;
+    std::cout << "Removing RenderManager ... DONE" << std::endl;
 
     // std::queue<Drawable *> empty;
     // std::swap(m_queue, empty);
@@ -104,6 +105,8 @@ void RenderManager::Draw()
             static_cast<Bullet*>(*it)->Draw();
         else if ((*it)->type == TYPE_BONUS)
             static_cast<Bonus*>(*it)->Draw();
+        else if ((*it)->type == TYPE_SHELL)
+            static_cast<Shell*>(*it)->Draw();
         else if ((*it)->type == TYPE_PLAYER)
             static_cast<Bot*>(*it)->Draw();
         else if ((*it)->type == TYPE_GRENADE)
@@ -125,10 +128,8 @@ void RenderManager::Draw()
 
     InterfaceBase.Draw();
 
-
-
     world.mouse->Draw();
-//world.window_exit->draw(world.mouse->getLocalPosition());
+
     game.App.Display();
 
 }

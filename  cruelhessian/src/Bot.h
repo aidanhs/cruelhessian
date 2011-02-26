@@ -31,6 +31,7 @@
 #include "Body.h"
 
 class Weapon;
+class Jet;
 
 
 class Bot : public Drawable, public Body
@@ -42,8 +43,15 @@ class Bot : public Drawable, public Body
 public:
 //Body *bod;
     bool MODE_BERSERKER, MODE_PREDATOR, MODE_FLAMEGOD;
+    void ChangeMovement(MT move);
+    int usedWeaponNr;
+
+    void ChangeWeapon();
+    void DropWeapon();
 //    Body *body;
-    Weapon* weapon;
+    Weapon *weapon[2];
+    //Weapon *currentWeapon;
+    Jet *jet;
     std::string name;
     TEAM team;
     std::string chatKill;
@@ -79,6 +87,7 @@ public:
     unsigned int ping;
     unsigned int gunModel;
     unsigned int numGrenades;
+    unsigned int numGrenadesMax;
     unsigned int numClusters;
     unsigned int leftAmmos;
     unsigned int currentFrame;       // aktualnie wyswietlana ramka
@@ -93,9 +102,11 @@ public:
 
     bool isShooting;
     bool isKilled;
-    bool isAbleToFly;
+    bool wantToFly;
+    //bool jump;
+    //bool fly;
     bool isReloading;
-    bool isAbleToJump;
+    bool collisionWithPoly;
 
     bool moveLeft;
     bool moveRight;
@@ -104,7 +115,7 @@ public:
     bool changeMove;
 
     TVector2D shotPoint;
-    float procJet;
+   // float procJet;
     float procVest;
     float actLife;
 
@@ -123,6 +134,7 @@ public:
 	void ThrowCluster(const TVector2D& dest, float push_time);
     void Update();
     bool is_inside(int x, int y);
+    void ReloadGun();
     //void AccumulateForces();
 
 };

@@ -26,7 +26,7 @@
 #include "TVector2D.h"
 #include "TexturesLoader.h"
 #include <cmath>
-#include "physics/ContactListener.h"
+#include "ContactListener.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else
@@ -39,6 +39,7 @@ Grenade::Grenade(const TVector2D& src, const TVector2D& velocity, unsigned int _
     m_iOwner(_owner),
     m_iCurrentFrame(0),
     m_fTimerChangeFrame(0.0f),
+    m_bPlayOnlyOnce(true),
     m_fTimerThrow(world.getCurrentTime),
     killMyself(false)
 {
@@ -63,9 +64,12 @@ void Grenade::Update()
 
     if (world.getCurrentTime - m_fTimerThrow > 4000)
     {
-        // explode after 4 second
-        if (Parser.SOUNDS_VOL > 0)
+        // explode after 4 seconds
+        if (m_bPlayOnlyOnce && Parser.SOUNDS_VOL > 0)
+		{
             Audio.Play(Audio.grenade_explosion);
+			m_bPlayOnlyOnce = false;
+		}
 
         if (world.getCurrentTime - m_fTimerChangeFrame >= 20)
         {

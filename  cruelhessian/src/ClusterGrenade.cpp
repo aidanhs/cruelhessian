@@ -27,7 +27,7 @@
 #include "TexturesLoader.h"
 #include "WorldMap.h"
 #include <cmath>
-#include "physics/ContactListener.h"
+#include "ContactListener.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else
@@ -41,8 +41,9 @@ ClusterGrenade::ClusterGrenade(const TVector2D& src, const TVector2D& velocity, 
     m_iCurrentFrame(0),
     m_fTimerChangeFrame(0.0f),
     m_fTimerThrow(world.getCurrentTime),
+    m_bPlayOnlyOnce(true),
     killMyself(false),
-    m_iTouchNumber(0)
+    m_iBouncingCount(0)
 {
 
     m_xTexture = &WeaponManager::GetSingleton().text_clustergrenade[0];
@@ -64,11 +65,14 @@ ClusterGrenade::ClusterGrenade(const TVector2D& src, const TVector2D& velocity, 
 void ClusterGrenade::Update()
 {
 
-    if (m_iTouchNumber >= 2)
+    if (m_iBouncingCount >= 2)
     {
         // explode if touch something
         if (Parser.SOUNDS_VOL > 0)
+        {
             Audio.Play(Audio.cluster_explosion);
+            m_bPlayOnlyOnce = false;
+        }
 
         if (world.getCurrentTime - m_fTimerChangeFrame >= 20)
         {
@@ -83,6 +87,7 @@ void ClusterGrenade::Update()
             // remove from the list
             else
             {
+                //std::cout << "DF\n";
                 killMyself = true;
             }
         }

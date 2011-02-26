@@ -24,9 +24,10 @@
 
 #include "TexturesLoader.h"
 #include "TVector2D.h"
+#include "Singleton.h"
 
 
-class Mouse
+class Mouse : public Singleton<Mouse>
 {
     const Tex& texture;
     TVector2D mGlobalPos;

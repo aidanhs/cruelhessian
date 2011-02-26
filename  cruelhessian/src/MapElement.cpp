@@ -1,10 +1,7 @@
-#ifndef ARROW_H
-#define ARROW_H
-
-/*   Arrow.h
+/*   MapElement.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,29 +18,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "Drawable.h"
-#include "TVector2D.h"
-#include "Singleton.h"
 
-
-class Tex;
-
-
-class Arrow : public Singleton<Arrow>, public Drawable
-{
-
-    const Tex& m_xTexture;
-    TVector2D m_xPosition;
-	Arrow& operator=(const Arrow&) {return *this;}
-
-public:
-
-    Arrow();
-    ~Arrow() {}
-
-    void Update(const TVector2D& bot_pos);
-    void Draw() const;
-};
-
-
-#endif
+#include "MapElement.h"

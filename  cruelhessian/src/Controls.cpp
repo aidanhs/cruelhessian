@@ -25,9 +25,11 @@
 #include "ParserManager.h"
 #include "BotManager.h"
 #include "WeaponManager.h"
+#include "InterfaceManager.h"
 #include "Bot.h"
 #include "Map.h"
 #include "Body.h"
+#include "Jet.h"
 #include "Mouse.h"
 #include "WindowExit.h"
 #include "WindowGuns.h"
@@ -43,22 +45,20 @@ void WorldMap::inputUser()
 
     while (game.App.GetEvent(event))
     {
+        //if (window_guns->GetSingletonPtr() || window_exit->GetSingletonPtr() || CHOICE_EXIT || bot[MY_BOT_NR]->isKilled) break;
+
         if (event.Type == sf::Event::Closed)
         {
-            //    App.Close();
             CHOICE_EXIT = true;
         }
-
-        if (event.Type == sf::Event::KeyPressed)
+        else if (event.Type == sf::Event::KeyPressed)
         {
-
-            onKeyDown(event.Key.Code);
 
             KEY_PRESSED = event.Key.Code;
 
             if (KEY_PRESSED == sf::Key::Escape)
             {
-                if (window_exit->GetSingletonPtr() != NULL)
+                if (window_exit->GetSingletonPtr())
                 {
                     delete window_exit;
                 }
@@ -94,10 +94,7 @@ void WorldMap::inputUser()
             {
                 Audio.playMusic(1);
             }
-
-            if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT) return;
-
-            if (KEY_PRESSED == Parser.KEY_GRENADE)
+            else if (KEY_PRESSED == Parser.KEY_GRENADE)
             {
                 if (!CHOICE_GUN && (bot[MY_BOT_NR]->numGrenades >= 1))
                 {
@@ -108,12 +105,17 @@ void WorldMap::inputUser()
                     bot[MY_BOT_NR]->ThrowCluster(mouse->getGlobalPosition(), 200);
                 }
             }
-            if (KEY_PRESSED == Parser.KEY_DOWN)
+            else if (KEY_PRESSED == Parser.KEY_DOWN)
             {
                 bot[MY_BOT_NR]->movementType = KUCA;
             }
+            else if (KEY_PRESSED == Parser.KEY_CHANGE)
+            {
+                //bot[MY_BOT_NR]->movementType = KUCA;
+                bot[MY_BOT_NR]->ChangeWeapon();
+            }
 
-            if (command_line->GetSingletonPtr() != NULL && chat_line->GetSingletonPtr() == NULL)
+            if (command_line->GetSingletonPtr() && chat_line->GetSingletonPtr() == NULL)
             {
                 command_line->Query(KEY_PRESSED);
             }
@@ -122,7 +124,7 @@ void WorldMap::inputUser()
                 command_line = new CommandLine();
             }
 
-            if (chat_line->GetSingletonPtr() != NULL && command_line->GetSingletonPtr() == NULL)
+            if (chat_line->GetSingletonPtr() && command_line->GetSingletonPtr() == NULL)
             {
                 chat_line->Query(KEY_PRESSED);
             }
@@ -131,13 +133,18 @@ void WorldMap::inputUser()
                 chat_line = new ChatLine();
             }
 
+            // fix !!!!!!!!!!! to powinno stac poza while - za zdarzeniami dotyczacymi myszy
+            if (window_guns->GetSingletonPtr() || window_exit->GetSingletonPtr() || CHOICE_EXIT || bot[MY_BOT_NR]->isKilled) break;
+
+            onKeyDown(KEY_PRESSED);
+
         }
         else if (event.Type == sf::Event::KeyReleased)
         {
             onKeyUp(event.Key.Code);
         }
 
-        if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT || command_line->GetSingletonPtr() != NULL || chat_line->GetSingletonPtr() != NULL) return;
+        //if (window_guns->GetSingletonPtr() || window_exit->GetSingletonPtr() || CHOICE_EXIT || command_line->GetSingletonPtr() != NULL || chat_line->GetSingletonPtr() != NULL) break;
 
         if (event.Type == sf::Event::MouseButtonPressed)
         {
@@ -150,7 +157,6 @@ void WorldMap::inputUser()
 
     }
 
-    if (window_guns->GetSingletonPtr() != NULL || window_exit->GetSingletonPtr() != NULL || CHOICE_EXIT || bot[MY_BOT_NR]->isKilled) return;
 
 
 // ************  mouse
@@ -166,33 +172,10 @@ void WorldMap::inputUser()
         bot[MY_BOT_NR]->movementDirection = RIGHT;
     }
 
-// right mouse button
-    const sf::Input& Input = game.App.GetInput();
-
-    //if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON_RMASK) && (bot[MY_BOT_NR]->procJet >= 0.01))
-    if (Input.IsMouseButtonDown(sf::Mouse::Right) && (bot[MY_BOT_NR]->procJet >= 0.01))
-    {
-
-        //if (SOUNDS_VOL > 0) Mix_PlayChannel(-1, Mix_LoadWAV("Sfx/jump.wav"), 0);
-        if (bot[MY_BOT_NR]->procJet >= 2*JET_CHANGE)
-        {
-            bot[MY_BOT_NR]->procJet -= JET_CHANGE;
-            bot[MY_BOT_NR]->movementType = GORA;
-        }
-
-    }
-    else if (bot[MY_BOT_NR]->procJet >= 0.000)
-    {
-        if (bot[MY_BOT_NR]->procJet <= 1-JET_CHANGE)
-        {
-            bot[MY_BOT_NR]->procJet += JET_CHANGE;
-        }
-
-    }
 
 // left mouse button
 // don't stop fire
-    if (Input.IsMouseButtonDown(sf::Mouse::Left))
+    if (game.App.GetInput().IsMouseButtonDown(sf::Mouse::Left))
     {
         if (bot[MY_BOT_NR]->gunModel == 2 || bot[MY_BOT_NR]->gunModel == 3 || bot[MY_BOT_NR]->gunModel == 4 ||
                 bot[MY_BOT_NR]->gunModel == 7 || bot[MY_BOT_NR]->gunModel == 9 || bot[MY_BOT_NR]->gunModel == 10)
@@ -209,12 +192,14 @@ void WorldMap::onMouseButtonDown(sf::Mouse::Button& butt)
 
     if (butt == sf::Mouse::Right)
     {
-        bot[MY_BOT_NR]->isAbleToFly = true;
+        bot[MY_BOT_NR]->jet->StartDecreasing();
+        bot[MY_BOT_NR]->wantToFly = true;
     }
     // single shot
     // only USSCOM, Dessert Eagles, M79, ...
     else if (butt == sf::Mouse::Left)
     {
+        std::cout << "QQQQQQ\n";
         if (bot[MY_BOT_NR]->gunModel == 0 || bot[MY_BOT_NR]->gunModel == 1 || bot[MY_BOT_NR]->gunModel == 5 ||
                 bot[MY_BOT_NR]->gunModel == 6 || bot[MY_BOT_NR]->gunModel == 8)
         {
@@ -227,10 +212,16 @@ void WorldMap::onMouseButtonDown(sf::Mouse::Button& butt)
 void WorldMap::onMouseButtonUp(sf::Mouse::Button& butt)
 {
 
-    //std::cout << "W GORE PRAWY" << std::endl;
     if (butt == sf::Mouse::Right)
     {
-        bot[MY_BOT_NR]->isAbleToFly = false;
+        bot[MY_BOT_NR]->jet->StopDecreasing();
+        bot[MY_BOT_NR]->wantToFly = false;
+//        bot[MY_BOT_NR]->fly = false;
+    }
+    else if (butt == sf::Mouse::Left)
+    {
+        std::cout << "SD\n";
+        //bot[MY_BOT_NR]->weapon->StopShooting();
     }
 
 }
@@ -249,7 +240,7 @@ void WorldMap::onKeyDown(sf::Key::Code sym)
     else if (sym == Parser.KEY_DOWN)
         bot[MY_BOT_NR]->setMoveDown(true);
     else if (sym == Parser.KEY_RELOAD && bot[MY_BOT_NR]->leftAmmos < Weapons[bot[MY_BOT_NR]->gunModel].ammo)
-        gunReloading(MY_BOT_NR);
+        bot[MY_BOT_NR]->ReloadGun();
 
 }
 
@@ -262,7 +253,10 @@ void WorldMap::onKeyUp(sf::Key::Code sym)
     else if (sym == Parser.KEY_RIGHT)
         bot[MY_BOT_NR]->setMoveRight(false);
     else if (sym == Parser.KEY_UP)
+    {
         bot[MY_BOT_NR]->setMoveUp(false);
+//        bot[MY_BOT_NR]->jump = false;
+    }
     else if (sym == Parser.KEY_DOWN)
         bot[MY_BOT_NR]->setMoveDown(false);
 

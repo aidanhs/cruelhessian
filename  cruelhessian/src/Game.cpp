@@ -25,7 +25,7 @@
 #include "GUI/GUI.h"
 #include "Regex.h"
 #include "WorldMap.h"
-#include "Singleton.h"
+//#include "Singleton.h"
 #include "WeaponManager.h"
 #include "BotManager.h"
 #include "FontManager.h"
@@ -163,11 +163,8 @@ Game::Game(int argc, char *argv[])
     //std::cout << (int)tcolor2rgb("$00DDCB21")[0] << " " << (int)tcolor2rgb("$00DDCB21")[1] << " " << (int)tcolor2rgb("$00DDCB21")[2] << std::endl;
     //std::cout << (int)tcolor2rgb("$00796938")[0] << " " << (int)tcolor2rgb("$00796938")[1] << " " << (int)tcolor2rgb("$00796938")[2] << std::endl;
 
-    CH_HOME_DIRECTORY = "";
-    CH_DATA_DIRECTORY = "data/";
-    CH_CONFIG_FILE = "";
     START_MODE = 0;
-    CONFIG_VERSION = 4;
+    CONFIG_VERSION = 5;
 
 #ifndef _WIN32
     CH_DATA_DIRECTORY = "/usr/share/cruelhessian/data/";
@@ -175,17 +172,19 @@ Game::Game(int argc, char *argv[])
     CH_HOME_DIRECTORY = getenv("HOME");
     CH_HOME_DIRECTORY += "/.config/cruelhessian/";
     boost::filesystem::create_directory(CH_HOME_DIRECTORY);
+#else
+	CH_HOME_DIRECTORY = boost::filesystem::current_path().string() + "/";
+    CH_DATA_DIRECTORY = "data/";
 #endif
 
     CH_CONFIG_FILE = CH_HOME_DIRECTORY + "options.ini";
-
 
     int parsing = Parser.ReadConfigs();
 
     if (argc == 1)
     {
         START_MODE = 2;
-		setSFML();
+        setSFML();
         guiMgr = new GUI;
     }
     else
@@ -216,7 +215,7 @@ Game::Game(int argc, char *argv[])
             std::string re = "ctf_.+.pms$";
             boost::filesystem::directory_iterator end;
 
-            for (boost::filesystem::directory_iterator iter(Parser.SOL_PATH + "Maps/"); iter != end; ++iter)
+            for (boost::filesystem::directory_iterator iter(Parser.GAME_PATH + "Maps/"); iter != end; ++iter)
             {
                 if (regex_match(iter->leaf(), re))
                 {
@@ -234,7 +233,7 @@ Game::Game(int argc, char *argv[])
                 setSFML();
 
                 worldMgr = new WorldMap(firstMap);
-                //worldMgr = new WorldMap(Parser.SOL_PATH + "Maps/ctf_Cobra.PMS");
+                //worldMgr = new WorldMap(Parser.GAME_PATH + "Maps/ctf_Cobra.PMS");
                 worldMgr->SetPlayers(4, Parser.RANDOM_BOTS_1, Parser.RANDOM_BOTS_2, 0, 0);
 
             }
@@ -262,15 +261,15 @@ Game::~Game()
         {
             delete worldMgr;
 //            SDL_FreeSurface(screen);
- //           SDL_Quit();
+//           SDL_Quit();
         }
 
     }
     else if (START_MODE == 2)
     {
         delete guiMgr;
-   //     SDL_FreeSurface(screen);
-     //   SDL_Quit();
+        //     SDL_FreeSurface(screen);
+        //   SDL_Quit();
     }
 
 
@@ -286,70 +285,66 @@ Game::~Game()
 
 bool Game::checkSoldatStart()
 {
+    bool exit = false;
 
-    if (!boost::filesystem::exists(Parser.SOL_PATH))
+    if (!boost::filesystem::exists(Parser.GAME_PATH))
     {
-        std::cerr << "Cannot find Soldat directory : " << Parser.SOL_PATH << std::endl;
-        RemoveManagers();
-        return false;
+        std::cerr << "Cannot find Soldat directory : " << Parser.GAME_PATH << std::endl;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Anims/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Anims/"))
     {
         std::cerr << "Cannot find Anims directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Bots/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Bots/"))
     {
         std::cerr << "Cannot find Bots directory (not needed)" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Gostek-gfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Gostek-gfx/"))
     {
         std::cerr << "Cannot find Gostek-gfx directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Interface-gfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Interface-gfx/"))
     {
         std::cerr << "Cannot find Interface-gfx directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Scenery-gfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Scenery-gfx/"))
     {
         std::cerr << "Cannot find Scenery-gfx directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Sfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Sfx/"))
     {
         std::cerr << "Cannot find Sfx directory (not needed)" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Sparks-gfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Sparks-gfx/"))
     {
         std::cerr << "Cannot find Sparks-gfx directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Textures/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Textures/"))
     {
         std::cerr << "Cannot find Texture directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Txt/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Txt/"))
     {
         std::cerr << "Cannot find Txt directory" << std::endl;
-        RemoveManagers();
-        return false;
+        exit = true;
     }
-    if (!boost::filesystem::exists(Parser.SOL_PATH + "Weapons-gfx/"))
+    if (!boost::filesystem::exists(Parser.GAME_PATH + "Weapons-gfx/"))
     {
         std::cerr << "Cannot find Weapons-gfx directory" << std::endl;
+        exit = true;
+    }
+
+    if (exit)
+    {
         RemoveManagers();
         return false;
     }
@@ -362,9 +357,6 @@ bool Game::checkSoldatStart()
 void Game::RemoveManagers()
 {
 
-  //  if (PhysicsManager::GetSingletonPtr() != NULL)
-    //    delete physicsMgr;
-
     if (BotManager::GetSingletonPtr() != NULL)
         delete botMgr;
 
@@ -374,27 +366,26 @@ void Game::RemoveManagers()
     if (BonusManager::GetSingletonPtr() != NULL)
         delete bonusMgr;
 
-//    if (AudioManager::GetSingletonPtr() != NULL)
-  //      delete audioMgr;
+    if (AudioManager::GetSingletonPtr() != NULL)
+        delete audioMgr;
 
     if (FontManager::GetSingletonPtr() != NULL)
         delete fontMgr;
-
 
 }
 
 
 void Game::CreateManagers()
 {
-//std::cout << "CRE" << std::endl;
+
     RemoveManagers();
 
     fontMgr = new FontManager;
-    //audioMgr = new AudioManager;
+    if (Parser.SOUNDS_VOL > 0 || Parser.MUSIC_VOL > 0)
+        audioMgr = new AudioManager;
     bonusMgr = new BonusManager;
     weaponMgr = new WeaponManager;
     botMgr = new BotManager;
-//    physicsMgr = new PhysicsManager;
 
 }
 
@@ -504,10 +495,11 @@ std::string Game::rgb2tcolor(const std::vector<unsigned char>& col)
 int Game::setSFML()
 {
 
-	sf::VideoMode Mode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP);
-	App.Create(Mode, "Cruel Hessian", sf::Style::Close);
-	App.PreserveOpenGLStates(true);
-	return 0;
+    sf::VideoMode Mode(static_cast<int>(Parser.MAX_WIDTH), static_cast<int>(Parser.MAX_HEIGHT), Parser.MAX_BPP);
+    App.Create(Mode, "Cruel Hessian", sf::Style::Close);
+    App.PreserveOpenGLStates(true);
+    App.SetFramerateLimit(300);
+    return 0;
 }
 
 
@@ -517,7 +509,7 @@ int Game::LoadMapsList()
 
     std::cout << "   loading maps list from 'mapslist.txt' (UTF-16LE with BOM encoding) ..." << std::endl;
 
-    std::ifstream file((Parser.SOL_PATH + "mapslist.txt").c_str());
+    std::ifstream file((Parser.GAME_PATH + "mapslist.txt").c_str());
 
     mapsListFromFile.clear();
 

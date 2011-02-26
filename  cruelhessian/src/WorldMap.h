@@ -29,10 +29,9 @@
 #include <list>
 
 #include "Enums.h"
-//#include "Console.h"
 #include "Singleton.h"
 #include "TVector2D.h"
-//#include "SDL.h"
+#include "interface/JetBar.h"
 #include <SFML/Graphics.hpp>
 
 
@@ -72,8 +71,8 @@ public:
     void SetPlayers(int amount, ...);
 
     void onReceiveShot(unsigned int shooted, unsigned int owner, float damage);
-    void onBonusFall();
-    void onTouchBonus(Bot* xbot, Bonus* xbonus);
+//    void onBonusFall();
+//    void onTouchBonus(Bot* xbot, Bonus* xbonus);
 
     std::string REST_TIME;
     bool CHOICE_GUN;
@@ -130,9 +129,12 @@ public:
 //    void mychat_line();
     void setGL();
     unsigned int addBot(const BotsBase& bots, int spawn_nr, TEAM team);
-    void gunReloading(unsigned int bot_nr);
+    //void gunReloading(unsigned int bot_nr);
     void ThrowFive(unsigned int bot_nr, const TVector2D& src);
     PhysicsManager *physicsMgr;
+
+
+//    JetBar jetBar;
 
 private:
 
@@ -164,7 +166,7 @@ private:
     int prev_time;
 
     int MAX_RESPAWN_TIME;
-    float JET_CHANGE;
+
 
     void bots_control();
 

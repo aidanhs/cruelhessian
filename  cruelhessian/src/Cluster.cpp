@@ -29,7 +29,7 @@
 #include "TexturesLoader.h"
 //#include "Body.h"
 #include <cmath>
-#include "physics/ContactListener.h"
+#include "ContactListener.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else

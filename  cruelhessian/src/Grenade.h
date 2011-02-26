@@ -40,6 +40,7 @@ class Grenade : public Drawable, public Body
 	Tex *m_xTexture;
 	float m_fHalfWidth;
 	float m_fHalfHeight;
+	bool m_bPlayOnlyOnce;
 
 public:
 

@@ -38,7 +38,7 @@ public:
     WindowExit();
     ~WindowExit() {}
 
-    void Draw(const TVector2D& pos);
+    void Draw();
     bool Select() const;
 };
 

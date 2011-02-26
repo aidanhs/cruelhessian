@@ -151,7 +151,7 @@ void WindowScores::Draw(void) const
 
     // show columns names
     for (unsigned int i = 0; i < column_names.size(); ++i)
-        Fonts.printText(Fonts.font[0], Fonts.FontMenuSize, column_names[i], Fonts.textColorGunOnTouch, off[i], offset+10);
+        Fonts.printText(Fonts.font[0], Fonts.FontMenu, column_names[i], Fonts.textColorGunOnTouch, off[i], offset+10);
 
     offset += 40;
 
@@ -167,10 +167,10 @@ void WindowScores::Draw(void) const
             else if (scores[j]->isKilled)
                 draw_help(InterfaceBase.text_deaddot, off[0]-10, offset+j*15+5);
 
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, scores[j]->name, Fonts.textCol[scores[j]->team], off[0], offset+j*15);
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->points), Fonts.textCol[scores[j]->team], off[1], offset+j*15);
-			Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->deaths), Fonts.textCol[scores[j]->team], off[2], offset+j*15);
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->ping), Fonts.textCol[scores[j]->team], off[3], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, scores[j]->name, Fonts.textCol[scores[j]->team], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->points), Fonts.textCol[scores[j]->team], off[1], offset+j*15);
+			Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->deaths), Fonts.textCol[scores[j]->team], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->ping), Fonts.textCol[scores[j]->team], off[3], offset+j*15);
         }
 
     }
@@ -186,10 +186,10 @@ void WindowScores::Draw(void) const
             else if (scores[j]->isKilled)
                 draw_help(InterfaceBase.text_deaddot, off[0]-10, offset+j*15+5);
 
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->killedNr), scores[j]->color[SHIRT], off[1], offset+j*15);
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->deaths), scores[j]->color[SHIRT], off[2], offset+j*15);
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, IntToString(scores[j]->ping), scores[j]->color[SHIRT], off[3], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, scores[j]->name, scores[j]->color[SHIRT], off[0], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->killedNr), scores[j]->color[SHIRT], off[1], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->deaths), scores[j]->color[SHIRT], off[2], offset+j*15);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, IntToString(scores[j]->ping), scores[j]->color[SHIRT], off[3], offset+j*15);
         }
     }
 

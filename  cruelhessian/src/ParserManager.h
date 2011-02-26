@@ -74,6 +74,7 @@ public:
     bool WEAPON[14];
     bool BONUSES[7];
     bool CONSOLE_SHOW;
+    unsigned int MAX_GRENADES;
 
     int KEY_LEFT;
     int KEY_RIGHT;
@@ -83,13 +84,15 @@ public:
     int KEY_GRENADE;
     int KEY_CHAT;
     int KEY_TEAMCHAT;
+    int KEY_DROP;
+    int KEY_CHANGE;
 
     int MODE;
 
     std::string PLAYER_NAME;
 
-    std::string SOL_PATH;
-    std::string SOL_PATH_[2];
+    std::string GAME_PATH;
+    std::string SOLDAT_PATH;
     std::string INTERFACE_PATH;
     std::string INTERFACE_PATH_[2];
     std::string INTERFACE_NAME;

@@ -24,7 +24,7 @@
 #include "BonusManager.h"
 #include "TexturesLoader.h"
 #include "TVector2D.h"
-#include "physics/ContactListener.h"
+#include "ContactListener.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else

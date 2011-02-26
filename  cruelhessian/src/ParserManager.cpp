@@ -43,23 +43,26 @@ ParserManager::ParserManager() :
 
     KEY_LEFT(97),
     KEY_RIGHT(100),
-    KEY_DOWN( 115),
-    KEY_UP( 119),
+    KEY_DOWN(115),
+    KEY_UP(119),
     KEY_RELOAD(114),
-    KEY_GRENADE( 277),
-    KEY_CHAT( 116),
-    KEY_TEAMCHAT( 121),
+    KEY_GRENADE(277),
+    KEY_CHAT(116),
+    KEY_TEAMCHAT(121),
+    KEY_CHANGE(113),
+    KEY_DROP(102),
 
     LIMIT_TEAMMATCH(60),
     LIMIT_DEATHMATCH(30),
     LIMIT_POINTMATCH(30),
     LIMIT_RAMBOMATCH( 30),
     LIMIT_INFILTRATION( 90),
-    LIMIT_HOLD( 80),
-    LIMIT_CAPTURE( 5),
+    LIMIT_HOLD(80),
+    LIMIT_CAPTURE(5),
     LIMIT_TIME(15*60),
 
-    CONSOLE_SHOW( true),
+    CONSOLE_SHOW(true),
+    MAX_GRENADES(4),
 
     RANDOM_BOTS( 5),
     RANDOM_BOTS_1( 1),
@@ -70,8 +73,8 @@ ParserManager::ParserManager() :
 
     std::cout << "Starting ParserManager ..." << std::flush;
 
-    SOL_PATH_[0]       = "";
-    SOL_PATH_[1]       = "";
+    SOLDAT_PATH       = "";
+//    GAME_PATH_[1]       = "";
     INTERFACE_NAME_[0] = "Default";
     INTERFACE_NAME_[1] = "Default";
     INTERFACE_PATH_[0] = "";
@@ -97,7 +100,7 @@ ParserManager::ParserManager() :
 ParserManager::~ParserManager()
 {
 
-    std::cout << "Removing ParserManager ..." << std::endl;
+    std::cout << "Removing ParserManager ... DONE" << std::endl;
 
 }
 
@@ -122,8 +125,8 @@ int ParserManager::ReadConfigs()
     }
 
     MODE               = static_cast<int>(ini.GetLongValue("global", "Mode"));
-    SOL_PATH_[0]       = RepairPath(ini.GetValue("global", "SoldatPath"));
-    SOL_PATH_[1]       = RepairPath(ini.GetValue("global", "CruelHessianPath"));
+    SOLDAT_PATH       = RepairPath(ini.GetValue("global", "SoldatPath"));
+    //GAME_PATH_[1]       = RepairPath(ini.GetValue("global", "CruelHessianPath"));
     INTERFACE_NAME_[0] = ini.GetValue("global", "SoldatInterface");
     INTERFACE_NAME_[1] = ini.GetValue("global", "CruelHessianInterface");
     FULLSCREEN         = ini.GetBoolValue("global", "Fullscreen");
@@ -144,6 +147,7 @@ int ParserManager::ReadConfigs()
     LIMIT_TIME         = 60*ini.GetLongValue("game", "TimeLimit");
 
     CONSOLE_SHOW = ini.GetBoolValue("game", "ConsoleShow");
+    MAX_GRENADES = ini.GetLongValue("game", "MaxGrenades");
 
     RANDOM_BOTS   = ini.GetLongValue("game", "RandomBots");
     RANDOM_BOTS_1 = ini.GetLongValue("game", "RandomBots1");
@@ -171,6 +175,8 @@ int ParserManager::ReadConfigs()
     KEY_GRENADE  = ini.GetLongValue("controls", "Grenade");
     KEY_CHAT     = ini.GetLongValue("controls", "Chat");
     KEY_TEAMCHAT = ini.GetLongValue("controls", "TeamChat");
+    KEY_CHANGE   = ini.GetLongValue("controls", "Change");
+    KEY_DROP     = ini.GetLongValue("controls", "Drop");
 
     WEAPON[0]  = ini.GetBoolValue("game", "Weapon1");
     WEAPON[1]  = ini.GetBoolValue("game", "Weapon2");
@@ -195,20 +201,29 @@ int ParserManager::ReadConfigs()
     BONUSES[5] = ini.GetBoolValue("game", "BonusPredator");
     BONUSES[6] = ini.GetBoolValue("game", "BonusVest");
 
-    for (unsigned int i = 0; i < 2; ++i)
+    //for (unsigned int i = 0; i < 2; ++i)
+    // {
+    if (INTERFACE_NAME_[0] == "Default" || INTERFACE_NAME_[0] == "--None--")
     {
-        if (INTERFACE_NAME_[i] == "Default" || INTERFACE_NAME_[i] == "--None--")
-        {
-            INTERFACE_PATH_[i] = SOL_PATH_[i] + "Interface-gfx/";
-        }
-        else
-        {
-            INTERFACE_PATH_[i] = SOL_PATH_[i] + "Custom-Interfaces/";
-        }
-
+        INTERFACE_PATH_[0] = SOLDAT_PATH + "Interface-gfx/";
+    }
+    else
+    {
+        INTERFACE_PATH_[0] = SOLDAT_PATH + "Custom-Interfaces/";
     }
 
-    SOL_PATH = SOL_PATH_[MODE];
+    if (INTERFACE_NAME_[1] == "Default" || INTERFACE_NAME_[1] == "--None--")
+    {
+        INTERFACE_PATH_[1] = game.CH_HOME_DIRECTORY + "Interface-gfx/";
+    }
+    else
+    {
+        INTERFACE_PATH_[1] = game.CH_HOME_DIRECTORY + "Custom-Interfaces/";
+    }
+
+    // }
+
+    GAME_PATH = SOLDAT_PATH;
     INTERFACE_NAME = INTERFACE_NAME_[MODE];
     INTERFACE_PATH = INTERFACE_PATH_[MODE];
 
@@ -221,8 +236,8 @@ std::string ParserManager::RepairPath(const std::string& pathx)
 
     if (!pathx.empty())
     {
-		if (pathx[pathx.length()-1] != '/')
-			return pathx + '/';
+        if (pathx[pathx.length()-1] != '/')
+            return pathx + '/';
     }
 
     return pathx;
@@ -246,9 +261,9 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("info", "Version", game.CONFIG_VERSION, NULL);
 
     ini.SetLongValue("global", "Mode",                  static_cast<int>(MODE),   NULL);
-    ini.SetValue(    "global", "SoldatPath",            RepairPath(SOL_PATH_[0]).c_str(),       NULL);
+    ini.SetValue(    "global", "SoldatPath",            RepairPath(SOLDAT_PATH).c_str(),       NULL);
     ini.SetValue(    "global", "SoldatInterface",       INTERFACE_NAME_[0].c_str(), NULL);
-    ini.SetValue(    "global", "CruelHessianPath",      RepairPath(SOL_PATH_[1]).c_str(),       NULL);
+//    ini.SetValue(    "global", "CruelHessianPath",      RepairPath(GAME_PATH_[1]).c_str(),       NULL);
     ini.SetValue(    "global", "CruelHessianInterface", INTERFACE_NAME_[1].c_str(), NULL);
     ini.SetBoolValue("global", "Fullscreen",       FULLSCREEN,                   NULL);
     ini.SetLongValue("global", "MaxWidth",         static_cast<int>(MAX_WIDTH),  NULL);
@@ -282,6 +297,8 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("game", "RandomBots3", RANDOM_BOTS_3, NULL);
     ini.SetLongValue("game", "RandomBots4", RANDOM_BOTS_4, NULL);
 
+    ini.SetLongValue("game", "MaxGrenades", MAX_GRENADES, NULL);
+
     ini.SetBoolValue("game", "ConsoleShow", CONSOLE_SHOW, NULL);
     ini.SetBoolValue("game", "Weapon1",  WEAPON[0], NULL);
     ini.SetBoolValue("game", "Weapon2",  WEAPON[1], NULL);
@@ -312,6 +329,8 @@ int ParserManager::SaveConfigs()
     ini.SetLongValue("controls", "Grenade",  KEY_GRENADE,  NULL);
     ini.SetLongValue("controls", "Chat",     KEY_CHAT,     NULL);
     ini.SetLongValue("controls", "TeamChat", KEY_TEAMCHAT, NULL);
+    ini.SetLongValue("controls", "Change",   KEY_CHANGE,   NULL);
+    ini.SetLongValue("controls", "Drop",     KEY_DROP,     NULL);
 
     ini.SaveFile(game.CH_CONFIG_FILE.c_str());
 

@@ -24,6 +24,7 @@
 #include "WorldMap.h"
 #include "TVector2D.h"
 #include "Map.h"
+#include "MapElement.h"
 #include "Mouse.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
@@ -85,15 +86,15 @@ void Background::Draw()
     glTranslatef(m_xMove.x, m_xMove.y, 0.0f);
 
     glBegin(GL_POLYGON);
-    glColor4ub(static_cast<GLubyte>(world.map->bgColorTop.red), static_cast<GLubyte>(world.map->bgColorTop.green), static_cast<GLubyte>(world.map->bgColorTop.blue), static_cast<GLubyte>(world.map->bgColorTop.alpha));
-    glVertex2f(world.map->leftoffs - Parser.MAX_WIDTH, -world.map->topoffs);
-    glVertex2f(world.map->rightoffs + Parser.MAX_WIDTH, -world.map->topoffs);
-    glColor4ub(static_cast<GLubyte>(world.map->bgColorBottom.red), static_cast<GLubyte>(world.map->bgColorBottom.green), static_cast<GLubyte>(world.map->bgColorBottom.blue), static_cast<GLubyte>(world.map->bgColorBottom.alpha));
-    glVertex2f(world.map->rightoffs + Parser.MAX_WIDTH, -world.map->bottomoffs);
-    glVertex2f(world.map->leftoffs - Parser.MAX_WIDTH, -world.map->bottomoffs);
+    glColor4ub(static_cast<GLubyte>(world.map->background.bgColorTop.red), static_cast<GLubyte>(world.map->background.bgColorTop.green), static_cast<GLubyte>(world.map->background.bgColorTop.blue), static_cast<GLubyte>(world.map->background.bgColorTop.alpha));
+    glVertex2f(world.map->leftoffs - Parser.MAX_WIDTH, world.map->topoffs);
+    glVertex2f(world.map->rightoffs + Parser.MAX_WIDTH, world.map->topoffs);
+    glColor4ub(static_cast<GLubyte>(world.map->background.bgColorBottom.red), static_cast<GLubyte>(world.map->background.bgColorBottom.green), static_cast<GLubyte>(world.map->background.bgColorBottom.blue), static_cast<GLubyte>(world.map->background.bgColorBottom.alpha));
+    glVertex2f(world.map->rightoffs + Parser.MAX_WIDTH, world.map->bottomoffs);
+    glVertex2f(world.map->leftoffs - Parser.MAX_WIDTH, world.map->bottomoffs);
     glEnd();
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+   // glColor3f(1.0f, 1.0f, 1.0f);
 
     m_xMove.x = m_xMove.y = 0;
 

@@ -35,19 +35,15 @@ WeaponManager::WeaponManager()
 
     std::cout << "   loading guns' information ..." << std::endl;
 
-    CSimpleIni ini(false, false, false);
-    if (ini.LoadFile((Parser.SOL_PATH + "weapons.ini").c_str()) < 0)
-    {
-        std::cerr << "Cannot read 'weapons.ini' file" << std::endl;
-        return;
-    }
+    // czytanie nazw broni
 
     std::string str;
-    std::ifstream file((Parser.SOL_PATH + "Txt/weaponnames.txt").c_str());
+    std::ifstream file((Parser.GAME_PATH + "Txt/weaponnames.txt").c_str());
     unsigned int i = 0;
 
     while (std::getline(file, str) && i < WEAPONS_NUMBER)
     {
+
         if (!str.empty() && (str[str.size() - 1] == '\r'))
             str.resize(str.size() - 1);
 
@@ -59,7 +55,31 @@ WeaponManager::WeaponManager()
         if (element[i].name == "Barrett M82A1")
             element[i].name = "Barret M82A1";
 
-        //std::cout << "   loading gun " << ++i << " : " << temp.name << std::endl;
+        ++i;
+    }
+
+    file.close();
+
+  //  str = element[0].name;
+  //  element[0].name = element[10].name;
+  //  element[10].name = str;
+
+   // for (i = 0; i <= 10; i++)
+     //   std::cout << "DF " << i << " " << element[i].name << std::endl;
+
+
+    // czytanie wlasciwosci broni
+
+    CSimpleIni ini(false, false, false);
+    if (ini.LoadFile((Parser.GAME_PATH + "weapons.ini").c_str()) < 0)
+    {
+        std::cerr << "Cannot read 'weapons.ini' file" << std::endl;
+        return;
+    }
+
+    i = 0;
+    while (i < WEAPONS_NUMBER)
+    {
 
         element[i].damage = static_cast<float>(ini.GetLongValue(element[i].name.c_str(), "Damage"));
         element[i].fireInterval = static_cast<float>(16.67 * ini.GetLongValue(element[i].name.c_str(), "FireInterval"));
@@ -72,44 +92,56 @@ WeaponManager::WeaponManager()
         element[i].movementAcc = ini.GetLongValue(element[i].name.c_str(), "MovementAcc");
         element[i].recoil = ini.GetLongValue(element[i].name.c_str(), "Recoil");
 
-        //element.push_back(temp);
         ++i;
     }
-
-    file.close();
 
 
     std::cout << "   loading guns' textures ... " << std::endl;
 
-    element[0].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "10");
-    element[1].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "1");
-    element[2].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "2");
-    element[3].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "3");
-    element[4].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "4");
-    element[5].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "5");
-    element[6].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "6");
-    element[7].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "7");
-    element[8].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "8");
-    element[9].textureGun  = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "9");
-    element[10].textureGun = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "0");
-    element[14].textureGun = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "knife");
-    element[15].textureGun = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "chainsaw");
-    element[16].textureGun = Texture::LoadExt(Parser.SOL_PATH + "Interface-gfx/Guns/", "law");
+    element[0].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "10");
+    element[1].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "1");
+    element[2].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "2");
+    element[3].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "3");
+    element[4].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "4");
+    element[5].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "5");
+    element[6].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "6");
+    element[7].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "7");
+    element[8].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "8");
+    element[9].textureGun  = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "9");
+    element[10].textureGun = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "0");
+    element[14].textureGun = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "knife");
+    element[15].textureGun = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "chainsaw");
+    element[16].textureGun = Texture::LoadExt(Parser.GAME_PATH + "Interface-gfx/Guns/", "law");
 
 
     std::cout << "   loading bullets' textures ... " << std::endl;
 
-    element[0].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "minigun-bullet");
-    element[1].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "eagles-bullet");
-    element[2].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
-    element[3].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "ak74-bullet");
-    element[4].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "steyraug-bullet");
-    element[5].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
-    element[6].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "ruger77-bullet");
-    element[7].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "m79-bullet");
-    element[8].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "barretm82-bullet");
-    element[9].textureAmmo  = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
-    element[10].textureAmmo = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[0].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "minigun-bullet");
+    element[1].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "eagles-bullet");
+    element[2].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ak74-bullet");
+    element[3].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ak74-bullet");
+    element[4].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "steyraug-bullet");
+    element[5].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[6].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ruger77-bullet");
+    element[7].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "m79-bullet");
+    element[8].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "barretm82-bullet");
+    element[9].textureAmmo  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-bullet");
+    element[10].textureAmmo = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-bullet");
+
+
+    std::cout << "   loading bullets' shells ... " << std::endl;
+
+    element[0].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "minigun-shell");
+    element[1].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "eagles-shell");
+    element[2].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ak74-shell");
+    element[3].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ak74-shell");
+    element[4].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "steyraug-shell");
+    element[5].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-shell");
+    element[6].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "ruger77-shell");
+    element[7].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "m79-shell");
+    element[8].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "barretm82-shell");
+    element[9].textureShell  = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-shell");
+    element[10].textureShell = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "spas12-shell");
 
 
     std::cout << "   loading grenade's textures ... " << std::endl;
@@ -118,19 +150,19 @@ WeaponManager::WeaponManager()
 
     std::ostringstream oss;
 
-    text_grenade[0] = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "cluster-grenade");
+    text_grenade[0] = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "cluster-grenade");
     for (i = 1; i < 17; ++i)
     {
         oss << i;
-        text_grenade[i] = Texture::LoadExt(Parser.SOL_PATH + "Sparks-gfx/explosion/", "explode" + oss.str());
+        text_grenade[i] = Texture::LoadExt(Parser.GAME_PATH + "Sparks-gfx/explosion/", "explode" + oss.str());
         oss.str("");
     }
 
-    text_clustergrenade[0] = Texture::LoadExt(Parser.SOL_PATH + "Weapons-gfx/", "cluster");
+    text_clustergrenade[0] = Texture::LoadExt(Parser.GAME_PATH + "Weapons-gfx/", "cluster");
     for (i = 1; i < 17; ++i)
     {
         oss << i;
-        text_clustergrenade[i] = Texture::LoadExt(Parser.SOL_PATH + "Sparks-gfx/flames/", "explode" + oss.str());
+        text_clustergrenade[i] = Texture::LoadExt(Parser.GAME_PATH + "Sparks-gfx/flames/", "explode" + oss.str());
         oss.str("");
     }
 }
@@ -139,6 +171,6 @@ WeaponManager::WeaponManager()
 WeaponManager::~WeaponManager()
 {
 
-    std::cout << "Removing WeaponManager ..." << std::endl;
+    std::cout << "Removing WeaponManager ... DONE" << std::endl;
 
 }

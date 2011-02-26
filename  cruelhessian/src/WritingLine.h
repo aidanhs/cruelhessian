@@ -1,8 +1,4 @@
-#ifndef PHYSICS_MANAGER_H
-#define PHYSICS_MANAGER_H
-
-
-/*   PhysicsManager.cpp
+/*   WritingLine.h
  *
  *   Cruel Hessian
  *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
@@ -22,41 +18,41 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef WRITING_LINE_H
+#define WRITING_LINE_H
 
 
-#include "Singleton.h"
+#include <iostream>
 #include <list>
+#include <SFML/Graphics.hpp>
 
-class Body;
+
+    enum Result
+    {
+        NOTHING = 0,
+        ENTERED,
+        //ESCAPED
+        BACKSPACED
+    };
 
 
-class PhysicsManager : public Singleton<PhysicsManager>
+class WritingLine
 {
-    //int FindBody(Body* pxBody);
-    //void UpdatePlayerMovement(float dt);
-    void DestroyBody(Body* body);
-    void UpdatePlayer(float dt);
-    bool m_bShouldCollide[11][11];
-    void CreateCollisionTable();
+private:
+    typedef std::list<std::string> InputList;
+    Result lastResult;
+    std::string input, lastInput;
 
 public:
-    float fPlayerAirbornTimer;
-   // float fCoF;
-   // float fCoR;
-   // float fCoS;
-    std::list<Body *> m_movingObj;
-    std::list<Body *> m_staticObj;
-
-    PhysicsManager();
-    ~PhysicsManager();
-
-    void  GameUpdate			(float dt);
-//    void  GameRender			(void);
+    WritingLine() : lastResult(NOTHING), input(""), lastInput("") {};
+    ~WritingLine() {};
+    const std::string& GetInput() const;
+    const std::string GetInputEntered() const;
+    bool IsEscaped() const;
+    void ClearCache();
+    Result Query(const sf::Key::Code& lastKey);
 
 };
 
-
-
-#define Physics PhysicsManager::GetSingleton()
 
 #endif

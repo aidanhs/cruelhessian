@@ -96,12 +96,12 @@ void WindowGuns::Draw()
     glPushMatrix();
     glLoadIdentity();
 
-    // obramowanie
-    glColor4ub(247, 247, 247, 50);
+    // wewnetrzny prostokat
+    glColor4ub(247, 247, 247, 70);
     glRectf(x, y, x + w, y + h);
 
-    // inner rectangle
-    glColor4ub(0, 80, 140, 25);
+    // obramowanie
+    glColor4ub(0, 80, 140, 0);
     glBegin(GL_QUADS);
     glVertex2f(x - 1, y - 1);
     glVertex2f(x + w + 1, y - 1);
@@ -114,7 +114,7 @@ void WindowGuns::Draw()
 
     // tekst
     TVector2D start = TVector2D(x + 10, y + 10);
-    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Primary Weapon:", Fonts.textGunColor, start.x, start.y);
+    Fonts.printText(Fonts.font[1], Fonts.FontConsole, "Primary Weapon:", Fonts.textGunColor, start.x, start.y);
 
     m_number = -1;
 
@@ -133,12 +133,12 @@ void WindowGuns::Draw()
 
             if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
             {
-                Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, str, Fonts.textColorGunOnTouch, start.x, start.y);
+                Fonts.printText(Fonts.font[1], Fonts.FontConsole, str, Fonts.textColorGunOnTouch, start.x, start.y);
                 m_number = i;
             }
             else
             {
-                Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, str, Fonts.textColorGunNormal, start.x, start.y);
+                Fonts.printText(Fonts.font[1], Fonts.FontConsole, str, Fonts.textColorGunNormal, start.x, start.y);
             }
 
         }
@@ -146,7 +146,7 @@ void WindowGuns::Draw()
 
 
     start.y += 30.0f;
-    Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, "Secondary Weapon:", Fonts.textGunColor, start.x-85, start.y);
+    Fonts.printText(Fonts.font[1], Fonts.FontConsole, "Secondary Weapon:", Fonts.textGunColor, start.x-85, start.y);
 
     start.y += delta;
     if (Parser.WEAPON[10])
@@ -154,12 +154,12 @@ void WindowGuns::Draw()
         draw_help(Weapons[0].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[0].name, Fonts.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[0].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 0;
         }
         else
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[0].name, Fonts.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[0].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
@@ -169,12 +169,12 @@ void WindowGuns::Draw()
         draw_help(Weapons[14].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[14].name, Fonts.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[14].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 14;
         }
         else
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[14].name, Fonts.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[14].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
@@ -184,12 +184,12 @@ void WindowGuns::Draw()
         draw_help(Weapons[15].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[15].name, Fonts.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[15].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 15;
         }
         else
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[15].name, Fonts.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[15].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 
@@ -199,12 +199,12 @@ void WindowGuns::Draw()
         draw_help(Weapons[16].textureGun, start.x-85, start.y);
         if (stan1 && m_mouse_pos.y > start.y - 7.0f && m_mouse_pos.y < start.y + 7.0f)
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[16].name, Fonts.textColorGunOnTouch, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[16].name, Fonts.textColorGunOnTouch, start.x, start.y);
             m_number = 16;
         }
         else
         {
-            Fonts.printText(Fonts.font[1], Fonts.FontConsoleSize, Weapons[16].name, Fonts.textColorGunNormal, start.x, start.y);
+            Fonts.printText(Fonts.font[1], Fonts.FontConsole, Weapons[16].name, Fonts.textColorGunNormal, start.x, start.y);
         }
     }
 

@@ -5,7 +5,7 @@
 /*   InterfaceManager.h
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010 by Paweł Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,6 +26,8 @@
 
 #include "Singleton.h"
 #include "TexturesLoader.h"
+#include "interface/InterfaceElement.h"
+#include "interface/JetBar.h"
 
 
 class InterfaceManager : public Singleton<InterfaceManager>
@@ -33,27 +35,55 @@ class InterfaceManager : public Singleton<InterfaceManager>
 
 public:
 
-    InterfaceManager(void);
-    virtual ~InterfaceManager(void);
+    InterfaceManager();
+    virtual ~InterfaceManager();
 
     void Draw();
-    void ReloadBar(void);
+    void ReloadBar();
+    JetBar jetBar;
 
 private:
 
-    void DrawIntHelp(const Tex& texture, float dx, float dy);
+    unsigned char m_cInterfaceAlpha;
 
-    Tex text_health;
-    Tex text_healthbar;
-    Tex text_ammo;
-    Tex text_nade;
-    Tex text_clusternade;
-    Tex text_reloadbar;
-    Tex text_jet;
-    Tex text_jetbar;
-    Tex text_firebar;
-    Tex text_firebar_r;
-    Tex text_vestbar;
+    // original
+    InterfaceElement m_xHealthIcon;
+    InterfaceElement m_xHealthBar;
+    InterfaceElement m_xAmmoIcon;
+    InterfaceElement m_xAmmoBar;
+    InterfaceElement m_xJetIcon;
+    InterfaceElement m_xJetBar;
+    InterfaceElement m_xFireIcon;
+    InterfaceElement m_xFireBar;
+    InterfaceElement m_xWeaponName;
+    InterfaceElement m_xStatus;
+    InterfaceElement m_xTeamBox;
+    InterfaceElement m_xVestBar;
+    InterfaceElement m_xNade;
+	InterfaceElement m_xClusterNade;
+    InterfaceElement m_xPingDot;
+    InterfaceElement m_xAmmoCount;
+
+    // depending on resolution
+    InterfaceElement HealthIcon;
+    InterfaceElement HealthBar;
+    InterfaceElement AmmoIcon;
+    InterfaceElement AmmoBar;
+    InterfaceElement JetIcon;
+
+    //InterfaceElement jetBar;
+    InterfaceElement FireIcon;
+    InterfaceElement FireBar;
+    InterfaceElement WeaponName;
+    InterfaceElement Status;
+    InterfaceElement TeamBox;
+    InterfaceElement VestBar;
+    InterfaceElement Nade;
+	InterfaceElement ClusterNade;
+    InterfaceElement PingDot;
+    InterfaceElement AmmoCount;
+
+    void Parse();
 
 };
 

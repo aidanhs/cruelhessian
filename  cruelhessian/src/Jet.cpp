@@ -1,7 +1,7 @@
-/*   interface.h
+/*   Jet.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008 by Pawel Konieczny <konp84 at gmail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,57 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef INTERFACE_H
-#define INTERFACE_H
 
-
+#include "Jet.h"
+//#include <cstdio>
+#ifdef _WIN32
+#include "CompatibleWindows.h"
+#else
+#include <GL/gl.h>
 #endif
+
+
+Jet::Jet() :
+    m_bDecrease(false),
+    m_fAmount(1.0f),
+    JET_CHANGE_DEC(0.009f),
+    JET_CHANGE_INC(0.005f)
+{
+}
+
+float Jet::GetAmount() const
+{
+    return m_fAmount;
+}
+
+
+
+void Jet::Update()
+{
+
+    if (m_bDecrease)
+    {
+        m_fAmount -= JET_CHANGE_DEC;
+        if (m_fAmount < 0.0)
+            m_fAmount = 0.0;
+    }
+    else
+    {
+        m_fAmount += JET_CHANGE_INC;
+        if (m_fAmount > 1.0)
+            m_fAmount = 1.0;
+    }
+
+}
+
+
+void Jet::StartDecreasing()
+{
+    m_bDecrease = true;
+}
+
+
+void Jet::StopDecreasing()
+{
+    m_bDecrease = false;
+}

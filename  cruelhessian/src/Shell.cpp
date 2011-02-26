@@ -1,7 +1,7 @@
-/*   Bullet.cpp
+/*   Shell.cpp
  *
  *   Cruel Hessian
- *   Copyright (C) 2008, 2009, 2010, 2011 by Paweł Konieczny <konp84 at mail.com>
+ *   Copyright (C) 2011 by Paweł Konieczny <konp84 at gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,14 +18,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
-#include <cmath>
-
-#include "Bullet.h"
-#include "Body.h"
-#include "TexturesLoader.h"
-#include "TVector2D.h"
+#include "Shell.h"
+//#include "ParserManager.h"
+#include "WorldMap.h"
+//#include "AudioManager.h"
 #include "WeaponManager.h"
+#include "TVector2D.h"
+#include "TexturesLoader.h"
+#include <cmath>
 #include "ContactListener.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
@@ -35,45 +35,39 @@
 
 
 
-Bullet::Bullet(const TVector2D& src, const TVector2D& velocity, float angle, unsigned int gunmodel, unsigned int _owner) :
-    m_iOwner(_owner),
-    m_iGunModel(gunmodel),
-    m_xTexture(Weapons[gunmodel].textureAmmo),
+Shell::Shell(const TVector2D& src, const TVector2D& velocity, unsigned int gunmodel) :
+	m_iBouncingCount(0),
+	m_xTexture(Weapons[gunmodel].textureShell),
     killMyself(false)
 {
-    m_fHalfWidth = m_xTexture.w/2.0f;
+
     m_fHalfHeight = m_xTexture.h/2.0f;
+    m_fHalfWidth = m_xTexture.w/2.0f;
 
-    std::vector<TVector2D> axVertices;
-    axVertices.resize(2);
-
-    axVertices[0] = TVector2D(-m_fHalfWidth, 0.0f);
-    axVertices[1] = TVector2D(m_fHalfWidth, 0.0f);
-
-    Set(src, velocity, axVertices, 0.01f);
-    SetOrientation(angle);
+    Set(src, velocity, 8, m_fHalfHeight, m_fHalfWidth, 0.01f);
     SetCollisionCallback(HandleContact);
-    type = TYPE_BULLET;
+    GetInvInertia() = 0.0f;
+    GetInertia() = 0.0f;
+    GetAngVelocity() = 0.0f;
+    SetOrientation(0.0f);
+    type = TYPE_SHELL;
 
 }
 
 
-Bullet::~Bullet()
+void Shell::Update()
 {
-//    delete axVertices;
+
+	if (m_iBouncingCount >= 2)
+    {
+		killMyself = true;
+    }
+
 }
 
-
-
-void Bullet::Update()
+void Shell::Draw() const
 {
-  //  m_translateX = position.x;
-  //  m_translateY = position.y;
-  //  m_rotate = _180overpi * atan(velocity.y / velocity.x);
-}
 
-void Bullet::Draw() const
-{
     glPushMatrix();
 
     glTranslatef(GetPosition().x, GetPosition().y, 0.0f);

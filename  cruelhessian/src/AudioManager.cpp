@@ -42,55 +42,68 @@ AudioManager::AudioManager()
 
     music = new sf::Music();
 
-    grenade_pullout.SetBuffer  (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-pullout"));
-    grenade_throw.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-throw"));
-    grenade_bounce.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-bounce"));
-    grenade_explosion.SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "grenade-explosion"));
-    cluster_explosion.SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "cluster-explosion"));
-    cluster.SetBuffer          (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "clustergrenade"));
-    sound_new_life.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "wermusic"));
-    sound_heaven.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "playerdeath"));
-    sound_spawn.SetBuffer      (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spawn"));
-    menu_click.SetBuffer       (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "menuclick"));
-    take_medikit.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "takemedikit"));
-    take_vestkit.SetBuffer     (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "vesttake"));
-    take_flamer.SetBuffer      (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "godflame"));
-    take_berserker.SetBuffer   (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "berserker"));
-    take_predator.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "predator"));
-    take_grenades.SetBuffer    (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "pickupgun"));
+    grenade_pullout.SetBuffer  (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "grenade-pullout"));
+    grenade_throw.SetBuffer    (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "grenade-throw"));
+    grenade_bounce.SetBuffer   (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "grenade-bounce"));
+    grenade_explosion.SetBuffer(*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "grenade-explosion"));
+    cluster_explosion.SetBuffer(*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "cluster-explosion"));
+    cluster.SetBuffer          (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "clustergrenade"));
+    sound_new_life.SetBuffer   (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "wermusic"));
+    sound_heaven.SetBuffer     (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "playerdeath"));
+    sound_spawn.SetBuffer      (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "spawn"));
+    menu_click.SetBuffer       (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "menuclick"));
+	regenerate.SetBuffer(*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "regenerate"));
 
-    fireSound[0].SetBuffer( *LoadSoundExt(Parser.SOL_PATH + "Sfx/", "colt1911-fire"));
-    fireSound[1].SetBuffer( * LoadSoundExt(Parser.SOL_PATH + "Sfx/", "deserteagle-fire"));
-    fireSound[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "mp5-fire"));
-    fireSound[3].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ak74-fire"));
-    fireSound[4].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "steyraug-fire"));
-    fireSound[5].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spas12-fire"));
-    fireSound[6].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ruger77-fire"));
-    fireSound[7].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m79-fire"));
-    fireSound[8].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "barretm82-fire"));
-    fireSound[9].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m249-fire"));
-    fireSound[10].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "minigun-fire"));
-    fireSound[11].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "flamer"));
-    fireSound[12].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "chainsaw-r"));
+    take_medikit.SetBuffer     (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "takemedikit"));
+    take_vestkit.SetBuffer     (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "vesttake"));
+    take_flamer.SetBuffer      (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "godflame"));
+    take_berserker.SetBuffer   (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "berserker"));
+    take_predator.SetBuffer    (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "predator"));
+    take_grenades.SetBuffer    (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "pickupgun"));
 
-    reloadSound[0].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "colt1911-reload"));
-    reloadSound[1].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "deserteagle-reload"));
-    reloadSound[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "mp5-reload"));
-    reloadSound[3].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ak74-reload"));
-    reloadSound[4].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "steyraug-reload"));
-    reloadSound[5].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "spas12-reload"));
-    reloadSound[6].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "ruger77-reload"));
-    reloadSound[7].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m79-reload"));
-    reloadSound[8].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "barretm82-reload"));
-    reloadSound[9].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "m249-reload"));
-    reloadSound[10].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "minigun-reload"));
+    fireSound[0].SetBuffer( *LoadSoundExt(Parser.GAME_PATH + "Sfx/", "colt1911-fire"));
+    fireSound[1].SetBuffer( * LoadSoundExt(Parser.GAME_PATH + "Sfx/", "deserteagle-fire"));
+    fireSound[2].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "mp5-fire"));
+    fireSound[3].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "ak74-fire"));
+    fireSound[4].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "steyraug-fire"));
+    fireSound[5].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "spas12-fire"));
+    fireSound[6].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "ruger77-fire"));
+    fireSound[7].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "m79-fire"));
+    fireSound[8].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "barretm82-fire"));
+    fireSound[9].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "m249-fire"));
+    fireSound[10].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "minigun-fire"));
+    fireSound[11].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "flamer"));
+    fireSound[12].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "chainsaw-r"));
 
-    sound_death[0].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death"));
-    sound_death[1].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death2"));
-    sound_death[2].SetBuffer (*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "death3"));
-    sound_kitfall[0].SetBuffer ( *LoadSoundExt(Parser.SOL_PATH + "Sfx/", "kit-fall"));
-    sound_kitfall[1].SetBuffer(*LoadSoundExt(Parser.SOL_PATH + "Sfx/", "kit-fall2"));
+    reloadSound[0].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "colt1911-reload"));
+    reloadSound[1].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "deserteagle-reload"));
+    reloadSound[2].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "mp5-reload"));
+    reloadSound[3].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "ak74-reload"));
+    reloadSound[4].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "steyraug-reload"));
+    reloadSound[5].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "spas12-reload"));
+    reloadSound[6].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "ruger77-reload"));
+    reloadSound[7].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "m79-reload"));
+    reloadSound[8].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "barretm82-reload"));
+    reloadSound[9].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "m249-reload"));
+    reloadSound[10].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "minigun-reload"));
 
+    sound_death[0].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "death"));
+    sound_death[1].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "death2"));
+    sound_death[2].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "death3"));
+    sound_kitfall[0].SetBuffer ( *LoadSoundExt(Parser.GAME_PATH + "Sfx/", "kit-fall"));
+    sound_kitfall[1].SetBuffer(*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "kit-fall2"));
+
+    step[0].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step"));
+    step[1].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step2"));
+    step[2].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step3"));
+    step[3].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step4"));
+    step[4].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step5"));
+    step[5].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step6"));
+    step[6].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step7"));
+    step[7].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "step8"));
+
+	shell[0].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "shell"));
+	shell[1].SetBuffer (*LoadSoundExt(Parser.GAME_PATH + "Sfx/", "shell2"));
 
     setVolume();
 
@@ -112,6 +125,11 @@ void AudioManager::setVolume()
         reloadSound[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
+	for (int i = 0; i < 2; ++i)
+    {
+         shell[i].SetVolume(Parser.SOUNDS_VOL);
+    }
+
     for (int i = 0; i < 2; ++i)
     {
          sound_kitfall[i].SetVolume(Parser.SOUNDS_VOL);
@@ -120,6 +138,11 @@ void AudioManager::setVolume()
     for (int i = 0; i < 3; ++i)
     {
         sound_death[i].SetVolume(Parser.SOUNDS_VOL);
+    }
+
+    for (int i = 0; i < 9; ++i)
+    {
+         step[i].SetVolume(Parser.SOUNDS_VOL);
     }
 
     grenade_pullout.SetVolume(Parser.SOUNDS_VOL);
@@ -189,7 +212,7 @@ AudioManager::~AudioManager()
 }
 
 
-
+// fix it - sprawic, zeby bylo uzywana wszedzie !!!
 void AudioManager::Play(sf::Sound &snd)
 {
     snd.Play();

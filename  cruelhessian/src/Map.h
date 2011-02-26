@@ -29,6 +29,9 @@
 #include "TexturesLoader.h"
 #include "Drawable.h"
 #include "Body.h"
+#include "MapElement.h"
+#include "MapElementPolygon.h"
+#include "MapElementProp.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
 #else
@@ -36,8 +39,8 @@
 #endif
 
 
-typedef unsigned char ubyte;
-typedef unsigned short word;
+//typedef unsigned char ubyte;
+//typedef unsigned short word;
 
 
 //class Body;
@@ -51,37 +54,12 @@ public:
     GLuint* text_scen;
     GLuint text_poly;
     Tex text_weath;
- //   Body *body;
-
-  //  void drawBack(void) const;
-  //  void drawFront(void) const;
-    //void draw(void) const;
-
 
     Map(const std::string& mname);
 
     ~Map();
 
-    typedef enum
-    {
-        ptNORMAL = 0,
-        ptONLY_BULLETS_COLLIDE,
-        ptONLY_PLAYERS_COLLIDE,
-        ptNO_COLLIDE,
-        ptICE,
-        ptDEADLY,
-        ptBLOODY_DEADLY,
-        ptHURTS,
-        ptREGENERATES,
-        ptLAVA
-    } PMS_POLYTYPE;
 
-    typedef enum
-    {
-        dbBEHIND_ALL = 0,
-        dbBEHIND_MAP,
-        dbBEHIND_NONE
-    } PMS_DRAWBEHIND;
 //private:
     typedef enum
     {
@@ -130,38 +108,9 @@ public:
         stSTAT_GUN
     } PMS_SPAWNTEAM;
 
-    typedef struct
-    {
-        float x;
-        float y;
-        float z;
-    } PMS_VECTOR;
 
-    typedef struct
-    {
-        ubyte blue;
-        ubyte green;
-        ubyte red;
-        ubyte alpha;
-    } PMS_COLOR;
 
-    typedef struct
-    {
-        float x;
-        float y;
-        float z;
-        float rhw;
-        PMS_COLOR color;
-        float tu;
-        float tv;
-    } PMS_VERTEX;
 
-    typedef struct
-    {
-        PMS_VERTEX vertex[3];
-        PMS_VECTOR perpendicular[3];
-        PMS_POLYTYPE polyType;
-    } PMS_POLYGON;
 
     typedef struct
     {
@@ -169,24 +118,7 @@ public:
         std::vector<word> polys;
     } PMS_SECTOR;
 
-    typedef struct
-    {
-        bool active;
-        ubyte filler1;
-        word style;
-        long width;
-        long height;
-        float x;
-        float y;
-        float rotation;
-        float scaleX;
-        float scaleY;
-        ubyte alpha;
-        ubyte filler2[3];
-        PMS_COLOR color;
-        PMS_DRAWBEHIND level;
-        ubyte filler3[3];
-    } PMS_PROP;
+
 
     typedef struct
     {
@@ -220,14 +152,7 @@ word year :
         PMS_TIMESTAMP timestamp;
     } PMS_SCENERY;
 
-    typedef struct
-    {
-        bool active;
-        ubyte filler[3];
-        float x;
-        float y;
-        float radius;
-    } PMS_COLLIDER;
+
 
     typedef struct
     {
@@ -265,8 +190,7 @@ public:
     long version;
     std::string name;
     std::string texture;
-    PMS_COLOR bgColorTop;
-    PMS_COLOR bgColorBottom;
+
     long jetAmount;
     ubyte grenades;
     ubyte medikits;
@@ -274,16 +198,17 @@ public:
     PMS_STEPSTYPE steps;
     long randID;
     long polygonCount;
-    std::vector<PMS_POLYGON> polygon;
+    MapElementBackground background;
+    std::vector<MapElementPolygon> polygon;
     long sectorDivisions;
     long numSectors;
     std::vector<PMS_SECTOR> sector;
     long propCount;
-    std::vector<PMS_PROP> prop;
+    std::vector<MapElementProp> prop;
     long sceneryCount;
     std::vector<PMS_SCENERY> scenery;
     long colliderCount;
-    std::vector<PMS_COLLIDER> collider;
+//    std::vector<MapElementCollider> collider;
     long spawnpointCount;
     std::vector<PMS_SPAWNPOINT> spawnpoint;
     long waypointCount;

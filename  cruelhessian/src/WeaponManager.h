@@ -48,6 +48,7 @@ class WeaponManager : public Singleton<WeaponManager>
         int recoil;
         Tex textureAmmo;
         Tex textureGun;
+		Tex textureShell;
     };
 
 public:

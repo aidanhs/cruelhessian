@@ -47,7 +47,7 @@ typedef enum GAME_MODE
     HTF
 } GAME_MODE;
 
-typedef enum OBJECT_TYPE
+/*typedef enum OBJECT_TYPE
 {
     GOSTEK = 0,
     BULLET,
@@ -58,7 +58,7 @@ typedef enum OBJECT_TYPE
     KIT,
     STAT
 } OBJECT_TYPE;
-
+*/
 
 typedef enum TEAM
 {
@@ -69,19 +69,20 @@ typedef enum TEAM
     TEAM_DELTA
 } TEAM;
 
-typedef enum OBJECT_SHAPE
+/*typedef enum OBJECT_SHAPE
 {
     XPOINT = 0,
     CIRCLE,
     SQUARE
 } OBJECT_SHAPE;
-
+*/
 
 typedef enum MT
 {
     BIEGA = 0,
     BIEGA_TYL,
     CELUJE,
+    CHANGE,
     CIESZY,
     GORA,
     KUCA,
@@ -92,6 +93,7 @@ typedef enum MT
     SKOK_W_BOK,
     SPADA,
     STOI,
+	WYRZUCA,
     ZMIEN_BRON
 } MT;
 
@@ -134,11 +136,12 @@ typedef enum
     TYPE_CLUSTER,
     TYPE_CLUSTERGRENADE,
     TYPE_POLYGON,
-    TYPE_CRATE,
+    //TYPE_CRATE,
     TYPE_COLLIDER,
     TYPE_WEAPON,
     TYPE_PLAYER,
-    TYPE_DEADMEAT
+    //TYPE_DEADMEAT,
+	TYPE_SHELL
 } BODY_TYPE;
 
 #endif

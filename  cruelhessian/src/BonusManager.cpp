@@ -37,20 +37,20 @@ BonusManager::BonusManager(void)
 
     std::cout << "   loading bonuses' textures ... " << std::endl;
 
-    text_bonus[BONUS_BERSERKER] = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "berserkerkit");
-    text_bonus[BONUS_CLUSTERS]  = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "clusterkit");
-    text_bonus[BONUS_FLAMER]    = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "flamerkit");
-    text_bonus[BONUS_GRENADES]  = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "grenadekit");
-    text_bonus[BONUS_MEDIKITS]  = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "medikit");
-    text_bonus[BONUS_PREDATOR]  = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "predatorkit");
-    text_bonus[BONUS_VESTKIT]   = Texture::LoadExt(Parser.SOL_PATH + "Textures/Objects/", "vestkit");
+    text_bonus[BONUS_BERSERKER] = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "berserkerkit");
+    text_bonus[BONUS_CLUSTERS]  = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "clusterkit");
+    text_bonus[BONUS_FLAMER]    = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "flamerkit");
+    text_bonus[BONUS_GRENADES]  = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "grenadekit");
+    text_bonus[BONUS_MEDIKITS]  = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "medikit");
+    text_bonus[BONUS_PREDATOR]  = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "predatorkit");
+    text_bonus[BONUS_VESTKIT]   = Texture::LoadExt(Parser.GAME_PATH + "Textures/Objects/", "vestkit");
 
 }
 
 BonusManager::~BonusManager(void)
 {
 
-    std::cout << "Removing BonusManager ..." << std::endl;
+    std::cout << "Removing BonusManager ... DONE" << std::endl;
 
 }
 
@@ -82,7 +82,7 @@ int BonusManager::LoadBonuses(void)
                 bonus[BONUS_VESTKIT].push_back(i);
         }
     }
-	
+
     // laduj wszystko co jest
     // fix it !!!!!!!!!!!!
     TVector2D p;
@@ -98,8 +98,6 @@ int BonusManager::LoadBonuses(void)
                 Bonus *newbon = new Bonus(p, i);
 
 				Physics.m_movingObj.push_back(newbon);
-                //Bonus newbon(p, text_bonus[i], i);
-                //world.bonus_list.push_back(newbon);
             }
     }
 
@@ -110,7 +108,7 @@ int BonusManager::LoadBonuses(void)
 
 int BonusManager::RemoveIfNeeded(void)
 {
-	return false;
+	return 0;
 /*    BodyUserData* b;
 
     for (b2Body *body = world.spaceMap->GetBodyList(); body; body = body->GetNext())

@@ -25,7 +25,7 @@
 #include "parser/SimpleIni.h"
 
 
-FontManager::FontManager(void)
+FontManager::FontManager()
 {
     std::cout << "Starting FontManager ... " << std::endl;
 
@@ -97,7 +97,7 @@ FontManager::FontManager(void)
 
     std::string tmp_str;
     CSimpleIni ini(false, false, false);
-    if (ini.LoadFile((Parser.SOL_PATH + "Txt/font.ini").c_str()) < 0)
+    if (ini.LoadFile((Parser.GAME_PATH + "Txt/font.ini").c_str()) < 0)
     {
         std::cerr << "Cannot read 'Txt/font.ini' file" << std::endl;
         return;
@@ -148,44 +148,47 @@ FontManager::FontManager(void)
         m_xFont[1] = "FreeSans.ttf";
     }
 
-    FontMenuSize         = ini.GetLongValue("FONTS", "FontMenuSize");
-    FontConsoleSize      = ini.GetLongValue("FONTS", "FontConsoleSize");
-    FontBigSize          = ini.GetLongValue("FONTS", "FontBigSize");
-    FontWeaponMenuSize   = ini.GetLongValue("FONTS", "FontWeaponMenuSize");
-    FontConsoleSmallSize = ini.GetLongValue("FONTS", "FontConsoleSmallSize");
-    FontHeightScale      = ini.GetLongValue("FONTS", "FontHeightScale");
-    FontMenuBold         = ini.GetLongValue("FONTS", "FontMenuBold");
-    FontConsoleBold      = ini.GetLongValue("FONTS", "FontConsoleBold");
-    FontBigBold          = ini.GetLongValue("FONTS", "FontBigBold");
-    FontWeaponMenuBold   = ini.GetLongValue("FONTS", "FontWeaponMenuBold");
-    FontConsoleSmallBold = ini.GetLongValue("FONTS", "FontConsoleSmallBold");
+    FontHeightScale      = ini.GetLongValue("FONTS", "FontHeightScale") / 100.0f;
     KillConsoleNameSpace = ini.GetLongValue("FONTS", "KillConsoleNameSpace");
 
-    font[0].LoadFromFile(Parser.SOL_PATH + m_xFont[0]);
-    font[1].LoadFromFile(Parser.SOL_PATH + m_xFont[1]);
+    FontMenu.size         = ini.GetLongValue("FONTS", "FontMenuSize");
+    FontMenu.bold         = ini.GetLongValue("FONTS", "FontMenuBold");
+    FontConsole.size      = ini.GetLongValue("FONTS", "FontConsoleSize");
+    FontConsole.bold      = ini.GetLongValue("FONTS", "FontConsoleBold");
+    FontBig.size          = ini.GetLongValue("FONTS", "FontBigSize");
+    FontBig.bold          = ini.GetLongValue("FONTS", "FontBigBold");
+    FontWeaponMenu.size   = ini.GetLongValue("FONTS", "FontWeaponMenuSize");
+    FontWeaponMenu.bold   = ini.GetLongValue("FONTS", "FontWeaponMenuBold");
+    FontConsoleSmall.size = ini.GetLongValue("FONTS", "FontConsoleSmallSize");
+    FontConsoleSmall.bold = ini.GetLongValue("FONTS", "FontConsoleSmallBold");
+
+    font[0].LoadFromFile(Parser.GAME_PATH + m_xFont[0]);
+    font[1].LoadFromFile(Parser.GAME_PATH + m_xFont[1]);
 
 }
 
-FontManager::~FontManager(void)
+FontManager::~FontManager()
 {
 
-    std::cout << "Removing FontManager ..." << std::endl;
+    std::cout << "Removing FontManager ... DONE" << std::endl;
 
 }
 
 
-void FontManager::printTextMiddle(const sf::Font& fontx, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float y) const
+void FontManager::printTextMiddle(const sf::Font& fontx, const FontStruct& font_info, const std::string& text, const std::vector<unsigned char>& color, const float y) const
 {
-	printText(fontx, size, text, color, 100, y);
+	printText(fontx, font_info, text, color, 100, y);
 }
 
 
-void FontManager::printText(const sf::Font& fontx, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const
+void FontManager::printText(const sf::Font& fontx, const FontStruct& font_info, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const
 {
-	sf::String xtext(text, fontx, static_cast<float>(size));
+	sf::String xtext(text, fontx, font_info.size);
+	xtext.SetScale(1.5f, FontHeightScale);
 	xtext.SetColor(sf::Color(color[0], color[1], color[2]));
     xtext.SetPosition(x, y);
-	xtext.SetStyle(sf::String::Bold);
+	if (font_info.bold)
+        xtext.SetStyle(sf::String::Bold);
 
     game.App.Draw(xtext);
 

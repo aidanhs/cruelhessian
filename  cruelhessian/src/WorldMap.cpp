@@ -59,6 +59,7 @@
 #include "soil/SOIL.h"
 
 
+
 const float _180overpi = 57.29f;
 
 
@@ -85,12 +86,21 @@ WorldMap::~WorldMap()
     delete map;
     delete physicsMgr;
     delete backg;
-    delete mouse;
-    delete arrow;
 
-    delete window_scores;
+    if (Mouse::GetSingletonPtr() != NULL)
+        delete mouse;
+
+    if (Arrow::GetSingletonPtr() != NULL)
+        delete arrow;
+
+    if (WindowScores::GetSingletonPtr() != NULL)
+        delete window_scores;
+
     if (WindowExit::GetSingletonPtr() != NULL)
         delete window_exit;
+
+    if (WindowGuns::GetSingletonPtr() != NULL)
+        delete window_guns;
 
     delete text_output;
 
@@ -104,7 +114,7 @@ void WorldMap::run()
     setGL();
 
     game.App.SetCursorPosition(static_cast<int>(Parser.MAX_WIDTH/2.0f), static_cast<int>(Parser.MAX_HEIGHT/2.0f));
-    game.App.ShowMouseCursor(false);
+
 
 // --------------------------------------   start playing audio  --------------------------------------
 
@@ -117,7 +127,6 @@ void WorldMap::run()
             Audio.music->SetVolume(Parser.MUSIC_VOL);
         }
     }
-
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -204,8 +213,7 @@ WorldMap::WorldMap(const std::string& mapp) :
     FRIENDLY_FIRE(false),
     getStartGameTime(0),
     prev_time(0),
-    MAX_RESPAWN_TIME(5),
-    JET_CHANGE(0.005f)
+    MAX_RESPAWN_TIME(5)
 {
 
     physicsMgr = new PhysicsManager();
@@ -300,37 +308,6 @@ unsigned int WorldMap::addBot(const BotsBase& botss, int spawn_nr, TEAM team)
 
     return newbot->number;
 }
-
-
-
-
-
-
-
-void WorldMap::gunReloading(unsigned int bot_nr)
-{
-
-    if (!bot[bot_nr]->isReloading)
-    {
-        if (Parser.SOUNDS_VOL > 0)
-            Audio.Play(Audio.reloadSound[bot[bot_nr]->gunModel]);
-        bot[bot_nr]->startReloadingTime = getCurrentTime;
-        bot[bot_nr]->isReloading = true;
-        bot[bot_nr]->leftAmmos = 0;
-    }
-    if ((getCurrentTime - bot[bot_nr]->startReloadingTime) >= Weapons[bot[bot_nr]->gunModel].reloadTime)
-    {
-        bot[bot_nr]->leftAmmos = Weapons[bot[bot_nr]->gunModel].ammo;
-        bot[bot_nr]->isReloading = false;
-    }
-    else if (bot_nr == MY_BOT_NR)
-    {
-        if (InterfaceManager::GetSingletonPtr() != NULL)
-            Interface.ReloadBar();
-    }
-
-}
-
 
 
 void WorldMap::setGL()

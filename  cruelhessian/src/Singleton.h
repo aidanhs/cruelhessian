@@ -11,8 +11,8 @@ public:
     Singleton(void)
     {
         assert(!ms_Singleton);
-        int offset = (int)(T*)1 - (int)(Singleton <T>*)(T*)1;
-        ms_Singleton = (T*)((int)this + offset);
+        long offset = (long)(T*)1 - (long)(Singleton <T>*)(T*)1;
+        ms_Singleton = (T*)((long)this + offset);
     }
 
     virtual ~Singleton(void)

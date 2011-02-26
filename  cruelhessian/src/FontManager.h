@@ -28,14 +28,21 @@
 #include <SFML/Graphics.hpp>
 
 
+typedef struct
+{
+    float size;
+    bool bold;
+} FontStruct;
+
+
 class FontManager : public Singleton<FontManager>
 {
     std::string m_xFont[2];
 
 public:
 
-    FontManager(void);
-    virtual ~FontManager(void);
+    FontManager();
+    virtual ~FontManager();
 
     sf::Font font[2];
 
@@ -45,7 +52,13 @@ public:
     std::vector<unsigned char> textColor;
     std::vector<std::vector<unsigned char> > textCol;
 
-    int FontMenuSize;
+    FontStruct FontMenu;
+    FontStruct FontConsole;
+    FontStruct FontConsoleSmall;
+    FontStruct FontBig;
+    FontStruct FontWeaponMenu;
+
+   /* int FontMenuSize;
     int FontConsoleSize;
     int FontBigSize;
     int FontWeaponMenuSize;
@@ -55,11 +68,13 @@ public:
     int FontConsoleBold;
     int FontBigBold;
     int FontWeaponMenuBold;
-    int FontConsoleSmallBold;
+    int FontConsoleSmallBold;*/
+
+    float FontHeightScale;
     int KillConsoleNameSpace;
 
-    void printText(const sf::Font& font, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const;
-    void printTextMiddle(const sf::Font& font, unsigned int size, const std::string& text, const std::vector<unsigned char>& color, const float y) const;
+    void printText(const sf::Font& font, const FontStruct& font_info, const std::string& text, const std::vector<unsigned char>& color, const float x, const float y) const;
+    void printTextMiddle(const sf::Font& font, const FontStruct& font_info, const std::string& text, const std::vector<unsigned char>& color, const float y) const;
 
 };
 

@@ -29,6 +29,7 @@
 #include "TexturesLoader.h"
 #include "WeaponManager.h"
 #include "Bullet.h"
+#include "Shell.h"
 #include "PhysicsManager.h"
 #ifdef _WIN32
 #include "CompatibleWindows.h"
@@ -108,6 +109,8 @@ void Weapon::Shot(const TVector2D& aim)
     p += m_xPosition;
 
     Bullet* bullet = new Bullet(p, v, m_fAngle* DEG_TO_RAD, m_iModel, m_iOwner);
+	Shell* shell = new Shell(p, -v/8, m_iModel);
 
 	Physics.m_movingObj.push_back(bullet);
+	Physics.m_movingObj.push_back(shell);
 }
